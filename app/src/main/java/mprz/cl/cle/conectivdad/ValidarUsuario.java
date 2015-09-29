@@ -12,7 +12,7 @@ import org.ksoap2.transport.HttpTransportSE;
 /**
  * Created by elias on 28-09-15.
  */
-public class ValidarUsuario extends AsyncTask<Void, Void, Void> {
+public class ValidarUsuario extends AsyncTask<String, Void, Void> {
 
     @Override
     protected void onPreExecute() {
@@ -20,9 +20,9 @@ public class ValidarUsuario extends AsyncTask<Void, Void, Void> {
     }
 
     @Override
-    protected Void doInBackground(Void... params) {
+    protected Void doInBackground(String... params) {
 
-        getDatos();
+        getDatos(params[0], params[1]);
 
         return null;
     }
@@ -42,8 +42,8 @@ public class ValidarUsuario extends AsyncTask<Void, Void, Void> {
 
             try {
                 SoapObject Request = new SoapObject(NAMESPACE, METHOD_NAME);
-                Request.addProperty("rut", getCel);
-                Request.addProperty("Celsius", getCel);
+                Request.addProperty("rut", usuario);
+                Request.addProperty("password", password);
 
                 SoapSerializationEnvelope soapEnvelope = new SoapSerializationEnvelope(SoapEnvelope.VER11);
                 soapEnvelope.dotNet = true;
