@@ -5,7 +5,7 @@ android {
     buildToolsVersion "22.0.1"
 
     defaultConfig {
-        applicationId "mprz.cl.cle"
+        applicationId "cl.mprz.cle"
         minSdkVersion 16
         targetSdkVersion 23
         versionCode 1
@@ -32,7 +32,7 @@ dependencies {
     compile 'com.android.support:support-annotations:23.0.0'
     compile 'com.android.support:support-v13:23.0.0'
     compile 'com.android.support:support-v4:23.0.0'
-    compile files('libs/ksoap2-android-assembly-3.4.0-jar-with-dependencies.jar')
+    compile 'com.mcxiaoke.volley:library:1.0.19'
 
 
 }
