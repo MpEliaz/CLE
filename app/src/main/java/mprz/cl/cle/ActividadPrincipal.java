@@ -20,6 +20,7 @@ import com.android.volley.toolbox.StringRequest;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -48,7 +49,7 @@ public class ActividadPrincipal extends AppCompatActivity {
             public void onClick(View view) {
 
                 //validarUsuario(et_user.getText().toString(), et_pass.getText().toString());
-                if(et_user.getText().toString().equals("172888119") && et_pass.getText().toString().equals("123")){
+                if(et_user.getText().toString().equals("11111111-1") && et_pass.getText().toString().equals("juanperez")){
 
                     Intent i = new Intent(ActividadPrincipal.this, Inicio.class);
                     startActivity(i);
@@ -90,7 +91,7 @@ public class ActividadPrincipal extends AppCompatActivity {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Log.e("CLE",response.toString());
+                        Log.e("CLE",response);
                     }
                 }, new Response.ErrorListener() {
             @Override
@@ -101,29 +102,38 @@ public class ActividadPrincipal extends AppCompatActivity {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
 
-                HashMap parametros = new HashMap();
-                    parametros.put("run", user);
-                    parametros.put("pass", pass);
+                HashMap parametros = new HashMap<String, String>();
+                    parametros.put("run", "11111111-1");
+                    parametros.put("pass", "juanperez");
                 return parametros;
             }
 
-            @Override
+/*            @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
 
-                HashMap headers = new HashMap();
-                headers.put("Content-Type", "application/x-www-form-urlencoded");
-                headers.put("Content-Length", "length");
+                HashMap headers = new HashMap<String, String>();
+                headers.put("Content-Type", "application/x-www-form-urlencoded; charset=utf-8");
+                headers.put("run", "11111111-1");
+                headers.put("pass", "juanperez");
                 return headers;
-            }
-
-            @Override
-            public byte[] getBody() throws AuthFailureError {
-                return super.getBody();
-            }
+            }*/
 /*            @Override
+            public byte[] getBody() throws AuthFailureError {
+
+                String postData = "run=11111111-1&pass=juanperez";
+
+                try {
+                    return postData == null ? null :
+                            postData.getBytes(getParamsEncoding());
+                } catch (UnsupportedEncodingException uee) {
+                    // TODO consider if some other action should be taken
+                    return null;
+                }
+            }*/
+            @Override
             public String getBodyContentType() {
                 return "application/x-www-form-urlencoded";
-            }*/
+            }
         };
         CLESingleton.getInstance(getApplicationContext()).addToRequestQueue(req);
         }
