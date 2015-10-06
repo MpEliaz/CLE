@@ -43,7 +43,8 @@
                 android:textIsSelectable="false"
                 android:textColorHighlight="@color/white"
                 android:textColorHint="@color/white"
-                android:textColor="@color/white" />
+                android:textColor="@color/white"
+                android:text="11111111-9" />
 
         </android.support.design.widget.TextInputLayout>
 
@@ -62,7 +63,8 @@
                 android:textColorHint="@color/white"
                 android:textColorLink="@color/white"
                 android:textColor="@color/white"
-                android:textColorHighlight="@color/white" />
+                android:textColorHighlight="@color/white"
+                android:text="juanperez" />
 
         </android.support.design.widget.TextInputLayout>
 

@@ -12,9 +12,11 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.StringRequest;
 
 import org.json.JSONException;
@@ -48,15 +50,15 @@ public class ActividadPrincipal extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                //validarUsuario(et_user.getText().toString(), et_pass.getText().toString());
-                if(et_user.getText().toString().equals("11111111-1") && et_pass.getText().toString().equals("juanperez")){
+                validarUsuario(et_user.getText().toString(), et_pass.getText().toString());
+/*                if(et_user.getText().toString().equals("11111111-1") && et_pass.getText().toString().equals("juanperez")){
 
                     Intent i = new Intent(ActividadPrincipal.this, Inicio.class);
                     startActivity(i);
                 }
                 else{
                     Toast.makeText(ActividadPrincipal.this, "Credenciales incorrectas", Toast.LENGTH_SHORT).show();
-                }
+                }*/
             }
         });
 
@@ -84,7 +86,7 @@ public class ActividadPrincipal extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void validarUsuario(final String user, final String pass){
+    private void validarUsuario(final String run, final String pass){
 
         StringRequest req = new StringRequest(Request.Method.POST,
                 URL+"/Login",
@@ -96,43 +98,43 @@ public class ActividadPrincipal extends AppCompatActivity {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.e("CLE",error.getMessage());
+            //    Log.e("CLE",error.getMessage());
+                if(error.networkResponse.data!=null) {
+                    try {
+                        String body = new String(error.networkResponse.data,"UTF-8");
+                        Log.e("CLE",body);
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
         }){
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
 
-                HashMap parametros = new HashMap<String, String>();
-                    parametros.put("run", "11111111-1");
-                    parametros.put("pass", "juanperez");
-                return parametros;
+                Map<String,String> params = new HashMap<String, String>();
+                    params.put("run", run);
+                   // parametros.put("pass", pass);
+                return params;
             }
 
-/*            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
+            @Override
+            public byte[] getBody() throws AuthFailureError {
+                String params = "run=11111111-1&pass=juanperez";
 
+                return params.getBytes();
+            }
+
+            /*            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
                 HashMap headers = new HashMap<String, String>();
-                headers.put("Content-Type", "application/x-www-form-urlencoded; charset=utf-8");
-                headers.put("run", "11111111-1");
-                headers.put("pass", "juanperez");
+                headers.put("Content-Type", "application/x-www-form-urlencoded");
                 return headers;
             }*/
-/*            @Override
-            public byte[] getBody() throws AuthFailureError {
 
-                String postData = "run=11111111-1&pass=juanperez";
-
-                try {
-                    return postData == null ? null :
-                            postData.getBytes(getParamsEncoding());
-                } catch (UnsupportedEncodingException uee) {
-                    // TODO consider if some other action should be taken
-                    return null;
-                }
-            }*/
             @Override
             public String getBodyContentType() {
-                return "application/x-www-form-urlencoded";
+                return "application/x-www-form-urlencoded; charset=UTF-8";
             }
         };
         CLESingleton.getInstance(getApplicationContext()).addToRequestQueue(req);
