@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_home"
+            android:checked="true"
+            android:icon="@drawable/ic_home"
+            android:title="@string/home" />
+        <item
+            android:id="@+id/nav_mis_encuestas"
+            android:checked="true"
+            android:icon="@drawable/ic_file_document"
+            android:title="@string/encuestas" />
+        <item
+            android:id="@+id/nav_mision"
+            android:checked="true"
+            android:icon="@drawable/ic_file_document"
+            android:title="@string/mision" />
+        <item
+            android:id="@+id/nav_doctrina"
+            android:checked="true"
+            android:icon="@drawable/ic_file_document"
+            android:title="@string/doctrina" />
+        <item
+            android:id="@+id/nav_mis_datos"
+            android:checked="true"
+            android:icon="@drawable/ic_file_document"
+            android:title="@string/mis_datos" />
+        <item
+            android:id="@+id/nav_acerca_de"
+            android:checked="true"
+            android:icon="@drawable/ic_file_document"
+            android:title="@string/acerca_de" />
+
+
+        <!-- Sección de configuración -->
+        <item
+            android:id="@+id/configuration_section"
+            android:title="Configuracion">
+            <menu>
+                <item
+                    android:id="@+id/nav_log_out"
+                    android:icon="@android:drawable/ic_lock_power_off"
+                    android:title="@string/salir" />
+            </menu>
+        </item>
+    </group>
+
+</menu>

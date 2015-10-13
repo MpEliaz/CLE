@@ -16,7 +16,7 @@ public final class CLESingleton {
     private static Context context;
 
     private CLESingleton(Context context){
-        CLESingleton.context = context;
+        this.context = context;
         requestQueue = getRequestQueue();
     }
 

@@ -44,7 +44,7 @@
                 android:textColorHighlight="@color/white"
                 android:textColorHint="@color/white"
                 android:textColor="@color/white"
-                android:text="11111111-9" />
+                android:text="11111111-1" />
 
         </android.support.design.widget.TextInputLayout>
 
@@ -76,7 +76,8 @@
             android:layout_gravity="center_horizontal"
             android:background="@color/white"
             android:layout_marginTop="20dp"
-            android:textColor="@color/black" />
+            android:textColor="@color/black"
+            style="@style/Base.TextAppearance.AppCompat.Widget.Button" />
 
         <TextView
             android:layout_width="wrap_content"
