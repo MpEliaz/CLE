@@ -1,6 +1,7 @@
 package mprz.cl.cle;
 
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -9,6 +10,8 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Toast;
 
 import mprz.cl.cle.R;
 
@@ -69,6 +72,33 @@ public class Inicio extends AppCompatActivity {
 
         if(nv != null){
 
+            nv.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+                @Override
+                public boolean onNavigationItemSelected(MenuItem menuItem) {
+
+                    switch (menuItem.getItemId())
+                    {
+                        case R.id.home:
+                            break;
+                        case R.id.nav_mis_encuestas:
+                            break;
+                        case R.id.nav_mision:
+                            break;
+                        case R.id.nav_doctrina:
+                            break;
+                        case R.id.nav_mis_datos:
+                            break;
+                        case R.id.nav_acerca_de:
+                            break;
+                        case R.id.nav_log_out:
+                            break;
+                    }
+                    Toast.makeText(getApplicationContext(), menuItem.getTitle() + " pressed", Toast.LENGTH_LONG).show();
+                    menuItem.setChecked(true);
+                    drawerLayout.closeDrawers();
+                    return true;
+                }
+            });
         }
     }
 }

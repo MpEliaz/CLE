@@ -52,15 +52,15 @@ public class ActividadPrincipal extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                validarUsuario(et_user.getText().toString(), et_pass.getText().toString());
-/*                if(et_user.getText().toString().equals("11111111-1") && et_pass.getText().toString().equals("juanperez")){
+ //               validarUsuario(et_user.getText().toString(), et_pass.getText().toString());
+                if(et_user.getText().toString().equals("11111111-1") && et_pass.getText().toString().equals("juanperez")){
 
                     Intent i = new Intent(ActividadPrincipal.this, Inicio.class);
                     startActivity(i);
                 }
                 else{
                     Toast.makeText(ActividadPrincipal.this, "Credenciales incorrectas", Toast.LENGTH_SHORT).show();
-                }*/
+                }
             }
         });
 
@@ -90,6 +90,7 @@ public class ActividadPrincipal extends AppCompatActivity {
             @Override
             public void onResponse(String response) {
                 Log.e("CLE", response.toString());
+
             }
         }, new Response.ErrorListener() {
             @Override
