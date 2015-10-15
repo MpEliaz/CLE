@@ -1,6 +1,7 @@
 package mprz.cl.cle;
 
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -26,6 +27,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import mprz.cl.cle.clases.CLESingleton;
+import mprz.cl.cle.util.UsuarioSQLiteHelper;
 
 import static mprz.cl.cle.util.Constantes.URL;
 
@@ -52,15 +54,15 @@ public class ActividadPrincipal extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
- //               validarUsuario(et_user.getText().toString(), et_pass.getText().toString());
-                if(et_user.getText().toString().equals("11111111-1") && et_pass.getText().toString().equals("juanperez")){
+                validarUsuario(et_user.getText().toString(), et_pass.getText().toString());
+/*                if(et_user.getText().toString().equals("11111111-1") && et_pass.getText().toString().equals("juanperez")){
 
                     Intent i = new Intent(ActividadPrincipal.this, Inicio.class);
                     startActivity(i);
                 }
                 else{
                     Toast.makeText(ActividadPrincipal.this, "Credenciales incorrectas", Toast.LENGTH_SHORT).show();
-                }
+                }*/
             }
         });
 
@@ -90,6 +92,29 @@ public class ActividadPrincipal extends AppCompatActivity {
             @Override
             public void onResponse(String response) {
                 Log.e("CLE", response.toString());
+
+                try {
+                    JSONArray array = new JSONArray(response);
+                    JSONObject o = array.getJSONObject(0);
+                    Log.e("CLE", o.getString("nombres"));
+                    if(!o.getString("resp").equals("Error")){
+                    UsuarioSQLiteHelper helper = new UsuarioSQLiteHelper(ActividadPrincipal.this,"DBCLE",null, 1);
+                    SQLiteDatabase db = helper.getWritableDatabase();
+
+                        if(db !=null){
+
+                            db.execSQL("INSERT INTO Usuario (nombres, apellido_p, apellido_m) " +
+                                    "values("+o.getString("nombres")+","+o.getString("paterno")+","+o.getString("materno")+")");
+
+                            db.close();
+                        }
+                    }
+                    else{
+                        Toast.makeText(ActividadPrincipal.this,"Error en las credenciales",Toast.LENGTH_LONG).show();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
 
             }
         }, new Response.ErrorListener() {
