@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import mprz.cl.cle.clases.CLESingleton;
+import mprz.cl.cle.clases.Usuario;
 import mprz.cl.cle.util.UsuarioSQLiteHelper;
 
 import static mprz.cl.cle.util.Constantes.URL;
@@ -37,6 +38,7 @@ public class ActividadPrincipal extends AppCompatActivity {
     EditText et_user;
     EditText et_pass;
     String url = URL + "/LoginJson?AspxAutoDetectCookieSupport=1";
+    UsuarioSQLiteHelper helper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,14 +49,15 @@ public class ActividadPrincipal extends AppCompatActivity {
         et_user = (EditText) findViewById(R.id.et_user);
         et_pass = (EditText) findViewById(R.id.et_password);
 
+        helper = new UsuarioSQLiteHelper(ActividadPrincipal.this,"DBCLE",null, 1);
 
-        
+        if(Usuario.getUserName(ActividadPrincipal.this).length() == 0){
 
-        btn_login.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+            btn_login.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
 
-                validarUsuario(et_user.getText().toString(), et_pass.getText().toString());
+                    validarUsuario(et_user.getText().toString(), et_pass.getText().toString());
 /*                if(et_user.getText().toString().equals("11111111-1") && et_pass.getText().toString().equals("juanperez")){
 
                     Intent i = new Intent(ActividadPrincipal.this, Inicio.class);
@@ -63,8 +66,13 @@ public class ActividadPrincipal extends AppCompatActivity {
                 else{
                     Toast.makeText(ActividadPrincipal.this, "Credenciales incorrectas", Toast.LENGTH_SHORT).show();
                 }*/
-            }
-        });
+                }
+            });
+        }
+        else{
+            Intent i = new Intent(ActividadPrincipal.this, Inicio.class);
+            startActivity(i);
+        }
 
     }
 
@@ -97,17 +105,14 @@ public class ActividadPrincipal extends AppCompatActivity {
                     JSONArray array = new JSONArray(response);
                     JSONObject o = array.getJSONObject(0);
                     Log.e("CLE", o.getString("nombres"));
-                    if(!o.getString("resp").equals("Error")){
-                    UsuarioSQLiteHelper helper = new UsuarioSQLiteHelper(ActividadPrincipal.this,"DBCLE",null, 1);
-                    SQLiteDatabase db = helper.getWritableDatabase();
+                    if(o.getString("resp").equals("Error")){
 
-                        if(db !=null){
+                        Usuario.setUserName(ActividadPrincipal.this, "Elias Enoc");
+                       // Usuario.setUserName(ActividadPrincipal.this, o.getString("nombres"));
 
-                            db.execSQL("INSERT INTO Usuario (nombres, apellido_p, apellido_m) " +
-                                    "values("+o.getString("nombres")+","+o.getString("paterno")+","+o.getString("materno")+")");
+                        Intent i = new Intent(ActividadPrincipal.this, Inicio.class);
+                        startActivity(i);
 
-                            db.close();
-                        }
                     }
                     else{
                         Toast.makeText(ActividadPrincipal.this,"Error en las credenciales",Toast.LENGTH_LONG).show();
@@ -157,4 +162,11 @@ public class ActividadPrincipal extends AppCompatActivity {
         };
         CLESingleton.getInstance(this).addToRequestQueue(request);
         }
+
+    private boolean verificarSesion()
+    {
+        SQLiteDatabase db = helper.getReadableDatabase();
+
+        return true;
+    }
 }

@@ -9,7 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
  */
 public class UsuarioSQLiteHelper extends SQLiteOpenHelper {
 
-    String UsuarioTable= "CREATE TABLE Usuario (id INTEGER AUTOINCREMENT, nombres TEXT, apellido_p TEXT, apellido_m TEXT)";
+    String UsuarioTable= "CREATE TABLE Usuario (id INTEGER AUTOINCREMENT, nombres TEXT, apellido_p TEXT, apellido_m TEXT, estado INTEGER)";
 
     public UsuarioSQLiteHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
         super(context, name, factory, version);

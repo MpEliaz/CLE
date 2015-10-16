@@ -11,6 +11,9 @@
     <string name="organica">Organica</string>
     <string name="doctrina">Doctrina</string>
     <string name="mis_datos">Mis Datos</string>
-    <string name="acerca_de">Acerca De</string>
+    <string name="acerca_de">Acerca de</string>
     <string name="salir">Salir</string>
+
+<!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">TEXTO DE PRUEBA!</string>
 </resources>
