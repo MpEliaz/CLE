@@ -1,172 +1,132 @@
 package mprz.cl.cle;
 
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
-import android.os.Bundle;
+import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
+import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Toast;
-import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.StringRequest;
+import android.widget.TextView;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.UnsupportedEncodingException;
-import java.util.HashMap;
-import java.util.Map;
-
-import mprz.cl.cle.clases.CLESingleton;
 import mprz.cl.cle.clases.Usuario;
-import mprz.cl.cle.util.UsuarioSQLiteHelper;
-
-import static mprz.cl.cle.util.Constantes.URL;
+import mprz.cl.cle.util.SessionManager;
 
 public class ActividadPrincipal extends AppCompatActivity {
 
-    Button btn_login;
-    EditText et_user;
-    EditText et_pass;
-    String url = URL + "/LoginJson?AspxAutoDetectCookieSupport=1";
-    UsuarioSQLiteHelper helper;
+    DrawerLayout drawerLayout;
+    private SessionManager session;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_actividad_principal);
+        setContentView(R.layout.activity_inicio);
+        session = new SessionManager(getApplicationContext());
 
-        btn_login = (Button) findViewById(R.id.btn_login);
-        et_user = (EditText) findViewById(R.id.et_user);
-        et_pass = (EditText) findViewById(R.id.et_password);
-
-        helper = new UsuarioSQLiteHelper(ActividadPrincipal.this,"DBCLE",null, 1);
-
-        if(Usuario.getUserName(ActividadPrincipal.this).length() == 0){
-
-            btn_login.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-
-                    validarUsuario(et_user.getText().toString(), et_pass.getText().toString());
-/*                if(et_user.getText().toString().equals("11111111-1") && et_pass.getText().toString().equals("juanperez")){
-
-                    Intent i = new Intent(ActividadPrincipal.this, Inicio.class);
-                    startActivity(i);
-                }
-                else{
-                    Toast.makeText(ActividadPrincipal.this, "Credenciales incorrectas", Toast.LENGTH_SHORT).show();
-                }*/
-                }
-            });
-        }
-        else{
-            Intent i = new Intent(ActividadPrincipal.this, Inicio.class);
-            startActivity(i);
-        }
-
+        inicializarToolbar();
+        setearMenu();
     }
-
-
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_actividad_principal, menu);
+        getMenuInflater().inflate(R.menu.menu_inicio, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
+        switch(item.getItemId()){
+            case android.R.id.home:
+                drawerLayout.openDrawer(GravityCompat.START);
+                return true;
+        }
 
         return super.onOptionsItemSelected(item);
     }
 
-    private void validarUsuario(final String run, final String pass){
+    private void inicializarToolbar() {
 
-        StringRequest request = new StringRequest(Request.Method.POST,
-                url, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                Log.e("CLE", response.toString());
 
-                try {
-                    JSONArray array = new JSONArray(response);
-                    JSONObject o = array.getJSONObject(0);
-                    Log.e("CLE", o.getString("nombres"));
-                    if(o.getString("resp").equals("Error")){
+        //App bar
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("Dashboard");
 
-                        Usuario.setUserName(ActividadPrincipal.this, "Elias Enoc");
-                       // Usuario.setUserName(ActividadPrincipal.this, o.getString("nombres"));
+        final ActionBar ab = getSupportActionBar();
 
-                        Intent i = new Intent(ActividadPrincipal.this, Inicio.class);
-                        startActivity(i);
-
-                    }
-                    else{
-                        Toast.makeText(ActividadPrincipal.this,"Error en las credenciales",Toast.LENGTH_LONG).show();
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                if(error.networkResponse.data!=null) {
-                    try {
-                        String body = new String(error.networkResponse.data,"UTF-8");
-                        Log.e("CLE",body);
-                    } catch (UnsupportedEncodingException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }){
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-
-                Map<String,String> params = new HashMap<String, String>();
-                    params.put("pass", pass);
-                    params.put("run", run);
-                return params;
-            }
-
-/*            @Override
-            public byte[] getBody() throws AuthFailureError {
-                return parametros.toString().getBytes();
-            }*/
-/*                        @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                HashMap headers = new HashMap<String, String>();
-                headers.put("Content-Length:", "30");
-                return headers;
-            }*/
-
-            @Override
-            public String getBodyContentType() {
-                return "application/x-www-form-urlencoded; charset=UTF-8";
-            }
-        };
-        CLESingleton.getInstance(this).addToRequestQueue(request);
+        if(ab != null){
+            ab.setHomeAsUpIndicator(R.drawable.ic_menu);
+            ab.setDisplayHomeAsUpEnabled(true);
         }
 
-    private boolean verificarSesion()
-    {
-        SQLiteDatabase db = helper.getReadableDatabase();
+    }
 
-        return true;
+    private void setearMenu() {
+
+        drawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
+
+        NavigationView nv = (NavigationView)findViewById(R.id.nav_view);
+        TextView nombre = (TextView)findViewById(R.id.hnav_username);
+            nombre.setText("HOLA");
+
+        if(nv != null){
+
+            nv.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+                @Override
+                public boolean onNavigationItemSelected(MenuItem menuItem) {
+
+                    boolean fragmentTransaction =false;
+                    Fragment fragment = null;
+
+
+                    switch (menuItem.getItemId())
+                    {
+                        case R.id.home:
+                            break;
+                        case R.id.nav_mis_encuestas:
+                            fragment = new MisEncuestas();
+                            fragmentTransaction = true;
+                            break;
+                        case R.id.nav_mision:
+                            break;
+                        case R.id.nav_doctrina:
+                            fragment = new Doctrina();
+                            fragmentTransaction = true;
+                            break;
+                        case R.id.nav_mis_datos:
+                            break;
+                        case R.id.nav_acerca_de:
+                            break;
+                        case R.id.nav_log_out:
+                            session.setLogin(false);
+                            Intent intent = new Intent(ActividadPrincipal.this, Login.class);
+                            startActivity(intent);
+                            finish();
+                            break;
+                    }
+                    if(fragmentTransaction) {
+                        getSupportFragmentManager().beginTransaction()
+                                .replace(R.id.content_fragment, fragment)
+                                .commit();
+
+                        menuItem.setChecked(true);
+                        String titulo = menuItem.getTitle().toString();
+                        if(titulo != null){
+                            getSupportActionBar().setTitle(titulo);
+                        }
+                    }
+
+                    drawerLayout.closeDrawers();
+//                    Toast.makeText(getApplicationContext(), menuItem.getTitle() + " pressed", Toast.LENGTH_LONG).show();
+                    return true;
+                }
+            });
+        }
     }
 }
