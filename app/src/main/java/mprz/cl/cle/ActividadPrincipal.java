@@ -13,13 +13,18 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import java.util.HashMap;
+
 import mprz.cl.cle.clases.Usuario;
+import mprz.cl.cle.util.SQLiteHandler;
 import mprz.cl.cle.util.SessionManager;
 
 public class ActividadPrincipal extends AppCompatActivity {
 
+    private TextView saludo;
     DrawerLayout drawerLayout;
     private SessionManager session;
+    private SQLiteHandler db;
 
 
     @Override
@@ -27,6 +32,12 @@ public class ActividadPrincipal extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inicio);
         session = new SessionManager(getApplicationContext());
+
+        db = new SQLiteHandler(getApplicationContext());
+
+        HashMap<String, String> dataUser = db.getUserDetails();
+        saludo = (TextView)findViewById(R.id.saludo);
+        saludo.setText("Bienvenido "+dataUser.get("nombre")+" "+dataUser.get("paterno")+" "+dataUser.get("materno"));
 
         inicializarToolbar();
         setearMenu();
@@ -105,6 +116,7 @@ public class ActividadPrincipal extends AppCompatActivity {
                             break;
                         case R.id.nav_log_out:
                             session.setLogin(false);
+                            db.deleteUsers();
                             Intent intent = new Intent(ActividadPrincipal.this, Login.class);
                             startActivity(intent);
                             finish();

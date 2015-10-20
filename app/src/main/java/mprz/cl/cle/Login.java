@@ -82,7 +82,7 @@ public class Login extends AppCompatActivity {
                     } else {
                         // Prompt user to enter credentials
                         Toast.makeText(getApplicationContext(),
-                                "Please enter the credentials!", Toast.LENGTH_LONG)
+                                "Ingrese credenciales", Toast.LENGTH_LONG)
                                 .show();
                     }
                 }
@@ -129,8 +129,7 @@ public class Login extends AppCompatActivity {
 
                         session.setLogin(true);
 
-                       // Usuario.setUserName(Login.this, "Elias Enoc");
-                       // Usuario.setUserName(Login.this, o.getString("nombres"));
+                       db.addUser(o.getString("nombres"),o.getString("paterno"),o.getString("materno"));
 
                         // Launch main activity
                         Intent i = new Intent(Login.this, ActividadPrincipal.class);
