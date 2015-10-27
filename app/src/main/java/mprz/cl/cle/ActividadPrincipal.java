@@ -36,8 +36,8 @@ public class ActividadPrincipal extends AppCompatActivity {
         db = new SQLiteHandler(getApplicationContext());
 
         HashMap<String, String> dataUser = db.getUserDetails();
-        saludo = (TextView)findViewById(R.id.saludo);
-        saludo.setText("Bienvenido "+dataUser.get("nombre")+" "+dataUser.get("paterno")+" "+dataUser.get("materno"));
+        //saludo = (TextView)findViewById(R.id.saludo);
+        //saludo.setText("Bienvenido "+dataUser.get("nombre")+" "+dataUser.get("paterno")+" "+dataUser.get("materno"));
 
         inicializarToolbar();
         setearMenu();
