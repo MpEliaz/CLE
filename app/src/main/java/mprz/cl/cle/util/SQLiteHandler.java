@@ -7,7 +7,10 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+
+import mprz.cl.cle.clases.Persona;
 
 /**
  * Created by elias on 14-10-15.
@@ -32,6 +35,9 @@ public class SQLiteHandler extends SQLiteOpenHelper {
     private static final String KEY_PATERNO = "paterno";
     private static final String KEY_MATERNO = "materno";
     private static final String CREATE_USER_TABLE = "CREATE TABLE USUARIO (id INTEGER PRIMARY KEY," +
+            "nombre TEXT, paterno TEXT, materno TEXT)";
+
+    private static final String CREATE_ENCUESTADOS_TABLE = "CREATE TABLE USUARIO (id INTEGER PRIMARY KEY," +
             "nombre TEXT, paterno TEXT, materno TEXT)";
 
     public SQLiteHandler(Context context) {
@@ -60,6 +66,24 @@ public class SQLiteHandler extends SQLiteOpenHelper {
      * Storing user details in database
      * */
     public void addUser(String nombres, String paterno, String materno) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(KEY_NOMBRE, nombres); // Name
+        values.put(KEY_PATERNO, paterno); // Email
+        values.put(KEY_MATERNO, materno); // Email
+
+        // Inserting Row
+        long id = db.insert(TABLE_USER, null, values);
+        db.close(); // Closing database connection
+
+        Log.d(TAG, "New user inserted into sqlite: " + id);
+    }
+
+    /**
+     * Storing encuestados in database
+     * */
+    public void guardarEncuestados(ArrayList<Persona> datos) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();

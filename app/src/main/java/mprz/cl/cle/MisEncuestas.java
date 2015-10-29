@@ -1,6 +1,7 @@
 package mprz.cl.cle;
 
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -37,40 +38,64 @@ import static mprz.cl.cle.util.Constantes.URL;
  */
 public class MisEncuestas extends Fragment {
 
-    private ArrayList<Persona> datos;
     private RecyclerView rv;
     private String url = URL + "/ObtenerEvaluacionesJson?AspxAutoDetectCookieSupport=1";
     private ArrayList<Persona> data;
     private adaptadorEncuestados adapter;
+    private ProgressDialog pDialog;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
- //       datos = getData("17939855-9");
+        //       datos = getData("17939855-9");
 
 /*        for (int i = 0; i < 10; i++) {
             datos.add(new Persona(i,"17.288.811-9"+1,"ELIAS MILLACHINE "+1, "Superior "+i));
         }*/
+        //getData("17939855-9");
+
 
     }
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View v = inflater.inflate(R.layout.fragment_mis_encuestas, container, false);
 
+        // Progress dialog
+        pDialog = new ProgressDialog(getActivity());
+        pDialog.setCancelable(false);
 
+        rv = (RecyclerView) v.findViewById(R.id.rv_encuestas);
+        rv.setHasFixedSize(true);
+        rv.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
+        data = new ArrayList<Persona>();
+        getData("17939855-9");
+        adapter = new adaptadorEncuestados(data);
+        rv.setAdapter(adapter);
+
+        adapter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.i("DemoRecView", "Pulsado el elemento " + rv.getChildPosition(view));
+            }
+        });
+
+        return v;
     }
 
-    private ArrayList<Persona> getData(String rut) {
+    private void getData(String rut) {
 
+        pDialog.setMessage("Obteniendo datos...");
+        showDialog();
 
         StringRequest req = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+
             @Override
             public void onResponse(String response) {
 
-
-                data = new ArrayList<Persona>();
+                Log.e("CLE", "encuestas OK");
 
                 try {
                     JSONArray array = new JSONArray(response);
@@ -83,6 +108,8 @@ public class MisEncuestas extends Fragment {
                         p.setCategoria(o.getString("relacion"));
                         data.add(p);
                     }
+                    hideDialog();
+                    adapter.notifyDataSetChanged();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -91,12 +118,13 @@ public class MisEncuestas extends Fragment {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.e("CLE", "encuestas Error: " + error.getMessage());
+                hideDialog();
             }
-        }){
+        }) {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
 
-                Map<String,String> params = new HashMap<String, String>();
+                Map<String, String> params = new HashMap<String, String>();
                 params.put("runEvaluador", "17939855-9");
                 params.put("periodo", "2015");
                 return params;
@@ -109,31 +137,17 @@ public class MisEncuestas extends Fragment {
 
         };
         CLESingleton.getInstance(getActivity()).addToRequestQueue(req);
-        return data;
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_mis_encuestas, container, false);
-
-        rv = (RecyclerView)v.findViewById(R.id.rv_encuestas);
-        rv.setHasFixedSize(true);
-
-        final adaptadorEncuestados adapter = new adaptadorEncuestados(getData("17939855-9"));
-
-        adapter.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.i("DemoRecView", "Pulsado el elemento " + rv.getChildPosition(view));
-            }
-        });
-
-        rv.setAdapter(adapter);
-        rv.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
-        return v;
+    private void showDialog() {
+        if (!pDialog.isShowing())
+            pDialog.show();
     }
 
+    private void hideDialog() {
+        if (pDialog.isShowing())
+            pDialog.dismiss();
+    }
 
 }
 

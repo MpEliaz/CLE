@@ -42,7 +42,10 @@ implements View.OnClickListener{
 
     @Override
     public int getItemCount() {
-        return datos.size();
+        if(datos != null){
+            return datos.size();
+        }
+        return 0;
     }
 
     public void setOnClickListener(View.OnClickListener listener) {
