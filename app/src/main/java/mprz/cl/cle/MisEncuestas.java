@@ -29,7 +29,9 @@ import java.util.Map;
 import mprz.cl.cle.R;
 import mprz.cl.cle.adaptadores.adaptadorEncuestados;
 import mprz.cl.cle.clases.CLESingleton;
+import mprz.cl.cle.clases.Encuesta;
 import mprz.cl.cle.clases.Persona;
+import mprz.cl.cle.util.SQLiteHandler;
 
 import static mprz.cl.cle.util.Constantes.URL;
 
@@ -40,9 +42,10 @@ public class MisEncuestas extends Fragment {
 
     private RecyclerView rv;
     private String url = URL + "/ObtenerEvaluacionesJson?AspxAutoDetectCookieSupport=1";
-    private ArrayList<Persona> data;
+    private ArrayList<Encuesta> data;
     private adaptadorEncuestados adapter;
     private ProgressDialog pDialog;
+    private SQLiteHandler db;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -63,6 +66,8 @@ public class MisEncuestas extends Fragment {
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_mis_encuestas, container, false);
 
+        db = new SQLiteHandler(getActivity());
+
         // Progress dialog
         pDialog = new ProgressDialog(getActivity());
         pDialog.setCancelable(false);
@@ -70,9 +75,9 @@ public class MisEncuestas extends Fragment {
         rv = (RecyclerView) v.findViewById(R.id.rv_encuestas);
         rv.setHasFixedSize(true);
         rv.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
-        data = new ArrayList<Persona>();
+        data = new ArrayList<Encuesta>();
         getData("17939855-9");
-        adapter = new adaptadorEncuestados(data);
+        adapter = new adaptadorEncuestados(db.ObtenerEncuestados());
         rv.setAdapter(adapter);
 
         adapter.setOnClickListener(new View.OnClickListener() {
@@ -102,13 +107,18 @@ public class MisEncuestas extends Fragment {
                     for (int i = 0; i < array.length(); i++) {
                         JSONObject o = array.getJSONObject(i);
 
-                        Persona p = new Persona();
-                        p.setRut(o.getString("runEvaluado"));
-                        p.setNombre(o.getString("nombreEvaluado"));
-                        p.setCategoria(o.getString("relacion"));
-                        data.add(p);
+                        Encuesta e = new Encuesta();
+                        e.setRunEvaluador(o.getString("runEvaluador"));
+                        e.setRunEvaluado(o.getString("runEvaluado"));
+                        e.setNombreEvaluado(o.getString("nombreEvaluado"));
+                        e.setRelacion(o.getString("relacion"));
+                        e.setEstado(o.getString("estado"));
+                        data.add(e);
                     }
                     hideDialog();
+                    db.eliminarEncuestados();
+                    db.guardarEncuestados(data);
+                    db.ObtenerEncuestados();
                     adapter.notifyDataSetChanged();
                 } catch (JSONException e) {
                     e.printStackTrace();

@@ -9,6 +9,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import mprz.cl.cle.R;
+import mprz.cl.cle.clases.Encuesta;
 import mprz.cl.cle.clases.Persona;
 
 /**
@@ -18,9 +19,9 @@ public class adaptadorEncuestados extends RecyclerView.Adapter<adaptadorEncuesta
 implements View.OnClickListener{
 
     private View.OnClickListener listener;
-    private ArrayList<Persona> datos;
+    private ArrayList<Encuesta> datos;
 
-    public adaptadorEncuestados(ArrayList<Persona> datos) {
+    public adaptadorEncuestados(ArrayList<Encuesta> datos) {
         this.datos = datos;
     }
 
@@ -36,8 +37,8 @@ implements View.OnClickListener{
 
     @Override
     public void onBindViewHolder(EncuestadosViewHolder holder, int position) {
-        Persona p = datos.get(position);
-        holder.bindEncuestado(p);
+        Encuesta e = datos.get(position);
+        holder.bindEncuestado(e);
     }
 
     @Override
@@ -72,11 +73,11 @@ implements View.OnClickListener{
             categoria = (TextView)itemView.findViewById(R.id.encuestado_cat);
         }
 
-        public void bindEncuestado(Persona p){
+        public void bindEncuestado(Encuesta e){
 
-            rut = p.getRut();
-            nombre.setText(p.getNombre());
-            categoria.setText(p.getCategoria());
+            rut = e.getRunEvaluado();
+            nombre.setText(e.getNombreEvaluado());
+            categoria.setText(e.getRelacion());
         }
     }
 }

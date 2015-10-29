@@ -10,6 +10,7 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import mprz.cl.cle.clases.Encuesta;
 import mprz.cl.cle.clases.Persona;
 
 /**
@@ -28,6 +29,7 @@ public class SQLiteHandler extends SQLiteOpenHelper {
 
     // Login table name
     private static final String TABLE_USER = "USUARIO";
+    private static final String TABLE_ENCUESTADOS = "ENCUESTADOS";
 
     // Login Table Columns names
     private static final String KEY_ID = "id";
@@ -37,8 +39,8 @@ public class SQLiteHandler extends SQLiteOpenHelper {
     private static final String CREATE_USER_TABLE = "CREATE TABLE USUARIO (id INTEGER PRIMARY KEY," +
             "nombre TEXT, paterno TEXT, materno TEXT)";
 
-    private static final String CREATE_ENCUESTADOS_TABLE = "CREATE TABLE USUARIO (id INTEGER PRIMARY KEY," +
-            "nombre TEXT, paterno TEXT, materno TEXT)";
+    private static final String CREATE_ENCUESTADOS_TABLE = "CREATE TABLE ENCUESTADOS (id_encuesta INTEGER PRIMARY KEY," +
+            "runevaluado TEXT, nombreevaluado TEXT, relacion TEXT, estado TEXT)";
 
     public SQLiteHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -48,6 +50,7 @@ public class SQLiteHandler extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(CREATE_USER_TABLE);
+        db.execSQL(CREATE_ENCUESTADOS_TABLE);
 
         Log.d(TAG, "base de datos creada");
     }
@@ -57,6 +60,7 @@ public class SQLiteHandler extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // Drop older table if existed
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_USER);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_ENCUESTADOS);
 
         // Create tables again
         onCreate(db);
@@ -83,19 +87,62 @@ public class SQLiteHandler extends SQLiteOpenHelper {
     /**
      * Storing encuestados in database
      * */
-    public void guardarEncuestados(ArrayList<Persona> datos) {
+    public void guardarEncuestados(ArrayList<Encuesta> datos) {
         SQLiteDatabase db = this.getWritableDatabase();
 
-        ContentValues values = new ContentValues();
-        values.put(KEY_NOMBRE, nombres); // Name
-        values.put(KEY_PATERNO, paterno); // Email
-        values.put(KEY_MATERNO, materno); // Email
+        for (Encuesta e: datos) {
 
-        // Inserting Row
-        long id = db.insert(TABLE_USER, null, values);
+            ContentValues values = new ContentValues();
+            //values.put("id_encuesta", e.getId());
+            values.put("runevaluado", e.getRunEvaluado());
+            values.put("nombreevaluado", e.getNombreEvaluado());
+            values.put("relacion", e.getRelacion());
+            values.put("estado", e.getEstado());
+
+            // Inserting Row
+            long id = db.insert(TABLE_ENCUESTADOS, null, values);
+            Log.d(TAG, "nuevo registro insertado con id: " + id);
+
+        }
         db.close(); // Closing database connection
+    }
 
-        Log.d(TAG, "New user inserted into sqlite: " + id);
+    public ArrayList<Encuesta> ObtenerEncuestados() {
+        ArrayList<Encuesta> encuestados = new ArrayList<Encuesta>();
+        String selectQuery = "SELECT  * FROM " + TABLE_ENCUESTADOS;
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        if (cursor != null) {
+            // move cursor to first row
+            if (cursor.moveToFirst()) {
+                do {
+                    Encuesta e = new Encuesta();
+                    e.setId(cursor.getInt(cursor.getColumnIndex("id_encuesta")));
+                    e.setRunEvaluado(cursor.getString(cursor.getColumnIndex("runevaluado")));
+                    e.setNombreEvaluado(cursor.getString(cursor.getColumnIndex("nombreevaluado")));
+                    e.setRelacion(cursor.getString(cursor.getColumnIndex("relacion")));
+                    e.setEstado(cursor.getString(cursor.getColumnIndex("estado")));
+
+                    encuestados.add(e);
+                    Log.d(TAG, "encuestado agregado a lista: " + e.getNombreEvaluado());
+                    // move to next row
+                } while (cursor.moveToNext());
+            }
+        }
+        cursor.close();
+        db.close();
+        return encuestados;
+    }
+
+    public void eliminarEncuestados() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        // Delete All Rows
+        db.delete(TABLE_ENCUESTADOS, null, null);
+        db.close();
+
+        Log.d(TAG, "tabla encuestados borrada");
     }
 
     /**
