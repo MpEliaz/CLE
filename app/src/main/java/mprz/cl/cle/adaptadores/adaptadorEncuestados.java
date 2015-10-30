@@ -1,5 +1,7 @@
 package mprz.cl.cle.adaptadores;
 
+import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,8 +11,10 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import mprz.cl.cle.ActividadPrincipal;
 import mprz.cl.cle.R;
 import mprz.cl.cle.clases.Encuesta;
+import mprz.cl.cle.showEncuesta;
 
 /**
  * Created by elias on 26-10-15.
@@ -19,9 +23,11 @@ public class adaptadorEncuestados extends RecyclerView.Adapter<adaptadorEncuesta
 
     private OnItemClickListener onItemClickListener;
     private ArrayList<Encuesta> datos;
+    private static Context cx;
 
-    public adaptadorEncuestados(ArrayList<Encuesta> datos) {
+    public adaptadorEncuestados(ArrayList<Encuesta> datos, Context cx) {
         this.datos = datos;
+        this.cx = cx;
     }
 
     public interface OnItemClickListener {
@@ -82,7 +88,7 @@ public class adaptadorEncuestados extends RecyclerView.Adapter<adaptadorEncuesta
             btn = (Button)itemView.findViewById(R.id.btn_evaluar);
         }
 
-        public void bindEncuestado(Encuesta e){
+        public void bindEncuestado(final Encuesta e){
 
             rut = e.getRunEvaluado();
             nombre.setText(e.getNombreEvaluado());
@@ -100,7 +106,9 @@ public class adaptadorEncuestados extends RecyclerView.Adapter<adaptadorEncuesta
             btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
+                    Intent i = new Intent(cx.getApplicationContext(), showEncuesta.class);
+                    i.putExtra("runEvaluado",e.getRunEvaluado());
+                    cx.startActivity(i);
                 }
             });
 

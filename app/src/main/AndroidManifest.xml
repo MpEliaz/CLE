@@ -22,6 +22,10 @@
             android:name=".ActividadPrincipal"
             android:label="@string/title_activity_inicio" >
         </activity>
+        <activity
+            android:name=".showEncuesta"
+            android:label="@string/title_activity_encuesta" >
+        </activity>
     </application>
 
 </manifest>

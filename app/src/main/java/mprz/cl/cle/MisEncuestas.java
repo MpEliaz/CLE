@@ -73,7 +73,7 @@ public class MisEncuestas extends Fragment implements adaptadorEncuestados.OnIte
         rv = (RecyclerView) v.findViewById(R.id.rv_encuestas);
         rv.setHasFixedSize(true);
         rv.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
-        adapter = new adaptadorEncuestados(db.ObtenerEncuestados());
+        adapter = new adaptadorEncuestados(db.ObtenerEncuestados(), getActivity());
         adapter.setOnItemClickListener(this);
         rv.setAdapter(adapter);
 
@@ -125,7 +125,7 @@ public class MisEncuestas extends Fragment implements adaptadorEncuestados.OnIte
             protected Map<String, String> getParams() throws AuthFailureError {
 
                 Map<String, String> params = new HashMap<String, String>();
-                params.put("runEvaluador", "17939855-9");
+                params.put("runEvaluador", "15650686-9");
                 params.put("periodo", "2015");
                 return params;
             }
@@ -152,7 +152,7 @@ public class MisEncuestas extends Fragment implements adaptadorEncuestados.OnIte
     @Override
     public void onItemClick(View view, Encuesta encuesta, int position) {
 
-        Toast.makeText(getActivity(), "nombre: " + encuesta.getNombreEvaluado(),Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), "nombre: " + encuesta.getNombreEvaluado(), Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -167,7 +167,7 @@ public class MisEncuestas extends Fragment implements adaptadorEncuestados.OnIte
         switch(item.getItemId()){
             case R.id.update_encuestas:
                 getData("17939855-9");
-                Toast.makeText(getActivity(), "Actualizado", Toast.LENGTH_LONG).show();
+               // Toast.makeText(getActivity(), "Actualizado", Toast.LENGTH_LONG).show();
                 return true;
         }
 

@@ -3,7 +3,7 @@
     android:layout_height="wrap_content"
     tools:context=".ActividadPrincipal"
     android:orientation="vertical"
-    android:background="#999999">
+    android:background="#7c704d0d">
 
     <ImageView
         android:layout_width="wrap_content"

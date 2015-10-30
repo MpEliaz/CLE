@@ -1,5 +1,6 @@
 package mprz.cl.cle;
 
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -35,9 +36,13 @@ public class ActividadPrincipal extends AppCompatActivity {
 
         db = new SQLiteHandler(getApplicationContext());
 
-        HashMap<String, String> dataUser = db.getUserDetails();
-        //saludo = (TextView)findViewById(R.id.saludo);
-        //saludo.setText("Bienvenido "+dataUser.get("nombre")+" "+dataUser.get("paterno")+" "+dataUser.get("materno"));
+
+        if (savedInstanceState == null) {
+            Fragment fragment = new Home();
+            getSupportFragmentManager().beginTransaction()
+                .add(R.id.content_fragment, fragment)
+                    .commit();
+        }
 
         inicializarToolbar();
         setearMenu();
@@ -82,9 +87,10 @@ public class ActividadPrincipal extends AppCompatActivity {
 
         drawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
 
+        HashMap<String, String> dataUser = db.getUserDetails();
         NavigationView nv = (NavigationView)findViewById(R.id.nav_view);
         TextView nombre = (TextView)findViewById(R.id.hnav_username);
-            nombre.setText("HOLA");
+            nombre.setText(dataUser.get("nombre")+" "+dataUser.get("paterno")+" "+dataUser.get("materno"));
 
         if(nv != null){
 
@@ -99,12 +105,16 @@ public class ActividadPrincipal extends AppCompatActivity {
                     switch (menuItem.getItemId())
                     {
                         case R.id.home:
+                            fragment = new Home();
+                            fragmentTransaction = true;
                             break;
                         case R.id.nav_mis_encuestas:
                             fragment = new MisEncuestas();
                             fragmentTransaction = true;
                             break;
                         case R.id.nav_mision:
+                            fragment = new Mision();
+                            fragmentTransaction = true;
                             break;
                         case R.id.nav_doctrina:
                             fragment = new Doctrina();
