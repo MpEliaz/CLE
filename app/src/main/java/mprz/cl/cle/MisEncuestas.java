@@ -4,10 +4,15 @@ package mprz.cl.cle;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -38,7 +43,7 @@ import static mprz.cl.cle.util.Constantes.URL;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MisEncuestas extends Fragment {
+public class MisEncuestas extends Fragment implements adaptadorEncuestados.OnItemClickListener{
 
     private RecyclerView rv;
     private String url = URL + "/ObtenerEvaluacionesJson?AspxAutoDetectCookieSupport=1";
@@ -51,14 +56,7 @@ public class MisEncuestas extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //       datos = getData("17939855-9");
-
-/*        for (int i = 0; i < 10; i++) {
-            datos.add(new Persona(i,"17.288.811-9"+1,"ELIAS MILLACHINE "+1, "Superior "+i));
-        }*/
-        //getData("17939855-9");
-
-
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -75,17 +73,9 @@ public class MisEncuestas extends Fragment {
         rv = (RecyclerView) v.findViewById(R.id.rv_encuestas);
         rv.setHasFixedSize(true);
         rv.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
-        data = new ArrayList<Encuesta>();
-        getData("17939855-9");
         adapter = new adaptadorEncuestados(db.ObtenerEncuestados());
+        adapter.setOnItemClickListener(this);
         rv.setAdapter(adapter);
-
-        adapter.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.i("DemoRecView", "Pulsado el elemento " + rv.getChildPosition(view));
-            }
-        });
 
         return v;
     }
@@ -100,8 +90,8 @@ public class MisEncuestas extends Fragment {
             @Override
             public void onResponse(String response) {
 
-                Log.e("CLE", "encuestas OK");
-
+                Log.i("CLE", "encuestas OK");
+                data = new ArrayList<Encuesta>();
                 try {
                     JSONArray array = new JSONArray(response);
                     for (int i = 0; i < array.length(); i++) {
@@ -118,8 +108,8 @@ public class MisEncuestas extends Fragment {
                     hideDialog();
                     db.eliminarEncuestados();
                     db.guardarEncuestados(data);
-                    db.ObtenerEncuestados();
-                    adapter.notifyDataSetChanged();
+                    data = db.ObtenerEncuestados();
+                    adapter.updateData(data);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -127,7 +117,7 @@ public class MisEncuestas extends Fragment {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.e("CLE", "encuestas Error: " + error.getMessage());
+                Log.i("CLE", "encuestas Error: " + error.getMessage());
                 hideDialog();
             }
         }) {
@@ -159,5 +149,29 @@ public class MisEncuestas extends Fragment {
             pDialog.dismiss();
     }
 
+    @Override
+    public void onItemClick(View view, Encuesta encuesta, int position) {
+
+        Toast.makeText(getActivity(), "nombre: " + encuesta.getNombreEvaluado(),Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+
+        inflater.inflate(R.menu.menu_mis_encuestas, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()){
+            case R.id.update_encuestas:
+                getData("17939855-9");
+                Toast.makeText(getActivity(), "Actualizado", Toast.LENGTH_LONG).show();
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
 }
 

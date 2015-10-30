@@ -18,7 +18,7 @@ import mprz.cl.cle.clases.Persona;
  */
 public class SQLiteHandler extends SQLiteOpenHelper {
 
-    private static final String TAG = SQLiteHandler.class.getSimpleName();
+    private static final String TAG = "CLE";
 
     // All Static variables
     // Database Version
@@ -52,7 +52,7 @@ public class SQLiteHandler extends SQLiteOpenHelper {
         db.execSQL(CREATE_USER_TABLE);
         db.execSQL(CREATE_ENCUESTADOS_TABLE);
 
-        Log.d(TAG, "base de datos creada");
+        Log.i(TAG, "base de datos creada");
     }
 
     // Upgrading database
@@ -81,7 +81,7 @@ public class SQLiteHandler extends SQLiteOpenHelper {
         long id = db.insert(TABLE_USER, null, values);
         db.close(); // Closing database connection
 
-        Log.d(TAG, "New user inserted into sqlite: " + id);
+        Log.i(TAG, "New user inserted into sqlite: " + id);
     }
 
     /**
@@ -101,7 +101,7 @@ public class SQLiteHandler extends SQLiteOpenHelper {
 
             // Inserting Row
             long id = db.insert(TABLE_ENCUESTADOS, null, values);
-            Log.d(TAG, "nuevo registro insertado con id: " + id);
+            Log.i(TAG, "nuevo registro insertado con id: " + id);
 
         }
         db.close(); // Closing database connection
@@ -126,7 +126,7 @@ public class SQLiteHandler extends SQLiteOpenHelper {
                     e.setEstado(cursor.getString(cursor.getColumnIndex("estado")));
 
                     encuestados.add(e);
-                    Log.d(TAG, "encuestado agregado a lista: " + e.getNombreEvaluado());
+                    Log.i(TAG, "obtenido desde bd: " + e.getNombreEvaluado());
                     // move to next row
                 } while (cursor.moveToNext());
             }
@@ -142,7 +142,7 @@ public class SQLiteHandler extends SQLiteOpenHelper {
         db.delete(TABLE_ENCUESTADOS, null, null);
         db.close();
 
-        Log.d(TAG, "tabla encuestados borrada");
+        Log.i(TAG, "tabla encuestados borrada");
     }
 
     /**
@@ -164,7 +164,7 @@ public class SQLiteHandler extends SQLiteOpenHelper {
         cursor.close();
         db.close();
         // return user
-        Log.d(TAG, "Fetching user from Sqlite: " + user.toString());
+        Log.i(TAG, "Fetching user from Sqlite: " + user.toString());
 
         return user;
     }
@@ -178,7 +178,7 @@ public class SQLiteHandler extends SQLiteOpenHelper {
         db.delete(TABLE_USER, null, null);
         db.close();
 
-        Log.d(TAG, "Deleted all user info from sqlite");
+        Log.i(TAG, "Deleted all user info from sqlite");
     }
 
 }
