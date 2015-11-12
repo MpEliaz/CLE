@@ -11,7 +11,6 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-import mprz.cl.cle.ActividadPrincipal;
 import mprz.cl.cle.R;
 import mprz.cl.cle.clases.Encuesta;
 import mprz.cl.cle.showEncuesta;
@@ -37,7 +36,7 @@ public class adaptadorEncuestados extends RecyclerView.Adapter<adaptadorEncuesta
     @Override
     public adaptadorEncuestados.EncuestadosViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_encuesta, parent, false);
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_list_encuestados, parent, false);
 
         final EncuestadosViewHolder vh = new EncuestadosViewHolder(itemView);
 

@@ -2,26 +2,71 @@ package mprz.cl.cle;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
-import mprz.cl.cle.R;
+import java.util.ArrayList;
+
+import mprz.cl.cle.adaptadores.adaptadorEncuesta;
+import mprz.cl.cle.adaptadores.adaptadorEncuestados;
+import mprz.cl.cle.clases.Encuesta;
+import mprz.cl.cle.clases.Pregunta;
+import mprz.cl.cle.clases.Respuesta;
 
 public class showEncuesta extends AppCompatActivity {
 
     private TextView test;
+    private RecyclerView rv_encuesta;
+    private adaptadorEncuesta adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_encuesta);
+        setContentView(R.layout.activity_show_encuesta);
 
         Bundle extras = getIntent().getExtras();
 
+        rv_encuesta = (RecyclerView)findViewById(R.id.rv_encuesta);
+        rv_encuesta.setHasFixedSize(true);
+        rv_encuesta.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
 
-        test = (TextView)findViewById(R.id.test);
-        test.setText(extras.getString("runEvaluado"));
+        ArrayList<Pregunta> list = new ArrayList<Pregunta>();
+
+        for (int j = 0; j < 10; j++) {
+
+            Pregunta p = new Pregunta();
+
+            p.setId(j);
+            p.setTitulo("¿Que opina sobre el comportamiento de su superior?");
+
+
+            ArrayList<Respuesta> respuestas = new ArrayList<Respuesta>();
+
+            for (int i = 0; i < 4; i++) {
+
+                Respuesta r = new Respuesta();
+                r.setId(i);
+                r.setRespuesta("Respuesta "+i);
+                respuestas.add(r);
+
+            }
+
+            p.setRespuestas(respuestas);
+            list.add(p);
+
+        }
+
+
+
+        adapter = new adaptadorEncuesta(this, list);
+
+        rv_encuesta.setAdapter(adapter);
+
+
+
     }
 
     @Override
