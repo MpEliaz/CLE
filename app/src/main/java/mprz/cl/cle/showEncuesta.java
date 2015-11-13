@@ -1,5 +1,7 @@
 package mprz.cl.cle;
 
+import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -11,6 +13,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import mprz.cl.cle.adaptadores.adaptadorEncuesta;
+import mprz.cl.cle.adaptadores.adaptadorEncuestaPager;
 import mprz.cl.cle.adaptadores.adaptadorEncuestados;
 import mprz.cl.cle.clases.Encuesta;
 import mprz.cl.cle.clases.Pregunta;
@@ -20,7 +23,8 @@ public class showEncuesta extends AppCompatActivity {
 
     private TextView test;
     private RecyclerView rv_encuesta;
-    private adaptadorEncuesta adapter;
+    private ViewPager pager;
+    private adaptadorEncuestaPager adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,9 +33,11 @@ public class showEncuesta extends AppCompatActivity {
 
         Bundle extras = getIntent().getExtras();
 
-        rv_encuesta = (RecyclerView)findViewById(R.id.rv_encuesta);
+        pager = (ViewPager) findViewById(R.id.EncuestaPager);
+
+        /*rv_encuesta = (RecyclerView)findViewById(R.id.rv_encuesta);
         rv_encuesta.setHasFixedSize(true);
-        rv_encuesta.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        rv_encuesta.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));*/
 
         ArrayList<Pregunta> list = new ArrayList<Pregunta>();
 
@@ -59,15 +65,27 @@ public class showEncuesta extends AppCompatActivity {
 
         }
 
+        ArrayList<PreguntaEncuesta> fragments = getFragments(list);
 
-
-        adapter = new adaptadorEncuesta(this, list);
-
-        rv_encuesta.setAdapter(adapter);
+        adapter = new adaptadorEncuestaPager(getSupportFragmentManager(), fragments);
+        pager.setAdapter(adapter);
 
 
 
     }
+
+    private ArrayList<PreguntaEncuesta> getFragments(ArrayList<Pregunta> list) {
+        ArrayList<PreguntaEncuesta> items = new ArrayList<PreguntaEncuesta>();
+
+        for (Pregunta p : list) {
+
+            items.add(PreguntaEncuesta.newIntance(p));
+
+        }
+
+        return items;
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
