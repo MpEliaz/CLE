@@ -11,11 +11,13 @@ import android.view.ViewGroup;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
 import mprz.cl.cle.clases.Pregunta;
 import mprz.cl.cle.clases.Respuesta;
+import mprz.cl.cle.util.SQLiteHandler;
 
 /**
  * Created by elias on 12-11-15.
@@ -24,6 +26,7 @@ public class PreguntaEncuesta extends Fragment {
 
     public static final String PREGUNTA = "PREGUNTA";
     private Pregunta pregunta;
+    private SQLiteHandler db;
 
     public static final PreguntaEncuesta newIntance(Pregunta p){
 
@@ -33,6 +36,13 @@ public class PreguntaEncuesta extends Fragment {
         frag.setArguments(bundle);
 
         return frag;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        db = new SQLiteHandler(getActivity());
     }
 
     @Override
@@ -58,10 +68,20 @@ public class PreguntaEncuesta extends Fragment {
             rb.setText(r.getRespuesta());
             rprms = new RadioGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             rg.addView(rb, rprms);
-
-
-
         }
+
+        rg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+
+                db.saveQuestionWithAnswer(pregunta.getId(), i);
+                Toast.makeText(getActivity(), "presionado: respuesta"+i+" de pregunta:"+pregunta.getId() , Toast.LENGTH_SHORT).show();
+            }
+        });
+
+/*        int radioButtonID = rg.getCheckedRadioButtonId();
+        View radioButton = rg.findViewById(radioButtonID);
+        int idx = radioButtonGroup.indexOfChild(radioButton);*/
 
         return v;
     }

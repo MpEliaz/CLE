@@ -51,7 +51,7 @@ public class showEncuesta extends AppCompatActivity {
 
             ArrayList<Respuesta> respuestas = new ArrayList<Respuesta>();
 
-            for (int i = 0; i < 4; i++) {
+            for (int i = 0; i < 5; i++) {
 
                 Respuesta r = new Respuesta();
                 r.setId(i);
