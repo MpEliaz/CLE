@@ -2,6 +2,7 @@ package mprz.cl.cle;
 
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -64,7 +65,9 @@ public class PreguntaEncuesta extends Fragment {
             RadioButton rb = new RadioButton(getContext());
             rb.setId(r.getId());
             int textColor = Color.parseColor("#000000");
-            rb.setButtonTintList(ColorStateList.valueOf(textColor));
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                rb.setButtonTintList(ColorStateList.valueOf(textColor));
+            }
             rb.setText(r.getRespuesta());
             rprms = new RadioGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             rg.addView(rb, rprms);

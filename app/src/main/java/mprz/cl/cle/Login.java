@@ -21,10 +21,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 import mprz.cl.cle.clases.CLESingleton;
+import mprz.cl.cle.clases.Encuesta;
+import mprz.cl.cle.clases.Pregunta;
+import mprz.cl.cle.clases.Respuesta;
 import mprz.cl.cle.clases.Usuario;
 import mprz.cl.cle.util.SessionManager;
 import mprz.cl.cle.util.SQLiteHandler;
@@ -37,6 +41,7 @@ public class Login extends AppCompatActivity {
     private EditText et_user;
     private EditText et_pass;
     private String url = URL + "/LoginJson?AspxAutoDetectCookieSupport=1";
+    private String url_encuesta = URL + "/encuestaJson?AspxAutoDetectCookieSupport=1";
     private ProgressDialog pDialog;
     private SessionManager session;
     private SQLiteHandler db;
@@ -129,12 +134,9 @@ public class Login extends AppCompatActivity {
 
                         session.setLogin(true);
 
-                       db.addUser(o.getString("nombres"),o.getString("paterno"),o.getString("materno"));
+                       db.addUser(o.getString("nombres"), o.getString("paterno"), o.getString("materno"));
 
-                        // Launch main activity
-                        Intent i = new Intent(Login.this, ActividadPrincipal.class);
-                        startActivity(i);
-                        finish();
+                        obtenerEncuesta();
                     }
                     else{
                         Toast.makeText(Login.this,"Error en las credenciales",Toast.LENGTH_LONG).show();
@@ -170,6 +172,79 @@ public class Login extends AppCompatActivity {
         };
         CLESingleton.getInstance(this).addToRequestQueue(request);
         }
+
+    private void obtenerEncuesta() {
+
+        StringRequest req = new StringRequest(Request.Method.POST, url_encuesta, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+
+                int id_encuesta;
+
+                try {
+                    JSONObject o = new JSONObject(response);
+                    id_encuesta = Integer.parseInt(o.getString("id"));
+
+                    JSONArray preguntas = o.getJSONArray("preguntas");
+                    ArrayList<Pregunta> set_Preguntas = new ArrayList<Pregunta>();
+
+                    for (int i = 0; i < preguntas.length(); i++) {
+
+                        JSONObject pregunta = preguntas.getJSONObject(i);
+                        Pregunta p = new Pregunta();
+                        p.setId(Integer.parseInt(pregunta.getString("id")));
+                        p.setTitulo(pregunta.getString("pregunta"));
+
+                        JSONArray respuestas = pregunta.getJSONArray("respuestas");
+                        ArrayList<Respuesta> setRespuestas = new ArrayList<Respuesta>();
+
+                        for (int j = 0; j < respuestas.length(); j++) {
+                            JSONObject resp = respuestas.getJSONObject(j);
+                            Respuesta r = new Respuesta();
+                            r.setId(Integer.parseInt(resp.getString("id")));
+                            r.setRespuesta(resp.getString("respuesta"));
+                            setRespuestas.add(r);
+                        }
+
+                        p.setRespuestas(setRespuestas);
+                        set_Preguntas.add(p);
+                    }
+
+                    // Launch main activity
+                    Intent i = new Intent(Login.this, ActividadPrincipal.class);
+                    startActivity(i);
+                    finish();
+
+                }catch (JSONException e)
+                {
+                    e.printStackTrace();
+                    Toast.makeText(getApplicationContext(), "Json error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+
+            }
+        }){
+
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+
+                Map<String,String> params = new HashMap<String, String>();
+                params.put("id", "1");
+                return params;
+            }
+
+            @Override
+            public String getBodyContentType() {
+                return "application/x-www-form-urlencoded; charset=UTF-8";
+            }
+
+        };
+        CLESingleton.getInstance(this).addToRequestQueue(req);
+    }
 
     private void showDialog() {
         if (!pDialog.isShowing())

@@ -1,6 +1,5 @@
 package mprz.cl.cle;
 
-import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -13,12 +12,10 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
-
 import java.util.HashMap;
-
-import mprz.cl.cle.clases.Usuario;
 import mprz.cl.cle.util.SQLiteHandler;
 import mprz.cl.cle.util.SessionManager;
+
 
 public class ActividadPrincipal extends AppCompatActivity {
 
@@ -46,7 +43,10 @@ public class ActividadPrincipal extends AppCompatActivity {
 
         inicializarToolbar();
         setearMenu();
+
     }
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -88,9 +88,10 @@ public class ActividadPrincipal extends AppCompatActivity {
         drawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
 
         HashMap<String, String> dataUser = db.getUserDetails();
+        String name = dataUser.get("nombre")+" "+dataUser.get("paterno")+" "+dataUser.get("materno");
         NavigationView nv = (NavigationView)findViewById(R.id.nav_view);
         TextView nombre = (TextView)findViewById(R.id.hnav_username);
-            nombre.setText(dataUser.get("nombre")+" "+dataUser.get("paterno")+" "+dataUser.get("materno"));
+            nombre.setText(name);
 
         if(nv != null){
 

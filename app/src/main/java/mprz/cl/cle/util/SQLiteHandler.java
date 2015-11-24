@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import mprz.cl.cle.clases.Encuesta;
-import mprz.cl.cle.clases.Persona;
+import mprz.cl.cle.clases.Pregunta;
 
 /**
  * Created by elias on 14-10-15.
@@ -30,17 +30,20 @@ public class SQLiteHandler extends SQLiteOpenHelper {
     // Login table name
     private static final String TABLE_USER = "USUARIO";
     private static final String TABLE_ENCUESTADOS = "ENCUESTADOS";
-    private static final String TABLE_ENCUESTA = "ENCUESTA";
+    private static final String TABLE_ENCUESTAS = "ENCUESTAS";
+    private static final String TABLE_ENCUESTAS_TERMINADAS = "ENCUESTAS_TERMINADAS";
+    private static final String TABLE_RESPUESTAS = "RESPUESTAS";
 
     // Login Table Columns names
     private static final String KEY_ID = "id";
     private static final String KEY_NOMBRE = "nombre";
     private static final String KEY_PATERNO = "paterno";
     private static final String KEY_MATERNO = "materno";
-    private static final String CREATE_USER_TABLE = "CREATE TABLE USUARIO (id INTEGER PRIMARY KEY,nombre TEXT, paterno TEXT, materno TEXT)";
-
-    private static final String CREATE_ENCUESTADOS_TABLE = "CREATE TABLE ENCUESTADOS (id_encuesta INTEGER PRIMARY KEY, runevaluado TEXT, nombreevaluado TEXT, relacion TEXT, estado TEXT)";
-    private static final String CREATE_ENCUESTA_TABLE = "CREATE TABLE ENCUESTA (id INTEGER PRIMARY KEY AUTOINCREMENT, id_encuesta INTEGER, id_pregunta INTEGER, id_respuesta INTEGER)";
+    private static final String CREATE_USER_TABLE = "CREATE TABLE "+TABLE_USER+" (id INTEGER PRIMARY KEY,nombre TEXT, paterno TEXT, materno TEXT)";
+    private static final String CREATE_ENCUESTADOS_TABLE = "CREATE TABLE "+TABLE_ENCUESTADOS+" (id_encuesta INTEGER PRIMARY KEY, runevaluado TEXT, nombreevaluado TEXT, relacion TEXT, estado TEXT)";
+    private static final String CREATE_ENCUESTAS_TERMINADAS_TABLE = "CREATE TABLE "+TABLE_ENCUESTAS_TERMINADAS+" (id INTEGER PRIMARY KEY AUTOINCREMENT, id_encuesta INTEGER, id_pregunta INTEGER, id_respuesta INTEGER)";
+    private static final String CREATE_ENCUESTAS_TABLE = "CREATE TABLE "+TABLE_ENCUESTAS+" (id INTEGER PRIMARY KEY AUTOINCREMENT, id_encuesta INTEGER, id_pregunta INTEGER, pregunta TEXT)";
+    private static final String CREATE_RESPUESTAS_TABLE = "CREATE TABLE "+TABLE_RESPUESTAS+" (id INTEGER PRIMARY KEY AUTOINCREMENT, id_encuesta INTEGER, id_pregunta INTEGER, pregunta TEXT)";
 
     public SQLiteHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -51,7 +54,9 @@ public class SQLiteHandler extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(CREATE_USER_TABLE);
         db.execSQL(CREATE_ENCUESTADOS_TABLE);
-        db.execSQL(CREATE_ENCUESTA_TABLE);
+        db.execSQL(CREATE_ENCUESTAS_TERMINADAS_TABLE);
+        db.execSQL(CREATE_ENCUESTAS_TABLE);
+        db.execSQL(CREATE_RESPUESTAS_TABLE);
 
         Log.i(TAG, "base de datos creada");
     }
@@ -62,7 +67,8 @@ public class SQLiteHandler extends SQLiteOpenHelper {
         // Drop older table if existed
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_USER);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_ENCUESTADOS);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_ENCUESTA);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_ENCUESTAS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_ENCUESTAS_TERMINADAS);
 
         // Create tables again
         onCreate(db);
@@ -197,12 +203,12 @@ public class SQLiteHandler extends SQLiteOpenHelper {
 
                        // Inserting Row
             values.put("id_pregunta", id_pregunta); // id_pregunta
-            long id = db.insert(TABLE_ENCUESTA, null, values);
+            long id = db.insert(TABLE_ENCUESTAS_TERMINADAS, null, values);
             Log.i(TAG, "Nueva pregunta con respuesta insertada: id:" + id + ", id_pregunta:" + id_pregunta + ", id_respuesta:" + id_respuesta);
         }
         else
         {
-            long id = db.update(TABLE_ENCUESTA, values, "id_pregunta="+id_pregunta, null);
+            long id = db.update(TABLE_ENCUESTAS_TERMINADAS, values, "id_pregunta="+id_pregunta, null);
             Log.i(TAG, "pregunta con respuesta actualizada: id:" + id + ", id_pregunta:" + id_pregunta + ", id_respuesta:" + id_respuesta);
         }
 
@@ -212,7 +218,7 @@ public class SQLiteHandler extends SQLiteOpenHelper {
     }
 
     public int comprobarRespuestaEnBd(int id) {
-        String selectQuery = "SELECT id_pregunta FROM " + TABLE_ENCUESTA + " where id_pregunta="+ id;
+        String selectQuery = "SELECT id_pregunta FROM " + TABLE_ENCUESTAS_TERMINADAS + " where id_pregunta="+ id;
         int result = -1;
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
@@ -241,9 +247,32 @@ public class SQLiteHandler extends SQLiteOpenHelper {
     public void eliminar_respuestas() {
         SQLiteDatabase db = this.getWritableDatabase();
         // Delete All Rows
-        db.delete(TABLE_ENCUESTA, null, null);
+        db.delete(TABLE_ENCUESTAS_TERMINADAS, null, null);
         db.close();
 
         Log.i(TAG, "respuestas eliminadas desde bd");
+    }
+
+    /**
+     * Guardar la encuesta en la base de datos para consultarla offline
+     * */
+    public void guardarEncuesta(ArrayList<Pregunta> datos) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        for (Pregunta p: datos) {
+
+            ContentValues values = new ContentValues();
+            //values.put("id_encuesta", e.getId());
+            values.put("runevaluado", e.getRunEvaluado());
+            values.put("nombreevaluado", e.getNombreEvaluado());
+            values.put("relacion", e.getRelacion());
+            values.put("estado", e.getEstado());
+
+            // Inserting Row
+            long id = db.insert(TABLE_ENCUESTADOS, null, values);
+            Log.i(TAG, "nuevo registro insertado con id: " + id);
+
+        }
+        db.close(); // Closing database connection
     }
 }
