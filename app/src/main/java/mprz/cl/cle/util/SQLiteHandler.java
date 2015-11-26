@@ -22,7 +22,7 @@ public class SQLiteHandler extends SQLiteOpenHelper {
 
     // All Static variables
     // Database Version
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     // Database Name
     private static final String DATABASE_NAME = "android_api";
@@ -69,6 +69,7 @@ public class SQLiteHandler extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_ENCUESTADOS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_ENCUESTAS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_ENCUESTAS_TERMINADAS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_RESPUESTAS);
 
         // Create tables again
         onCreate(db);
@@ -256,23 +257,34 @@ public class SQLiteHandler extends SQLiteOpenHelper {
     /**
      * Guardar la encuesta en la base de datos para consultarla offline
      * */
-    public void guardarEncuesta(ArrayList<Pregunta> datos) {
+    public void guardarEncuesta(ArrayList<Pregunta> datos, int id_encuesta) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         for (Pregunta p: datos) {
 
             ContentValues values = new ContentValues();
             //values.put("id_encuesta", e.getId());
-            values.put("runevaluado", e.getRunEvaluado());
-            values.put("nombreevaluado", e.getNombreEvaluado());
-            values.put("relacion", e.getRelacion());
-            values.put("estado", e.getEstado());
+            values.put("id_encuesta", id_encuesta);
+            values.put("id_pregunta", p.getId());
+            values.put("pregunta", p.getTitulo());
 
             // Inserting Row
-            long id = db.insert(TABLE_ENCUESTADOS, null, values);
-            Log.i(TAG, "nuevo registro insertado con id: " + id);
+            long id = db.insert(TABLE_ENCUESTAS, null, values);
+            Log.i(TAG, "nueva pregunta insertada con id: " + id);
 
         }
         db.close(); // Closing database connection
+    }
+
+    /**
+     * Eliminar todas las preguntas guardadas en bd
+     * */
+    public void eliminarPreguntas() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        // Delete All Rows
+        db.delete(TABLE_ENCUESTAS, null, null);
+        db.close();
+
+        Log.i(TAG, "preguntas eliminadas desde bd");
     }
 }

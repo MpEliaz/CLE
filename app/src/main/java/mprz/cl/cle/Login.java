@@ -210,6 +210,8 @@ public class Login extends AppCompatActivity {
                         set_Preguntas.add(p);
                     }
 
+                    db.guardarEncuesta(set_Preguntas, id_encuesta);
+
                     // Launch main activity
                     Intent i = new Intent(Login.this, ActividadPrincipal.class);
                     startActivity(i);
