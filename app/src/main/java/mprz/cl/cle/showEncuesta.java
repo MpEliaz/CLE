@@ -18,6 +18,7 @@ import mprz.cl.cle.adaptadores.adaptadorEncuestados;
 import mprz.cl.cle.clases.Encuesta;
 import mprz.cl.cle.clases.Pregunta;
 import mprz.cl.cle.clases.Respuesta;
+import mprz.cl.cle.util.SQLiteHandler;
 
 public class showEncuesta extends AppCompatActivity {
 
@@ -25,11 +26,14 @@ public class showEncuesta extends AppCompatActivity {
     private RecyclerView rv_encuesta;
     private ViewPager pager;
     private adaptadorEncuestaPager adapter;
+    private SQLiteHandler db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_encuesta);
+
+        db = new SQLiteHandler(this);
 
         Bundle extras = getIntent().getExtras();
 
@@ -39,31 +43,8 @@ public class showEncuesta extends AppCompatActivity {
         rv_encuesta.setHasFixedSize(true);
         rv_encuesta.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));*/
 
-        ArrayList<Pregunta> list = new ArrayList<Pregunta>();
+        ArrayList<Pregunta> list = db.ObtenerEncuesta();
 
-        for (int j = 0; j < 10; j++) {
-
-            Pregunta p = new Pregunta();
-
-            p.setId(j);
-            p.setTitulo("¿Que opina sobre el comportamiento de su superior?");
-
-
-            ArrayList<Respuesta> respuestas = new ArrayList<Respuesta>();
-
-            for (int i = 0; i < 5; i++) {
-
-                Respuesta r = new Respuesta();
-                r.setId(i);
-                r.setRespuesta("Respuesta "+i);
-                respuestas.add(r);
-
-            }
-
-            p.setRespuestas(respuestas);
-            list.add(p);
-
-        }
 
         ArrayList<PreguntaEncuesta> fragments = getFragments(list);
 

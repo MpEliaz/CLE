@@ -12,6 +12,7 @@ import java.util.HashMap;
 
 import mprz.cl.cle.clases.Encuesta;
 import mprz.cl.cle.clases.Pregunta;
+import mprz.cl.cle.clases.Respuesta;
 
 /**
  * Created by elias on 14-10-15.
@@ -43,7 +44,7 @@ public class SQLiteHandler extends SQLiteOpenHelper {
     private static final String CREATE_ENCUESTADOS_TABLE = "CREATE TABLE "+TABLE_ENCUESTADOS+" (id_encuesta INTEGER PRIMARY KEY, runevaluado TEXT, nombreevaluado TEXT, relacion TEXT, estado TEXT)";
     private static final String CREATE_ENCUESTAS_TERMINADAS_TABLE = "CREATE TABLE "+TABLE_ENCUESTAS_TERMINADAS+" (id INTEGER PRIMARY KEY AUTOINCREMENT, id_encuesta INTEGER, id_pregunta INTEGER, id_respuesta INTEGER)";
     private static final String CREATE_ENCUESTAS_TABLE = "CREATE TABLE "+TABLE_ENCUESTAS+" (id INTEGER PRIMARY KEY AUTOINCREMENT, id_encuesta INTEGER, id_pregunta INTEGER, pregunta TEXT)";
-    private static final String CREATE_RESPUESTAS_TABLE = "CREATE TABLE "+TABLE_RESPUESTAS+" (id INTEGER PRIMARY KEY AUTOINCREMENT, id_encuesta INTEGER, id_pregunta INTEGER, pregunta TEXT)";
+    private static final String CREATE_RESPUESTAS_TABLE = "CREATE TABLE "+TABLE_RESPUESTAS+" (id INTEGER PRIMARY KEY AUTOINCREMENT, id_pregunta INTEGER, id_respuesta INTEGER, respuesta TEXT)";
 
     public SQLiteHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -270,7 +271,17 @@ public class SQLiteHandler extends SQLiteOpenHelper {
 
             // Inserting Row
             long id = db.insert(TABLE_ENCUESTAS, null, values);
-            Log.i(TAG, "nueva pregunta insertada con id: " + id);
+
+            for (Respuesta r: p.getRespuestas()) {
+                ContentValues data = new ContentValues();
+                data.put("id_pregunta", p.getId());
+                data.put("id_respuesta", r.getId());
+                data.put("respuesta", r.getRespuesta());
+
+                long id_p = db.insert(TABLE_RESPUESTAS, null, data);
+                Log.i(TAG, "nueva respuesta de la id_pregunta:"+p.getId()+", id_respuesta:"+r.getId());
+            }
+
 
         }
         db.close(); // Closing database connection
@@ -283,8 +294,54 @@ public class SQLiteHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         // Delete All Rows
         db.delete(TABLE_ENCUESTAS, null, null);
+        db.delete(TABLE_RESPUESTAS,null,null);
         db.close();
 
         Log.i(TAG, "preguntas eliminadas desde bd");
+        Log.i(TAG, "respuestas eliminadas desde bd");
+    }
+
+    /**
+     * Obtener la encuesta guardada en db
+     * */
+    public ArrayList<Pregunta> ObtenerEncuesta() {
+        ArrayList<Pregunta> lista_preguntas = new ArrayList<Pregunta>();
+        String selectQuery = "SELECT  * FROM " + TABLE_ENCUESTAS +" where id_encuesta=1";
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        if (cursor != null) {
+            // move cursor to first row
+            if (cursor.moveToFirst()) {
+                do {
+                    Pregunta p = new Pregunta();
+                    p.setId(cursor.getInt(cursor.getColumnIndex("id_pregunta")));
+                    p.setTitulo(cursor.getString(cursor.getColumnIndex("pregunta")));
+
+                    Cursor preg = db.rawQuery("SELECT * FROM "+TABLE_RESPUESTAS+" where id_pregunta="+p.getId(), null);
+                    ArrayList<Respuesta> respuestas = new ArrayList<>();
+                    if(preg != null){
+                        if(preg.moveToFirst()){
+                            do {
+
+                                Respuesta r = new Respuesta();
+                                r.setId(preg.getInt(preg.getColumnIndex("id_respuesta")));
+                                r.setRespuesta(preg.getString(preg.getColumnIndex("respuesta")));
+                                respuestas.add(r);
+                            }while (cursor.moveToNext());
+                        }
+                    }
+                    p.setRespuestas(respuestas);
+                    preg.close();
+                    lista_preguntas.add(p);
+                    Log.i(TAG, "pregunta obtenida: " + p.getId());
+                    // move to next row
+                } while (cursor.moveToNext());
+            }
+            cursor.close();
+        }
+        db.close();
+        return lista_preguntas;
     }
 }
