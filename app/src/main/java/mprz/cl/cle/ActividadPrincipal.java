@@ -128,8 +128,7 @@ public class ActividadPrincipal extends AppCompatActivity {
                         case R.id.nav_log_out:
                             session.setLogin(false);
                             db.deleteUsers();
-                            db.eliminarPreguntas();
-                            db.eliminarRespuestas();
+                            db.recrearTablas();
                             Intent intent = new Intent(ActividadPrincipal.this, Login.class);
                             startActivity(intent);
                             finish();

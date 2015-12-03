@@ -178,7 +178,6 @@ public class SQLiteHandler extends SQLiteOpenHelper {
 
         return user;
     }
-
     /**
      * Re crate database Delete all tables and create them again
      * */
@@ -190,7 +189,6 @@ public class SQLiteHandler extends SQLiteOpenHelper {
 
         Log.i(TAG, "Deleted all user info from sqlite");
     }
-
     /**
      * guarda encuesta respondida en base de datos
      * */
@@ -272,7 +270,7 @@ public class SQLiteHandler extends SQLiteOpenHelper {
     /**
      * Obtener la encuesta guardada en db
      * */
-    public ArrayList<Pregunta> ObtenerEncuesta() {
+    public ArrayList<Pregunta> ObtenerEncuestaFromDB() {
         ArrayList<Pregunta> lista_preguntas = new ArrayList<Pregunta>();
         String selectQuery = "SELECT  * FROM " + TABLE_ENCUESTAS +" where id_encuesta=1";
 
@@ -297,7 +295,7 @@ public class SQLiteHandler extends SQLiteOpenHelper {
                                 r.setId(preg.getInt(preg.getColumnIndex("id_respuesta")));
                                 r.setRespuesta(preg.getString(preg.getColumnIndex("respuesta")));
                                 respuestas.add(r);
-                            }while (cursor.moveToNext());
+                            }while (preg.moveToNext());
                         }
                     }
                     p.setRespuestas(respuestas);
@@ -322,7 +320,6 @@ public class SQLiteHandler extends SQLiteOpenHelper {
         for (Pregunta p: datos) {
 
             ContentValues values = new ContentValues();
-            //values.put("id_encuesta", e.getId());
             values.put("id_encuesta", id_encuesta);
             values.put("id_pregunta", p.getId());
             values.put("pregunta", p.getTitulo());
@@ -338,11 +335,24 @@ public class SQLiteHandler extends SQLiteOpenHelper {
                 data.put("respuesta", r.getRespuesta());
 
                 long id_p = db.insert(TABLE_RESPUESTAS, null, data);
-                Log.i(TAG, "nueva respuesta de la id_pregunta:"+p.getId()+", id_respuesta:"+r.getId());
+                Log.i(TAG, "nueva respuesta: "+r.getId()+" de la pregunta:"+p.getId()+" de la encuesta: "+id_encuesta);
             }
 
 
         }
         db.close(); // Closing database connection
+    }
+
+    SQLiteDatabase db = this.getWritableDatabase();
+
+    public void recrearTablas() {
+
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_ENCUESTAS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_RESPUESTAS);
+
+        db.execSQL(CREATE_ENCUESTAS_TABLE);
+        db.execSQL(CREATE_RESPUESTAS_TABLE);
+
+        Log.i(TAG, "tablas recreadas");
     }
 }

@@ -43,7 +43,7 @@ public class showEncuesta extends AppCompatActivity {
         rv_encuesta.setHasFixedSize(true);
         rv_encuesta.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));*/
 
-        ArrayList<Pregunta> list = db.ObtenerEncuesta();
+        ArrayList<Pregunta> list = db.ObtenerEncuestaFromDB();
 
 
         ArrayList<PreguntaEncuesta> fragments = getFragments(list);
