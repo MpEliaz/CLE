@@ -66,6 +66,8 @@ public class MisEncuestas extends Fragment implements adaptadorEncuestados.OnIte
 
         db = new SQLiteHandler(getActivity());
 
+        //llamar al getData para obtener a los encuestados
+
         // Progress dialog
         pDialog = new ProgressDialog(getActivity());
         pDialog.setCancelable(false);

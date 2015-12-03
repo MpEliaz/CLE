@@ -129,6 +129,7 @@ public class ActividadPrincipal extends AppCompatActivity {
                             session.setLogin(false);
                             db.deleteUsers();
                             db.eliminarPreguntas();
+                            db.eliminarRespuestas();
                             Intent intent = new Intent(ActividadPrincipal.this, Login.class);
                             startActivity(intent);
                             finish();

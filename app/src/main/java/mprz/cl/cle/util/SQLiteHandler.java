@@ -23,7 +23,7 @@ public class SQLiteHandler extends SQLiteOpenHelper {
 
     // All Static variables
     // Database Version
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
 
     // Database Name
     private static final String DATABASE_NAME = "android_api";
@@ -44,7 +44,7 @@ public class SQLiteHandler extends SQLiteOpenHelper {
     private static final String CREATE_ENCUESTADOS_TABLE = "CREATE TABLE "+TABLE_ENCUESTADOS+" (id_encuesta INTEGER PRIMARY KEY, runevaluado TEXT, nombreevaluado TEXT, relacion TEXT, estado TEXT)";
     private static final String CREATE_ENCUESTAS_TERMINADAS_TABLE = "CREATE TABLE "+TABLE_ENCUESTAS_TERMINADAS+" (id INTEGER PRIMARY KEY AUTOINCREMENT, id_encuesta INTEGER, id_pregunta INTEGER, id_respuesta INTEGER)";
     private static final String CREATE_ENCUESTAS_TABLE = "CREATE TABLE "+TABLE_ENCUESTAS+" (id INTEGER PRIMARY KEY AUTOINCREMENT, id_encuesta INTEGER, id_pregunta INTEGER, pregunta TEXT)";
-    private static final String CREATE_RESPUESTAS_TABLE = "CREATE TABLE "+TABLE_RESPUESTAS+" (id INTEGER PRIMARY KEY AUTOINCREMENT, id_pregunta INTEGER, id_respuesta INTEGER, respuesta TEXT)";
+    private static final String CREATE_RESPUESTAS_TABLE = "CREATE TABLE "+TABLE_RESPUESTAS+" (id INTEGER PRIMARY KEY AUTOINCREMENT, id_encuesta INTEGER, id_pregunta INTEGER, id_respuesta INTEGER, respuesta TEXT)";
 
     public SQLiteHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -192,7 +192,7 @@ public class SQLiteHandler extends SQLiteOpenHelper {
     }
 
     /**
-     * Storing encuesta respondida in database
+     * guarda encuesta respondida en base de datos
      * */
     public void saveQuestionWithAnswer(int id_pregunta, int id_respuesta) {
 
@@ -246,48 +246,16 @@ public class SQLiteHandler extends SQLiteOpenHelper {
     /**
      * Re crate database Delete all tables and create them again
      * */
-    public void eliminar_respuestas() {
+    public void eliminarRespuestasContestadas() {
         SQLiteDatabase db = this.getWritableDatabase();
         // Delete All Rows
         db.delete(TABLE_ENCUESTAS_TERMINADAS, null, null);
         db.close();
 
-        Log.i(TAG, "respuestas eliminadas desde bd");
+        Log.i(TAG, "respuestas contestadas eliminadas desde bd");
     }
 
-    /**
-     * Guardar la encuesta en la base de datos para consultarla offline
-     * */
-    public void guardarEncuesta(ArrayList<Pregunta> datos, int id_encuesta) {
-        SQLiteDatabase db = this.getWritableDatabase();
-
-        for (Pregunta p: datos) {
-
-            ContentValues values = new ContentValues();
-            //values.put("id_encuesta", e.getId());
-            values.put("id_encuesta", id_encuesta);
-            values.put("id_pregunta", p.getId());
-            values.put("pregunta", p.getTitulo());
-
-            // Inserting Row
-            long id = db.insert(TABLE_ENCUESTAS, null, values);
-
-            for (Respuesta r: p.getRespuestas()) {
-                ContentValues data = new ContentValues();
-                data.put("id_pregunta", p.getId());
-                data.put("id_respuesta", r.getId());
-                data.put("respuesta", r.getRespuesta());
-
-                long id_p = db.insert(TABLE_RESPUESTAS, null, data);
-                Log.i(TAG, "nueva respuesta de la id_pregunta:"+p.getId()+", id_respuesta:"+r.getId());
-            }
-
-
-        }
-        db.close(); // Closing database connection
-    }
-
-    /**
+       /**
      * Eliminar todas las preguntas guardadas en bd
      * */
     public void eliminarPreguntas() {
@@ -319,7 +287,7 @@ public class SQLiteHandler extends SQLiteOpenHelper {
                     p.setId(cursor.getInt(cursor.getColumnIndex("id_pregunta")));
                     p.setTitulo(cursor.getString(cursor.getColumnIndex("pregunta")));
 
-                    Cursor preg = db.rawQuery("SELECT * FROM "+TABLE_RESPUESTAS+" where id_pregunta="+p.getId(), null);
+                    Cursor preg = db.rawQuery("SELECT * FROM "+TABLE_RESPUESTAS+" where id_encuesta=1 and id_pregunta="+p.getId(), null);
                     ArrayList<Respuesta> respuestas = new ArrayList<>();
                     if(preg != null){
                         if(preg.moveToFirst()){
@@ -343,5 +311,38 @@ public class SQLiteHandler extends SQLiteOpenHelper {
         }
         db.close();
         return lista_preguntas;
+    }
+
+    /**
+     * Guardar la encuesta en la base de datos para consultarla offline
+     * */
+    public void guardarEncuesta(ArrayList<Pregunta> datos, int id_encuesta) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        for (Pregunta p: datos) {
+
+            ContentValues values = new ContentValues();
+            //values.put("id_encuesta", e.getId());
+            values.put("id_encuesta", id_encuesta);
+            values.put("id_pregunta", p.getId());
+            values.put("pregunta", p.getTitulo());
+
+            // Inserting Row
+            long id = db.insert(TABLE_ENCUESTAS, null, values);
+
+            for (Respuesta r: p.getRespuestas()) {
+                ContentValues data = new ContentValues();
+                data.put("id_encuesta", id_encuesta);
+                data.put("id_pregunta", p.getId());
+                data.put("id_respuesta", r.getId());
+                data.put("respuesta", r.getRespuesta());
+
+                long id_p = db.insert(TABLE_RESPUESTAS, null, data);
+                Log.i(TAG, "nueva respuesta de la id_pregunta:"+p.getId()+", id_respuesta:"+r.getId());
+            }
+
+
+        }
+        db.close(); // Closing database connection
     }
 }
