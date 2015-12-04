@@ -2,10 +2,12 @@ package mprz.cl.cle;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -33,6 +35,8 @@ public class showEncuesta extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_encuesta);
 
+        inicializarToolbar();
+
         db = new SQLiteHandler(this);
 
         Bundle extras = getIntent().getExtras();
@@ -55,6 +59,23 @@ public class showEncuesta extends AppCompatActivity {
 
     }
 
+    private void inicializarToolbar() {
+
+
+        //App bar
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_encuesta);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("Encuesta");
+
+/*        final ActionBar ab = getSupportActionBar();
+
+        if(ab != null){
+            ab.setHomeAsUpIndicator(R.drawable.ic_menu);
+            ab.setDisplayHomeAsUpEnabled(true);
+        }*/
+
+    }
+
     private ArrayList<PreguntaEncuesta> getFragments(ArrayList<Pregunta> list) {
         ArrayList<PreguntaEncuesta> items = new ArrayList<PreguntaEncuesta>();
 
@@ -71,7 +92,7 @@ public class showEncuesta extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_encuesta, menu);
+        getMenuInflater().inflate(R.menu.menu_show_encuestas, menu);
         return true;
     }
 
@@ -83,8 +104,9 @@ public class showEncuesta extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        if (id == R.id.next_question) {
+
+            pager.setCurrentItem(pager.getCurrentItem()+1);
         }
 
         return super.onOptionsItemSelected(item);

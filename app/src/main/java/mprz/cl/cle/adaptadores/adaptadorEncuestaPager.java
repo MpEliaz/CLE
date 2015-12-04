@@ -34,4 +34,6 @@ public class adaptadorEncuestaPager extends FragmentPagerAdapter {
         return preguntas.get(position);
     }
 
+
+
 }

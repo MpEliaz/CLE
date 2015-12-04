@@ -1,7 +1,21 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="mprz.cl.cle.showEncuesta">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="mprz.cl.cle.showEncuesta"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar_encuesta"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:minHeight="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        app:titleTextAppearance="@style/AppTheme.Toolbar.Title"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Dark"
+        app:theme="@style/AppTheme.Toolbar"
+        app:layout_scrollFlags="scroll|enterAlways"/>
 
     <android.support.v4.view.ViewPager
         android:layout_width="match_parent"
@@ -10,4 +24,4 @@
 
     </android.support.v4.view.ViewPager>
 
-</RelativeLayout>
+</LinearLayout>
