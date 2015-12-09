@@ -1,19 +1,22 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" tools:context="mprz.cl.cle.Doctrina">
+    android:layout_height="match_parent" tools:context="mprz.cl.cle.Doctrina"
+    android:background="@drawable/fondo_mision1">
 
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="DOCTRINA"
-            android:id="@+id/textView4"
-            android:layout_margin="10sp" />
+        <android.support.v7.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="20dp"
+            android:id="@+id/rv_doctrina_docs"
+            android:layout_marginTop="20dp">
+
+        </android.support.v7.widget.RecyclerView>
+
     </LinearLayout>
 
 </FrameLayout>

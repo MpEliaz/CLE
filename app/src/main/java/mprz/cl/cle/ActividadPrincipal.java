@@ -72,7 +72,7 @@ public class ActividadPrincipal extends AppCompatActivity {
         //App bar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Dashboard");
+        getSupportActionBar().setTitle("Noticias");
 
         final ActionBar ab = getSupportActionBar();
 
@@ -90,8 +90,8 @@ public class ActividadPrincipal extends AppCompatActivity {
         HashMap<String, String> dataUser = db.getUserDetails();
         String name = dataUser.get("nombre")+" "+dataUser.get("paterno")+" "+dataUser.get("materno");
         NavigationView nv = (NavigationView)findViewById(R.id.nav_view);
-        TextView nombre = (TextView)findViewById(R.id.hnav_username);
-            nombre.setText(name);
+        /*TextView nombre = (TextView)findViewById(R.id.hnav_username);
+            nombre.setText(name);*/
 
         if(nv != null){
 
@@ -105,13 +105,20 @@ public class ActividadPrincipal extends AppCompatActivity {
 
                     switch (menuItem.getItemId())
                     {
-                        case R.id.home:
+                        case R.id.nav_home:
                             fragment = new Home();
                             fragmentTransaction = true;
                             break;
                         case R.id.nav_mis_encuestas:
-                            fragment = new MisEncuestas();
-                            fragmentTransaction = true;
+                            if (session.isLoggedIn())
+                            {
+                                fragment = new MisEncuestas();
+                                fragmentTransaction = true;
+                            }
+                            else{
+                                Intent intent = new Intent(ActividadPrincipal.this, Login.class);
+                                startActivity(intent);
+                            }
                             break;
                         case R.id.nav_mision:
                             fragment = new Mision();
@@ -121,17 +128,25 @@ public class ActividadPrincipal extends AppCompatActivity {
                             fragment = new Doctrina();
                             fragmentTransaction = true;
                             break;
-                        case R.id.nav_mis_datos:
+                        case R.id.nav_herramientas:
+                            fragment = new Herramientas();
+                            fragmentTransaction = true;
+                            break;
+                        case R.id.nav_organica:
                             break;
                         case R.id.nav_acerca_de:
                             break;
                         case R.id.nav_log_out:
-                            session.setLogin(false);
-                            db.deleteUsers();
-                            db.recrearTablas();
-                            Intent intent = new Intent(ActividadPrincipal.this, Login.class);
-                            startActivity(intent);
-                            finish();
+                            if(session.isLoggedIn()){
+                                session.setLogin(false);
+                                db.eliminarUsuario();
+                                db.recrearTablas();
+
+                                getSupportFragmentManager().beginTransaction()
+                                        .replace(R.id.content_fragment, new Home())
+                                        .commit();
+
+                            }
                             break;
                     }
                     if(fragmentTransaction) {

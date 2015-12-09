@@ -35,9 +35,7 @@ public class adaptadorEncuesta extends RecyclerView.Adapter<adaptadorEncuesta.En
     public EncuestaViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         View iteView = LayoutInflater.from(cx).inflate(R.layout.item_encuesta_1, parent,false);
-
         final EncuestaViewHolder vh = new EncuestaViewHolder(iteView);
-
         return vh;
     }
 
@@ -46,7 +44,6 @@ public class adaptadorEncuesta extends RecyclerView.Adapter<adaptadorEncuesta.En
 
         Pregunta p = preguntas.get(position);
         holder.bindPregunta(p);
-
     }
 
     @Override

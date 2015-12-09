@@ -79,7 +79,7 @@ public class SQLiteHandler extends SQLiteOpenHelper {
     /**
      * Storing user details in database
      * */
-    public void addUser(String nombres, String paterno, String materno) {
+    public void guardarUsuario(String nombres, String paterno, String materno) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
@@ -92,6 +92,43 @@ public class SQLiteHandler extends SQLiteOpenHelper {
         db.close(); // Closing database connection
 
         Log.i(TAG, "New user inserted into sqlite: " + id);
+    }
+    /**
+     * Re crate database Delete all tables and create them again
+     * */
+    public void eliminarUsuario() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        // Delete All Rows
+        db.delete(TABLE_USER, null, null);
+        db.close();
+
+        Log.i(TAG, "Deleted all user info from sqlite");
+    }
+    /**
+     * Re crate database Delete all tables and create them again
+     * */
+    public boolean verificarUsuarioLogeado() {
+        String query = "select * from USUARIO where id=1";
+        int id;
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.rawQuery(query, null);
+
+        if(cursor.moveToFirst()){
+            id = cursor.getInt(0);
+        }
+        else {
+            return false;
+        }
+
+        if(id == 1){
+            return true;
+        }
+
+        cursor.close();
+        db.close();
+        Log.i(TAG, "usuario verificado");
+        return false;
     }
 
     /**
@@ -177,17 +214,6 @@ public class SQLiteHandler extends SQLiteOpenHelper {
         Log.i(TAG, "Fetching user from Sqlite: " + user.toString());
 
         return user;
-    }
-    /**
-     * Re crate database Delete all tables and create them again
-     * */
-    public void deleteUsers() {
-        SQLiteDatabase db = this.getWritableDatabase();
-        // Delete All Rows
-        db.delete(TABLE_USER, null, null);
-        db.close();
-
-        Log.i(TAG, "Deleted all user info from sqlite");
     }
     /**
      * guarda encuesta respondida en base de datos
@@ -343,10 +369,9 @@ public class SQLiteHandler extends SQLiteOpenHelper {
         db.close(); // Closing database connection
     }
 
-    SQLiteDatabase db = this.getWritableDatabase();
-
     public void recrearTablas() {
 
+        SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_ENCUESTAS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_RESPUESTAS);
 

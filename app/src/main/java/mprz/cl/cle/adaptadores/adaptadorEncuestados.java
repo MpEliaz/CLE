@@ -37,9 +37,7 @@ public class adaptadorEncuestados extends RecyclerView.Adapter<adaptadorEncuesta
     public adaptadorEncuestados.EncuestadosViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_list_encuestados, parent, false);
-
         final EncuestadosViewHolder vh = new EncuestadosViewHolder(itemView);
-
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

@@ -4,17 +4,19 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_inicio">Inicio</string>
-    
+
     <string name="home">Home</string>
     <string name="encuestas">Mis Encuestas</string>
     <string name="mision">Misión</string>
     <string name="organica">Organica</string>
     <string name="doctrina">Doctrina</string>
+    <string name="cursos">Cursos</string>
     <string name="mis_datos">Mis Datos</string>
+    <string name="herramientas">Herramientas</string>
     <string name="acerca_de">Acerca de</string>
     <string name="salir">Salir</string>
 
-<!-- TODO: Remove or change this placeholder text -->
+    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">TEXTO DE PRUEBA!</string>
     <string name="title_activity_encuesta">Encuesta</string>
 </resources>

@@ -14,8 +14,6 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
-
 import mprz.cl.cle.clases.Pregunta;
 import mprz.cl.cle.clases.Respuesta;
 import mprz.cl.cle.util.SQLiteHandler;
@@ -51,7 +49,7 @@ public class PreguntaEncuesta extends Fragment {
 
         pregunta = getArguments().getParcelable(PREGUNTA);
 
-        View v = inflater.inflate(R.layout.pregunta_encuesta, container, false);
+        View v = inflater.inflate(R.layout.item_pregunta_encuesta, container, false);
 
         TextView titulo = (TextView)v.findViewById(R.id.pregunta_txt);
         titulo.setText(pregunta.getTitulo());

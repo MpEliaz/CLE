@@ -23,10 +23,15 @@
             android:icon="@drawable/ic_file_document"
             android:title="@string/doctrina" />
         <item
-            android:id="@+id/nav_mis_datos"
+            android:id="@+id/nav_herramientas"
             android:checked="true"
             android:icon="@drawable/ic_file_document"
-            android:title="@string/mis_datos" />
+            android:title="@string/herramientas" />
+        <item
+            android:id="@+id/nav_organica"
+            android:checked="true"
+            android:icon="@drawable/ic_file_document"
+            android:title="@string/organica" />
         <item
             android:id="@+id/nav_acerca_de"
             android:checked="true"

@@ -68,7 +68,7 @@ public class Login extends AppCompatActivity {
         // Check if user is already logged in or not
         if (session.isLoggedIn()) {
             // User is already logged in. Take him to main activity
-            Intent intent = new Intent(Login.this, ActividadPrincipal.class);
+            Intent intent = new Intent(Login.this, MisEncuestas.class);
             startActivity(intent);
             finish();
         }
@@ -83,7 +83,7 @@ public class Login extends AppCompatActivity {
                     // Check for empty data in the form
                     if (!usuario.isEmpty() && !password.isEmpty()) {
                         // login user
-                        checkLogin(usuario, password);
+                        loginServidor(usuario, password);
                     } else {
                         // Prompt user to enter credentials
                         Toast.makeText(getApplicationContext(),
@@ -112,7 +112,7 @@ public class Login extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void checkLogin(final String user, final String pass){
+    private void loginServidor(final String user, final String pass){
 
         pDialog.setMessage("Iniciando sesion...");
         showDialog();
@@ -134,7 +134,7 @@ public class Login extends AppCompatActivity {
 
                         session.setLogin(true);
 
-                       db.addUser(o.getString("nombres"), o.getString("paterno"), o.getString("materno"));
+                       db.guardarUsuario(o.getString("nombres"), o.getString("paterno"), o.getString("materno"));
 
                         obtenerEncuesta();
                     }
@@ -213,8 +213,8 @@ public class Login extends AppCompatActivity {
                     db.guardarEncuesta(set_Preguntas, id_encuesta);
 
                     // Launch main activity
-                    Intent i = new Intent(Login.this, ActividadPrincipal.class);
-                    startActivity(i);
+                    /*Intent i = new Intent(Login.this, MisEncuestas.class);
+                    startActivity(i);*/
                     finish();
 
                 }catch (JSONException e)
