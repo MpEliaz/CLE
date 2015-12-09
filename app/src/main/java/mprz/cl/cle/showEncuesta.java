@@ -10,7 +10,10 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -106,9 +109,24 @@ public class showEncuesta extends AppCompatActivity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.next_question) {
 
-            pager.setCurrentItem(pager.getCurrentItem()+1);
+            avancePagina();
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void avancePagina(){
+
+        Fragment f = adapter.getItem(pager.getCurrentItem());
+        RadioGroup rg = (RadioGroup)f.getView().findViewById(R.id.rg_preg);
+        int checked = rg.getCheckedRadioButtonId();
+
+        if(checked == -1){
+            Toast.makeText(showEncuesta.this, "Seleccione opción", Toast.LENGTH_SHORT).show();
+        }
+        else{
+            pager.setCurrentItem(pager.getCurrentItem()+1);
+        }
+
     }
 }

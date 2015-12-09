@@ -1,7 +1,9 @@
 package mprz.cl.cle;
 
+import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -26,6 +28,7 @@ public class PreguntaEncuesta extends Fragment {
     public static final String PREGUNTA = "PREGUNTA";
     private Pregunta pregunta;
     private SQLiteHandler db;
+   // private OnFragmentInteractionListener mListener;
 
     public static final PreguntaEncuesta newIntance(Pregunta p){
 
@@ -71,12 +74,13 @@ public class PreguntaEncuesta extends Fragment {
             rg.addView(rb, rprms);
         }
 
+
         rg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
 
                 db.saveQuestionWithAnswer(pregunta.getId(), i);
-                Toast.makeText(getActivity(), "presionado: respuesta"+i+" de pregunta:"+pregunta.getId() , Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "presionado: respuesta" + i + " de pregunta:" + pregunta.getId(), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -84,6 +88,30 @@ public class PreguntaEncuesta extends Fragment {
         View radioButton = rg.findViewById(radioButtonID);
         int idx = radioButtonGroup.indexOfChild(radioButton);*/
 
+
+
         return v;
     }
+
+/*    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        try {
+            mListener = (OnFragmentInteractionListener) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString()
+                    + " must implement OnFragmentInteractionListener");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
+    }
+
+    public interface OnFragmentInteractionListener {
+        // TODO: Update argument type and name
+        public void onFragmentInteraction(Uri uri);
+    }*/
 }
