@@ -32,6 +32,7 @@ public class showEncuesta extends AppCompatActivity {
     private ViewPager pager;
     private adaptadorEncuestaPager adapter;
     private SQLiteHandler db;
+    private Menu menu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +54,7 @@ public class showEncuesta extends AppCompatActivity {
         ArrayList<Pregunta> list = db.ObtenerEncuestaFromDB();
 
 
-        ArrayList<PreguntaEncuesta> fragments = getFragments(list);
+        ArrayList<Fragment> fragments = getFragments(list);
 
         adapter = new adaptadorEncuestaPager(getSupportFragmentManager(), fragments);
         pager.setAdapter(adapter);
@@ -79,14 +80,16 @@ public class showEncuesta extends AppCompatActivity {
 
     }
 
-    private ArrayList<PreguntaEncuesta> getFragments(ArrayList<Pregunta> list) {
-        ArrayList<PreguntaEncuesta> items = new ArrayList<PreguntaEncuesta>();
+    private ArrayList<Fragment> getFragments(ArrayList<Pregunta> list) {
+        ArrayList<Fragment> items = new ArrayList<Fragment>();
 
         for (Pregunta p : list) {
 
             items.add(PreguntaEncuesta.newIntance(p));
 
         }
+        FragmentFinalEncuesta f = new FragmentFinalEncuesta();
+        items.add(f);
 
         return items;
     }
@@ -125,7 +128,14 @@ public class showEncuesta extends AppCompatActivity {
             Toast.makeText(showEncuesta.this, "Seleccione opción", Toast.LENGTH_SHORT).show();
         }
         else{
-            pager.setCurrentItem(pager.getCurrentItem()+1);
+            int total = adapter.getCount();
+            int actual = pager.getCurrentItem()+1;
+
+            if(actual < total){
+
+                pager.setCurrentItem(pager.getCurrentItem()+1);
+            }
+
         }
 
     }

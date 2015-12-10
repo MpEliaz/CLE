@@ -5,4 +5,9 @@
         android:title="Siguiente"
         android:orderInCategory="1"
         app:showAsAction="always" />
+    <item android:id="@+id/finish_quiz"
+        android:title="Siguiente"
+        android:orderInCategory="1"
+        app:showAsAction="always"
+        android:visible="false"/>
 </menu>

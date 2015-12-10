@@ -16,9 +16,9 @@ import mprz.cl.cle.clases.Pregunta;
  */
 public class adaptadorEncuestaPager extends FragmentPagerAdapter {
 
-    ArrayList<PreguntaEncuesta> preguntas;
+    ArrayList<Fragment> preguntas;
 
-    public adaptadorEncuestaPager(FragmentManager fm, ArrayList<PreguntaEncuesta> preguntas) {
+    public adaptadorEncuestaPager(FragmentManager fm, ArrayList<Fragment> preguntas) {
         super(fm);
         this.preguntas = preguntas;
     }
