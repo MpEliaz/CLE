@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import mprz.cl.cle.clases.Encuesta;
+import mprz.cl.cle.clases.Noticia;
 import mprz.cl.cle.clases.Pregunta;
 import mprz.cl.cle.clases.Respuesta;
 
@@ -34,6 +35,7 @@ public class SQLiteHandler extends SQLiteOpenHelper {
     private static final String TABLE_ENCUESTAS = "ENCUESTAS";
     private static final String TABLE_ENCUESTAS_TERMINADAS = "ENCUESTAS_TERMINADAS";
     private static final String TABLE_RESPUESTAS = "RESPUESTAS";
+    private static final String TABLE_NOTICIAS = "NOTICIAS";
 
     // Login Table Columns names
     private static final String KEY_ID = "id";
@@ -45,6 +47,7 @@ public class SQLiteHandler extends SQLiteOpenHelper {
     private static final String CREATE_ENCUESTAS_TERMINADAS_TABLE = "CREATE TABLE "+TABLE_ENCUESTAS_TERMINADAS+" (id INTEGER PRIMARY KEY AUTOINCREMENT, id_encuesta INTEGER, id_pregunta INTEGER, id_respuesta INTEGER)";
     private static final String CREATE_ENCUESTAS_TABLE = "CREATE TABLE "+TABLE_ENCUESTAS+" (id INTEGER PRIMARY KEY AUTOINCREMENT, id_encuesta INTEGER, id_pregunta INTEGER, pregunta TEXT)";
     private static final String CREATE_RESPUESTAS_TABLE = "CREATE TABLE "+TABLE_RESPUESTAS+" (id INTEGER PRIMARY KEY AUTOINCREMENT, id_encuesta INTEGER, id_pregunta INTEGER, id_respuesta INTEGER, respuesta TEXT)";
+    private static final String CREATE_NOTICIAS_TABLE = "CREATE TABLE NOTICIAS (id INTEGER PRIMARY KEY, usuario TEXT, titulo TEXT, resumen TEXT, completa TEXT, imagen TEXT)";
 
     public SQLiteHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -58,6 +61,7 @@ public class SQLiteHandler extends SQLiteOpenHelper {
         db.execSQL(CREATE_ENCUESTAS_TERMINADAS_TABLE);
         db.execSQL(CREATE_ENCUESTAS_TABLE);
         db.execSQL(CREATE_RESPUESTAS_TABLE);
+        db.execSQL(CREATE_NOTICIAS_TABLE);
 
         Log.i(TAG, "base de datos creada");
     }
@@ -71,6 +75,7 @@ public class SQLiteHandler extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_ENCUESTAS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_ENCUESTAS_TERMINADAS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_RESPUESTAS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NOTICIAS);
 
         // Create tables again
         onCreate(db);
@@ -379,5 +384,69 @@ public class SQLiteHandler extends SQLiteOpenHelper {
         db.execSQL(CREATE_RESPUESTAS_TABLE);
 
         Log.i(TAG, "tablas recreadas");
+    }
+
+    public void guardarNoticias(ArrayList<Noticia> noticias){
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        for (Noticia n: noticias) {
+
+            ContentValues values = new ContentValues();
+            values.put("id", n.getId());
+            values.put("usuario", n.getUsuario());
+            values.put("titulo", n.getTitulo());
+            values.put("resumen", n.getResumen());
+            values.put("completa", n.getCuerpo());
+            values.put("imagen", n.getUrl_imagen());
+
+            // Inserting Row
+            long id = db.insert(TABLE_NOTICIAS, null, values);
+            Log.i(TAG, "Noticia guardada con id: "+id);
+        }
+        Log.i(TAG, "Noticias guardadas");
+        db.close(); // Closing database connection
+
+    }
+
+    public void eliminarNoticias(){
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        // Delete All Rows
+        db.delete(TABLE_NOTICIAS, null, null);
+        db.close();
+
+        Log.i(TAG, "noticias eliminadas desde bd");
+
+    }
+
+    public ArrayList<Noticia> obtenerNoticias() {
+        ArrayList<Noticia> noticias = new ArrayList<Noticia>();
+        String selectQuery = "SELECT  * FROM " + TABLE_NOTICIAS;
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        if (cursor != null) {
+            // move cursor to first row
+            if (cursor.moveToFirst()) {
+                do {
+                    Noticia n = new Noticia();
+                    n.setId(cursor.getInt(cursor.getColumnIndex("id")));
+                    n.setUsuario(cursor.getString(cursor.getColumnIndex("usuario")));
+                    n.setTitulo(cursor.getString(cursor.getColumnIndex("titulo")));
+                    n.setResumen(cursor.getString(cursor.getColumnIndex("resumen")));
+                    n.setCuerpo(cursor.getString(cursor.getColumnIndex("completa")));
+                    n.setUrl_imagen(cursor.getString(cursor.getColumnIndex("imagen")));
+
+                    noticias.add(n);
+                    Log.i(TAG, "noticias obtenidas desde bd");
+                    // move to next row
+                } while (cursor.moveToNext());
+            }
+            cursor.close();
+        }
+        db.close();
+        return noticias;
     }
 }

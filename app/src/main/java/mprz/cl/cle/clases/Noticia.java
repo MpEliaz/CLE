@@ -8,7 +8,9 @@ import java.util.ArrayList;
 public class Noticia {
 
     private int id;
+    private String usuario;
     private String titulo;
+    private String resumen;
     private String cuerpo;
     private String url_imagen;
 
@@ -30,12 +32,28 @@ public class Noticia {
         this.id = id;
     }
 
+    public String getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(String usuario) {
+        this.usuario = usuario;
+    }
+
     public String getTitulo() {
         return titulo;
     }
 
     public void setTitulo(String titulo) {
         this.titulo = titulo;
+    }
+
+    public String getResumen() {
+        return resumen;
+    }
+
+    public void setResumen(String resumen) {
+        this.resumen = resumen;
     }
 
     public String getCuerpo() {

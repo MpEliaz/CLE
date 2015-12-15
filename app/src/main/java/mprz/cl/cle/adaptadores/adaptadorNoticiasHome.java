@@ -1,6 +1,7 @@
 package mprz.cl.cle.adaptadores;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,9 +9,14 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageRequest;
+
 import java.util.ArrayList;
 
 import mprz.cl.cle.R;
+import mprz.cl.cle.clases.CLESingleton;
 import mprz.cl.cle.clases.Noticia;
 
 /**
@@ -59,7 +65,8 @@ public class adaptadorNoticiasHome extends RecyclerView.Adapter<adaptadorNoticia
             super(v);
 
             titulo = (TextView)v.findViewById(R.id.titulo_noticia);
-            cuerpo = (TextView)v.findViewById(R.id.cuerpo_noticia);
+            cuerpo = (TextView)v.findViewById(R.id.resumen_noticia);
+            imagen = (ImageView)v.findViewById(R.id.img_thumbnail);
 
 
         }
@@ -67,6 +74,22 @@ public class adaptadorNoticiasHome extends RecyclerView.Adapter<adaptadorNoticia
         public void bindNoticia(final Noticia n){
             titulo.setText(n.getTitulo());
             cuerpo.setText(n.getCuerpo());
+            ImageRequest req = new ImageRequest("http://cle.ejercito.cl/upload/" + n.getUrl_imagen(),
+                    new Response.Listener<Bitmap>() {
+                @Override
+                public void onResponse(Bitmap response) {
+                    imagen.setImageBitmap(response);
+                }
+            }, 0, 0, null,
+                    new Response.ErrorListener(){
+
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+
+                        }
+                    }
+            );
+            CLESingleton.getInstance(cx).addToRequestQueue(req);
 
 
 
