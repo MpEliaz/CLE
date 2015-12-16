@@ -9,7 +9,7 @@ public class Documento {
 
     private int id;
     private String nombre;
-    private ArrayList<String> paginas;
+    private String[] paginas;
 
     public Documento() {
     }
@@ -35,11 +35,11 @@ public class Documento {
         this.nombre = nombre;
     }
 
-    public ArrayList<String> getPaginas() {
+    public String[] getPaginas() {
         return paginas;
     }
 
-    public void setPaginas(ArrayList<String> paginas) {
+    public void setPaginas(String[] paginas) {
         this.paginas = paginas;
     }
 
@@ -48,6 +48,30 @@ public class Documento {
         ArrayList<Documento> data = new ArrayList<>();
 
         Documento d1 = new Documento(1, "Atributos");
+        d1.setPaginas(new String[]{"competencias_pag_01",
+                "competencias_pag_02",
+                "competencias_pag_03",
+                "competencias_pag_04",
+                "competencias_pag_05",
+                "competencias_pag_06",
+                "competencias_pag_07",
+                "competencias_pag_08",
+                "competencias_pag_09",
+                "competencias_pag_10",
+                "competencias_pag_11",
+                "competencias_pag_12",
+                "competencias_pag_13",
+                "competencias_pag_14",
+                "competencias_pag_15",
+                "competencias_pag_16",
+                "competencias_pag_17",
+                "competencias_pag_18",
+                "competencias_pag_19",
+                "competencias_pag_20",
+                "competencias_pag_21",
+                "competencias_pag_22",
+                "competencias_pag_23",
+        });
         Documento d2 = new Documento(2, "Competencias");
         Documento d3 = new Documento(3, "Herramientas");
 
@@ -57,4 +81,6 @@ public class Documento {
 
         return data;
     }
+
+
 }

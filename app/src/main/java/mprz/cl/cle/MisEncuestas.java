@@ -45,7 +45,6 @@ import static mprz.cl.cle.util.Constantes.URL;
  */
 public class MisEncuestas extends Fragment implements adaptadorEncuestados.OnItemClickListener{
 
-    private RecyclerView rv;
     private String url = URL + "/ObtenerEvaluacionesJson?AspxAutoDetectCookieSupport=1";
     private ArrayList<Encuesta> data;
     private adaptadorEncuestados adapter;
@@ -72,7 +71,7 @@ public class MisEncuestas extends Fragment implements adaptadorEncuestados.OnIte
         pDialog = new ProgressDialog(getActivity());
         pDialog.setCancelable(false);
 
-        rv = (RecyclerView) v.findViewById(R.id.rv_encuestas);
+        RecyclerView rv = (RecyclerView) v.findViewById(R.id.rv_encuestas);
         rv.setHasFixedSize(true);
         rv.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
         adapter = new adaptadorEncuestados(db.ObtenerEncuestados(), getActivity());

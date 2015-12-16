@@ -11,8 +11,8 @@
         android:theme="@style/AppTheme" >
         <activity
             android:name=".ActividadPrincipal"
-            android:screenOrientation="portrait"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -26,6 +26,10 @@
         <activity
             android:name=".showEncuesta"
             android:label="@string/title_activity_encuesta" >
+        </activity>
+        <activity
+            android:name=".DocumentosPager"
+            android:label="@string/title_activity_documentos_pager" >
         </activity>
     </application>
 

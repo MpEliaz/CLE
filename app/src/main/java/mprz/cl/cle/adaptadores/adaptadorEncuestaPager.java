@@ -34,11 +34,4 @@ public class adaptadorEncuestaPager extends FragmentPagerAdapter {
         return preguntas.get(position);
     }
 
-    public boolean verificarCheck(){
-
-        return false;
-    }
-
-
-
 }

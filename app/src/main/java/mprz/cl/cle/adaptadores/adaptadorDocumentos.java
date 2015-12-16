@@ -16,6 +16,7 @@ import java.util.ArrayList;
 
 import mprz.cl.cle.R;
 import mprz.cl.cle.clases.Documento;
+import mprz.cl.cle.clases.Encuesta;
 import mprz.cl.cle.clases.Pregunta;
 import mprz.cl.cle.clases.Respuesta;
 
@@ -26,17 +27,36 @@ public class adaptadorDocumentos extends RecyclerView.Adapter<adaptadorDocumento
 
     private Context cx;
     private ArrayList<Documento> documentos;
+    private OnItemClickListener onItemClickListener;
 
     public adaptadorDocumentos(Context cx, ArrayList<Documento> documentos) {
         this.cx = cx;
         this.documentos = documentos;
     }
 
+    public interface OnItemClickListener {
+        void onItemClick(View view, Documento documento, int position);
+    }
+
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.onItemClickListener = listener;
+    }
+
     @Override
     public DocumentoViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-        View iteView = LayoutInflater.from(cx).inflate(R.layout.item_documento, parent,false);
-        final adaptadorDocumentos.DocumentoViewHolder vh = new DocumentoViewHolder(iteView);
+        View itemView = LayoutInflater.from(cx).inflate(R.layout.item_documento, parent,false);
+        final adaptadorDocumentos.DocumentoViewHolder vh = new DocumentoViewHolder(itemView);
+
+        itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(onItemClickListener != null){
+                    onItemClickListener.onItemClick(view,documentos.get(vh.getAdapterPosition()),vh.getAdapterPosition());
+                }
+            }
+        });
+
         return vh;
     }
 
