@@ -3,7 +3,7 @@
     android:layout_height="wrap_content"
     tools:context=".ActividadPrincipal"
     android:orientation="vertical"
-    android:background="#7c704d0d">
+    android:background="@drawable/fondo_mision1">
 
     <ImageView
         android:layout_width="wrap_content"
@@ -39,12 +39,7 @@
                 android:id="@+id/et_user"
                 android:hint="Usuario"
                 android:singleLine="true"
-                android:backgroundTint="@color/white"
-                android:textColorLink="@color/white"
                 android:textIsSelectable="false"
-                android:textColorHighlight="@color/white"
-                android:textColorHint="@color/white"
-                android:textColor="@color/white"
                 android:text="11111111-1" />
 
         </android.support.design.widget.TextInputLayout>
@@ -61,10 +56,6 @@
                 android:id="@+id/et_password"
                 android:hint="Contraseña"
                 android:backgroundTint="@color/white"
-                android:textColorHint="@color/white"
-                android:textColorLink="@color/white"
-                android:textColor="@color/white"
-                android:textColorHighlight="@color/white"
                 android:text="juanperez" />
 
         </android.support.design.widget.TextInputLayout>

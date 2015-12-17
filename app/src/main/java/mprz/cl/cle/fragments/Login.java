@@ -58,7 +58,7 @@ public class Login extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
          super.onCreateView(inflater, container, savedInstanceState);
 
-        View v = inflater.inflate(R.layout.activity_actividad_principal,container, false);
+        View v = inflater.inflate(R.layout.fragment_login,container, false);
 
         btn_login = (Button) v.findViewById(R.id.btn_login);
         et_user = (EditText) v.findViewById(R.id.et_user);

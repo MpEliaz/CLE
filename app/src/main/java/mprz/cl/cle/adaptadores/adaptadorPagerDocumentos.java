@@ -35,12 +35,5 @@ public class adaptadorPagerDocumentos extends FragmentStatePagerAdapter {
         return paginaDocumento.newInstance(nombres[position]);
     }
 
-    @Override
-    public void destroyItem(ViewGroup container, int position, Object object) {
-        super.destroyItem(container, position, object);
 
-        View view = (View)object;
-        ((ViewPager) container).removeView(view);
-        view = null;
-    }
 }

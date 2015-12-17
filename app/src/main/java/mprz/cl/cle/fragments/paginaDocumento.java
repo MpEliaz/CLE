@@ -2,6 +2,7 @@ package mprz.cl.cle.fragments;
 
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -26,6 +27,7 @@ public class paginaDocumento extends Fragment {
 
     private static final String NOMBRE_IMAGEN = "nombre_imagen";
     private ImageView image;
+    private Bitmap bitmap;
 
 
     private String nombre_imagen;
@@ -61,14 +63,18 @@ public class paginaDocumento extends Fragment {
         return v;
     }
 
+
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        int resId = getResources().getIdentifier(nombre_imagen , "drawable", getActivity().getPackageName());
+        image.setImageResource(resId); // Load image into ImageView
+    }
 
-        int idRes = getResources().getIdentifier(nombre_imagen , "drawable", getActivity().getPackageName());
-
-        if(idRes != 0){
-            image.setImageResource(idRes);
-        }
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        bitmap.recycle();
+        bitmap = null;
     }
 }
