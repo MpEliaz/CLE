@@ -1,6 +1,7 @@
-package mprz.cl.cle;
+package mprz.cl.cle.fragments;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -23,6 +24,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import mprz.cl.cle.NoticiaDetalle;
 import mprz.cl.cle.R;
 import mprz.cl.cle.adaptadores.adaptadorNoticiasHome;
 import mprz.cl.cle.clases.CLESingleton;
@@ -35,7 +37,7 @@ import static mprz.cl.cle.util.Constantes.URL;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class Home extends Fragment {
+public class Home extends Fragment implements adaptadorNoticiasHome.OnItemClickListener{
 
     private RecyclerView rv;
     private adaptadorNoticiasHome adapter;
@@ -68,6 +70,7 @@ public class Home extends Fragment {
         Noticia a = new Noticia();
         noticias = db.obtenerNoticias();
         adapter = new adaptadorNoticiasHome(getActivity(), noticias);
+        adapter.setOnItemClickListener(this);
         rv = (RecyclerView) v.findViewById(R.id.noticias_rv);
         rv.setHasFixedSize(true);
         rv.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
@@ -104,6 +107,7 @@ public class Home extends Fragment {
                     adapter.updateData(db.obtenerNoticias());
                     adapter.notifyDataSetChanged();
                     mSwipeRefreshLayout.setRefreshing(false);
+                    Toast.makeText(getActivity(), "Noticias Actualizadas", Toast.LENGTH_SHORT).show();
                 } catch (JSONException e) {
 
                 }
@@ -125,6 +129,13 @@ public class Home extends Fragment {
         };
 
         CLESingleton.getInstance(getActivity()).addToRequestQueue(request);
+    }
+
+    @Override
+    public void onItemClick(View view, Noticia noticia, int position) {
+        Intent i = new Intent(getActivity(), NoticiaDetalle.class);
+        i.putExtra("id_noticia", noticia.getId());
+        startActivity(i);
     }
 }
 

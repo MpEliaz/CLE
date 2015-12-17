@@ -1,13 +1,15 @@
-package mprz.cl.cle;
+package mprz.cl.cle.fragments;
 
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -25,17 +27,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import mprz.cl.cle.R;
 import mprz.cl.cle.clases.CLESingleton;
-import mprz.cl.cle.clases.Encuesta;
 import mprz.cl.cle.clases.Pregunta;
 import mprz.cl.cle.clases.Respuesta;
-import mprz.cl.cle.clases.Usuario;
 import mprz.cl.cle.util.SessionManager;
 import mprz.cl.cle.util.SQLiteHandler;
 
 import static mprz.cl.cle.util.Constantes.URL;
 
-public class Login extends AppCompatActivity {
+public class Login extends Fragment {
 
     private Button btn_login;
     private EditText et_user;
@@ -47,62 +48,67 @@ public class Login extends AppCompatActivity {
     private SQLiteHandler db;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_actividad_principal);
 
-        btn_login = (Button) findViewById(R.id.btn_login);
-        et_user = (EditText) findViewById(R.id.et_user);
-        et_pass = (EditText) findViewById(R.id.et_password);
+
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+         super.onCreateView(inflater, container, savedInstanceState);
+
+        View v = inflater.inflate(R.layout.activity_actividad_principal,container, false);
+
+        btn_login = (Button) v.findViewById(R.id.btn_login);
+        et_user = (EditText) v.findViewById(R.id.et_user);
+        et_pass = (EditText) v.findViewById(R.id.et_password);
 
         // Progress dialog
-        pDialog = new ProgressDialog(this);
+        pDialog = new ProgressDialog(getActivity());
         pDialog.setCancelable(false);
 
         // SQLite database handler
-        db = new SQLiteHandler(getApplicationContext());
+        db = new SQLiteHandler(getActivity());
 
         //SessionManager
-        session = new SessionManager(getApplicationContext());
+        session = new SessionManager(getActivity());
 
         // Check if user is already logged in or not
         if (session.isLoggedIn()) {
             // User is already logged in. Take him to main activity
-            Intent intent = new Intent(Login.this, MisEncuestas.class);
+           /* Intent intent = new Intent(Login.this, MisEncuestas.class);
             startActivity(intent);
-            finish();
+            finish();*/
         }
 
-            btn_login.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
+        btn_login.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
 
-                    String usuario = et_user.getText().toString().trim();
-                    String password = et_pass.getText().toString().trim();
+                String usuario = et_user.getText().toString().trim();
+                String password = et_pass.getText().toString().trim();
 
-                    // Check for empty data in the form
-                    if (!usuario.isEmpty() && !password.isEmpty()) {
-                        // login user
-                        loginServidor(usuario, password);
-                    } else {
-                        // Prompt user to enter credentials
-                        Toast.makeText(getApplicationContext(),
-                                "Ingrese credenciales", Toast.LENGTH_LONG)
-                                .show();
-                    }
+                // Check for empty data in the form
+                if (!usuario.isEmpty() && !password.isEmpty()) {
+                    // login user
+                    loginServidor(usuario, password);
+                } else {
+                    // Prompt user to enter credentials
+                    Toast.makeText(getActivity(),
+                            "Ingrese credenciales", Toast.LENGTH_LONG)
+                            .show();
                 }
-            });
-
+            }
+        });
+        return v;
     }
 
-
-
-
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_actividad_principal, menu);
-        return true;
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+
+        inflater.inflate(R.menu.menu_mis_encuestas, menu);
     }
 
     @Override
@@ -139,11 +145,11 @@ public class Login extends AppCompatActivity {
                         obtenerEncuesta();
                     }
                     else{
-                        Toast.makeText(Login.this,"Error en las credenciales",Toast.LENGTH_LONG).show();
+                        Toast.makeText(getActivity(),"Error en las credenciales",Toast.LENGTH_LONG).show();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    Toast.makeText(getApplicationContext(), "Json error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), "Json error: " + e.getMessage(), Toast.LENGTH_LONG).show();
                 }
 
             }
@@ -151,7 +157,7 @@ public class Login extends AppCompatActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.e("CLE", "Login Error: " + error.getMessage());
-                Toast.makeText(getApplicationContext(),
+                Toast.makeText(getActivity(),
                         error.getMessage(), Toast.LENGTH_LONG).show();
                 hideDialog();
             }
@@ -170,7 +176,7 @@ public class Login extends AppCompatActivity {
                 return "application/x-www-form-urlencoded; charset=UTF-8";
             }
         };
-        CLESingleton.getInstance(this).addToRequestQueue(request);
+        CLESingleton.getInstance(getActivity()).addToRequestQueue(request);
         }
 
     private void obtenerEncuesta() {
@@ -215,12 +221,15 @@ public class Login extends AppCompatActivity {
                     // Launch main activity
                     /*Intent i = new Intent(Login.this, MisEncuestas.class);
                     startActivity(i);*/
-                    finish();
+                    MisEncuestas nextFrag= new MisEncuestas();
+                    getActivity().getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.content_fragment, nextFrag)
+                            .commit();
 
                 }catch (JSONException e)
                 {
                     e.printStackTrace();
-                    Toast.makeText(getApplicationContext(), "Json error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), "Json error: " + e.getMessage(), Toast.LENGTH_LONG).show();
                 }
             }
         }, new Response.ErrorListener() {
@@ -245,7 +254,7 @@ public class Login extends AppCompatActivity {
             }
 
         };
-        CLESingleton.getInstance(this).addToRequestQueue(req);
+        CLESingleton.getInstance(getActivity()).addToRequestQueue(req);
     }
 
     private void showDialog() {

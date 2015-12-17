@@ -1,4 +1,4 @@
-package mprz.cl.cle;
+package mprz.cl.cle.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,6 +9,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+
+import mprz.cl.cle.DocumentosPager;
+import mprz.cl.cle.R;
 import mprz.cl.cle.adaptadores.adaptadorDocumentos;
 import mprz.cl.cle.clases.Documento;
 

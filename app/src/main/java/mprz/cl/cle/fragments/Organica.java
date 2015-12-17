@@ -1,4 +1,4 @@
-package mprz.cl.cle;
+package mprz.cl.cle.fragments;
 
 
 import android.os.Bundle;
@@ -12,10 +12,10 @@ import mprz.cl.cle.R;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class Mision extends Fragment {
+public class Organica extends Fragment {
 
 
-    public Mision() {
+    public Organica() {
         // Required empty public constructor
     }
 
@@ -24,8 +24,7 @@ public class Mision extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_mision, container, false);
+        return inflater.inflate(R.layout.fragment_organica, container, false);
     }
-
 
 }

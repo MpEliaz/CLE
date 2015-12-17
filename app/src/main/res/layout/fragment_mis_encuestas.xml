@@ -1,6 +1,6 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" tools:context="mprz.cl.cle.MisEncuestas">
+    android:layout_height="match_parent" tools:context=".fragments.MisEncuestas">
 
     <LinearLayout
         android:orientation="vertical"

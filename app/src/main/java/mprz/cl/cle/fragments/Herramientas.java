@@ -1,4 +1,4 @@
-package mprz.cl.cle;
+package mprz.cl.cle.fragments;
 
 
 import android.content.Intent;
@@ -11,6 +11,8 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import mprz.cl.cle.R;
 
 /**
  * A simple {@link Fragment} subclass.

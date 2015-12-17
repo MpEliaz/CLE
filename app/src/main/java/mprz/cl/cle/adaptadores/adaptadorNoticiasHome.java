@@ -11,12 +11,15 @@ import android.widget.TextView;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.ImageRequest;
+import com.android.volley.toolbox.NetworkImageView;
 
 import java.util.ArrayList;
 
 import mprz.cl.cle.R;
 import mprz.cl.cle.clases.CLESingleton;
+import mprz.cl.cle.clases.Documento;
 import mprz.cl.cle.clases.Noticia;
 
 /**
@@ -26,16 +29,36 @@ public class adaptadorNoticiasHome extends RecyclerView.Adapter<adaptadorNoticia
 
     private Context cx;
     private ArrayList<Noticia> noticias;
+    ImageLoader mImageLoader;
+    private OnItemClickListener onItemClickListener;
 
     public adaptadorNoticiasHome(Context cx, ArrayList<Noticia> noticias) {
         this.cx = cx;
         this.noticias = noticias;
     }
 
+    public interface OnItemClickListener {
+        void onItemClick(View view, Noticia noticia, int position);
+    }
+
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.onItemClickListener = listener;
+    }
+
     @Override
     public NoticiaViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(cx).inflate(R.layout.item_noticia_preview, parent, false);
         final NoticiaViewHolder vh = new NoticiaViewHolder(view);
+
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(onItemClickListener != null){
+                    onItemClickListener.onItemClick(view,noticias.get(vh.getAdapterPosition()),vh.getAdapterPosition());
+                }
+            }
+        });
+
         return vh;
     }
 
@@ -59,14 +82,14 @@ public class adaptadorNoticiasHome extends RecyclerView.Adapter<adaptadorNoticia
         private int id;
         private TextView titulo;
         private TextView cuerpo;
-        private ImageView imagen;
+        private NetworkImageView imagen;
 
         public NoticiaViewHolder(View v) {
             super(v);
 
             titulo = (TextView)v.findViewById(R.id.titulo_noticia);
             cuerpo = (TextView)v.findViewById(R.id.resumen_noticia);
-            imagen = (ImageView)v.findViewById(R.id.img_thumbnail);
+            imagen = (NetworkImageView)v.findViewById(R.id.img_thumbnail);
 
 
         }
@@ -74,26 +97,9 @@ public class adaptadorNoticiasHome extends RecyclerView.Adapter<adaptadorNoticia
         public void bindNoticia(final Noticia n){
             titulo.setText(n.getTitulo());
             cuerpo.setText(n.getCuerpo());
-            ImageRequest req = new ImageRequest("http://cle.ejercito.cl/upload/" + n.getUrl_imagen(),
-                    new Response.Listener<Bitmap>() {
-                @Override
-                public void onResponse(Bitmap response) {
-                    imagen.setImageBitmap(response);
-                }
-            }, 0, 0, null,
-                    new Response.ErrorListener(){
 
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-
-                        }
-                    }
-            );
-            CLESingleton.getInstance(cx).addToRequestQueue(req);
-
-
-
-
+            mImageLoader = CLESingleton.getInstance(cx).getImageLoader();
+            imagen.setImageUrl("http://cle.ejercito.cl/upload/" + n.getUrl_imagen(),mImageLoader);
         }
     }
 

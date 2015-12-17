@@ -449,4 +449,32 @@ public class SQLiteHandler extends SQLiteOpenHelper {
         db.close();
         return noticias;
     }
+
+    public Noticia obtenerNoticia(int id) {
+
+        String selectQuery = "SELECT  * FROM " + TABLE_NOTICIAS+" where id="+id;
+
+        Noticia n;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        if (cursor != null) {
+            // move cursor to first row
+            if (cursor.moveToFirst()) {
+                    n = new Noticia();
+                    n.setId(cursor.getInt(cursor.getColumnIndex("id")));
+                    n.setUsuario(cursor.getString(cursor.getColumnIndex("usuario")));
+                    n.setTitulo(cursor.getString(cursor.getColumnIndex("titulo")));
+                    n.setResumen(cursor.getString(cursor.getColumnIndex("resumen")));
+                    n.setCuerpo(cursor.getString(cursor.getColumnIndex("completa")));
+                    n.setUrl_imagen(cursor.getString(cursor.getColumnIndex("imagen")));
+
+                    Log.i(TAG, "noticias obtenida desde bd");
+                return n;
+            }
+            cursor.close();
+        }
+        db.close();
+        return null;
+    }
 }

@@ -1,6 +1,5 @@
 package mprz.cl.cle;
 
-import android.content.Intent;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
@@ -13,6 +12,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 import java.util.HashMap;
+
+import mprz.cl.cle.fragments.Doctrina;
+import mprz.cl.cle.fragments.Herramientas;
+import mprz.cl.cle.fragments.Home;
+import mprz.cl.cle.fragments.Login;
+import mprz.cl.cle.fragments.MisEncuestas;
+import mprz.cl.cle.fragments.Mision;
+import mprz.cl.cle.fragments.Organica;
 import mprz.cl.cle.util.SQLiteHandler;
 import mprz.cl.cle.util.SessionManager;
 
@@ -116,8 +123,8 @@ public class ActividadPrincipal extends AppCompatActivity {
                                 fragmentTransaction = true;
                             }
                             else{
-                                Intent intent = new Intent(ActividadPrincipal.this, Login.class);
-                                startActivity(intent);
+                                fragment = new Login();
+                                fragmentTransaction = true;
                             }
                             break;
                         case R.id.nav_mision:
@@ -133,6 +140,8 @@ public class ActividadPrincipal extends AppCompatActivity {
                             fragmentTransaction = true;
                             break;
                         case R.id.nav_organica:
+                            fragment = new Organica();
+                            fragmentTransaction = true;
                             break;
                         case R.id.nav_acerca_de:
                             break;

@@ -1,4 +1,4 @@
-package mprz.cl.cle;
+package mprz.cl.cle.fragments;
 
 
 import android.app.ProgressDialog;
