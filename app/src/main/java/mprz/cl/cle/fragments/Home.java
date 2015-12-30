@@ -119,7 +119,9 @@ public class Home extends Fragment implements adaptadorNoticiasHome.OnItemClickL
             public void onErrorResponse(VolleyError error) {
 
                 mSwipeRefreshLayout.setRefreshing(false);
-                Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "Error al actualizar las noticias.", Toast.LENGTH_SHORT).show();
+                adapter.updateData(db.obtenerNoticias());
+                adapter.notifyDataSetChanged();
             }
         }) {
             @Override

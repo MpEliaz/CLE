@@ -20,6 +20,8 @@ import mprz.cl.cle.fragments.Login;
 import mprz.cl.cle.fragments.MisEncuestas;
 import mprz.cl.cle.fragments.Mision;
 import mprz.cl.cle.fragments.Organica;
+import mprz.cl.cle.fragments.misEvaluadores;
+import mprz.cl.cle.util.SQLiteEncuestasHandler;
 import mprz.cl.cle.util.SQLiteHandler;
 import mprz.cl.cle.util.SessionManager;
 
@@ -30,6 +32,7 @@ public class ActividadPrincipal extends AppCompatActivity {
     DrawerLayout drawerLayout;
     private SessionManager session;
     private SQLiteHandler db;
+    private SQLiteEncuestasHandler dbEncuestados;
 
 
     @Override
@@ -39,6 +42,7 @@ public class ActividadPrincipal extends AppCompatActivity {
         session = new SessionManager(getApplicationContext());
 
         db = new SQLiteHandler(getApplicationContext());
+        dbEncuestados = new SQLiteEncuestasHandler(getApplicationContext());
 
 
         if (savedInstanceState == null) {
@@ -127,6 +131,17 @@ public class ActividadPrincipal extends AppCompatActivity {
                                 fragmentTransaction = true;
                             }
                             break;
+                        case R.id.nav_mis_evaluadores:
+/*                            if (session.isLoggedIn())
+                            {*/
+                                fragment = new misEvaluadores();
+                                fragmentTransaction = true;
+/*                            }
+                            else{
+                                fragment = new Login();
+                                fragmentTransaction = true;
+                            }*/
+                            break;
                         case R.id.nav_mision:
                             fragment = new Mision();
                             fragmentTransaction = true;
@@ -149,7 +164,7 @@ public class ActividadPrincipal extends AppCompatActivity {
                             if(session.isLoggedIn()){
                                 session.setLogin(false);
                                 db.eliminarUsuario();
-                                db.recrearTablas();
+                                dbEncuestados.recrearTablas();
 
                                 getSupportFragmentManager().beginTransaction()
                                         .replace(R.id.content_fragment, new Home())

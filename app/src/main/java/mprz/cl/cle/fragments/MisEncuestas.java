@@ -36,6 +36,7 @@ import mprz.cl.cle.adaptadores.adaptadorEncuestados;
 import mprz.cl.cle.clases.CLESingleton;
 import mprz.cl.cle.clases.Encuesta;
 import mprz.cl.cle.clases.Persona;
+import mprz.cl.cle.util.SQLiteEncuestasHandler;
 import mprz.cl.cle.util.SQLiteHandler;
 
 import static mprz.cl.cle.util.Constantes.URL;
@@ -49,7 +50,7 @@ public class MisEncuestas extends Fragment implements adaptadorEncuestados.OnIte
     private ArrayList<Encuesta> data;
     private adaptadorEncuestados adapter;
     private ProgressDialog pDialog;
-    private SQLiteHandler db;
+    private SQLiteEncuestasHandler db;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -63,7 +64,7 @@ public class MisEncuestas extends Fragment implements adaptadorEncuestados.OnIte
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_mis_encuestas, container, false);
 
-        db = new SQLiteHandler(getActivity());
+        db = new SQLiteEncuestasHandler(getActivity());
 
         //llamar al getData para obtener a los encuestados
 
@@ -81,7 +82,7 @@ public class MisEncuestas extends Fragment implements adaptadorEncuestados.OnIte
         return v;
     }
 
-    private void getData(String rut) {
+    private void getData(final String rut) {
 
         pDialog.setMessage("Obteniendo datos...");
         showDialog();
@@ -126,7 +127,7 @@ public class MisEncuestas extends Fragment implements adaptadorEncuestados.OnIte
             protected Map<String, String> getParams() throws AuthFailureError {
 
                 Map<String, String> params = new HashMap<String, String>();
-                params.put("runEvaluador", "15650686-9");
+                params.put("runEvaluador", rut);
                 params.put("periodo", "2015");
                 return params;
             }

@@ -21,16 +21,20 @@
         </activity>
         <activity
             android:name=".fragments.Login"
-            android:label="@string/title_activity_inicio"></activity>
+            android:label="@string/title_activity_inicio" />
         <activity
             android:name=".showEncuesta"
-            android:label="@string/title_activity_encuesta"></activity>
+            android:label="@string/title_activity_encuesta" />
         <activity
             android:name=".DocumentosPager"
-            android:label="@string/title_activity_documentos_pager"></activity>
+            android:label="@string/title_activity_documentos_pager" />
         <activity
             android:name=".NoticiaDetalle"
             android:label="@string/title_activity_noticia_detalle"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".buscadorEvaluadores"
+            android:label="@string/title_activity_buscador_evaluadores"
             android:theme="@style/AppTheme"></activity>
     </application>
 

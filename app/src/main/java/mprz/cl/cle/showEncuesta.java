@@ -23,6 +23,7 @@ import mprz.cl.cle.adaptadores.adaptadorEncuestados;
 import mprz.cl.cle.clases.Encuesta;
 import mprz.cl.cle.clases.Pregunta;
 import mprz.cl.cle.clases.Respuesta;
+import mprz.cl.cle.util.SQLiteEncuestasHandler;
 import mprz.cl.cle.util.SQLiteHandler;
 
 public class showEncuesta extends AppCompatActivity {
@@ -31,7 +32,7 @@ public class showEncuesta extends AppCompatActivity {
     private RecyclerView rv_encuesta;
     private ViewPager pager;
     private adaptadorEncuestaPager adapter;
-    private SQLiteHandler db;
+    private SQLiteEncuestasHandler db;
     private Menu menu;
 
     @Override
@@ -41,7 +42,7 @@ public class showEncuesta extends AppCompatActivity {
 
         inicializarToolbar();
 
-        db = new SQLiteHandler(this);
+        db = new SQLiteEncuestasHandler(this);
 
         Bundle extras = getIntent().getExtras();
 

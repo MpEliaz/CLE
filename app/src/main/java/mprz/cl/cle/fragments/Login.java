@@ -31,6 +31,7 @@ import mprz.cl.cle.R;
 import mprz.cl.cle.clases.CLESingleton;
 import mprz.cl.cle.clases.Pregunta;
 import mprz.cl.cle.clases.Respuesta;
+import mprz.cl.cle.util.SQLiteEncuestasHandler;
 import mprz.cl.cle.util.SessionManager;
 import mprz.cl.cle.util.SQLiteHandler;
 
@@ -38,14 +39,13 @@ import static mprz.cl.cle.util.Constantes.URL;
 
 public class Login extends Fragment {
 
-    private Button btn_login;
     private EditText et_user;
     private EditText et_pass;
     private String url = URL + "/LoginJson?AspxAutoDetectCookieSupport=1";
     private String url_encuesta = URL + "/encuestaJson?AspxAutoDetectCookieSupport=1";
     private ProgressDialog pDialog;
     private SessionManager session;
-    private SQLiteHandler db;
+    private SQLiteEncuestasHandler db;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -60,7 +60,7 @@ public class Login extends Fragment {
 
         View v = inflater.inflate(R.layout.fragment_login,container, false);
 
-        btn_login = (Button) v.findViewById(R.id.btn_login);
+        Button btn_login = (Button) v.findViewById(R.id.btn_login);
         et_user = (EditText) v.findViewById(R.id.et_user);
         et_pass = (EditText) v.findViewById(R.id.et_password);
 
@@ -69,7 +69,7 @@ public class Login extends Fragment {
         pDialog.setCancelable(false);
 
         // SQLite database handler
-        db = new SQLiteHandler(getActivity());
+        db = new SQLiteEncuestasHandler(getActivity());
 
         //SessionManager
         session = new SessionManager(getActivity());
@@ -157,8 +157,7 @@ public class Login extends Fragment {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.e("CLE", "Login Error: " + error.getMessage());
-                Toast.makeText(getActivity(),
-                        error.getMessage(), Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(),"Hubo un problema al intentar iniciar sesion. Intente mas tarde", Toast.LENGTH_LONG).show();
                 hideDialog();
             }
         }){

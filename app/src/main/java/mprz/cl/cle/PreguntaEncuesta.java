@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import mprz.cl.cle.clases.Pregunta;
 import mprz.cl.cle.clases.Respuesta;
+import mprz.cl.cle.util.SQLiteEncuestasHandler;
 import mprz.cl.cle.util.SQLiteHandler;
 
 /**
@@ -27,7 +28,7 @@ public class PreguntaEncuesta extends Fragment {
 
     public static final String PREGUNTA = "PREGUNTA";
     private Pregunta pregunta;
-    private SQLiteHandler db;
+    private SQLiteEncuestasHandler db;
    // private OnFragmentInteractionListener mListener;
 
     public static final PreguntaEncuesta newIntance(Pregunta p){
@@ -44,7 +45,7 @@ public class PreguntaEncuesta extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        db = new SQLiteHandler(getActivity());
+        db = new SQLiteEncuestasHandler(getActivity());
     }
 
     @Override
