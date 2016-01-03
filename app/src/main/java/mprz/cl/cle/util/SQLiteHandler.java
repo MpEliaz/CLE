@@ -12,6 +12,7 @@ import java.util.HashMap;
 
 import mprz.cl.cle.clases.Encuesta;
 import mprz.cl.cle.clases.Noticia;
+import mprz.cl.cle.clases.Persona;
 import mprz.cl.cle.clases.Pregunta;
 import mprz.cl.cle.clases.Respuesta;
 
@@ -24,15 +25,15 @@ public class SQLiteHandler extends SQLiteOpenHelper {
 
     // All Static variables
     // Database Version
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 1;
 
     // Database Name
     private static final String DATABASE_NAME = "android_api";
 
     // Login table name
     private static final String TABLE_USER = "USUARIO";
-
     private static final String TABLE_NOTICIAS = "NOTICIAS";
+    private static final String TABLE_MIS_EVALUADORES = "MIS_EVALUADORES";
 
     // Login Table Columns names
     private static final String KEY_ID = "id";
@@ -42,6 +43,7 @@ public class SQLiteHandler extends SQLiteOpenHelper {
     private static final String CREATE_USER_TABLE = "CREATE TABLE "+TABLE_USER+" (id INTEGER PRIMARY KEY,nombre TEXT, paterno TEXT, materno TEXT)";
 
     private static final String CREATE_NOTICIAS_TABLE = "CREATE TABLE NOTICIAS (id INTEGER PRIMARY KEY, usuario TEXT, titulo TEXT, resumen TEXT, completa TEXT, imagen TEXT)";
+    private static final String CREATE_MIS_EVALUADORES = "CREATE TABLE "+TABLE_MIS_EVALUADORES+" (id INTEGER PRIMARY KEY AUTOINCREMENT, rut TEXT, nombre TEXT)";
 
     public SQLiteHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -52,6 +54,7 @@ public class SQLiteHandler extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(CREATE_USER_TABLE);
         db.execSQL(CREATE_NOTICIAS_TABLE);
+        db.execSQL(CREATE_MIS_EVALUADORES);
 
         Log.i(TAG, "base de datos creada");
     }
@@ -62,6 +65,7 @@ public class SQLiteHandler extends SQLiteOpenHelper {
         // Drop older table if existed
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_USER);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_NOTICIAS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_MIS_EVALUADORES);
 
         // Create tables again
         onCreate(db);
@@ -122,18 +126,6 @@ public class SQLiteHandler extends SQLiteOpenHelper {
         return false;
     }
 
-    /**
-     * Storing encuestados in database
-     * */
-
-
-
-
-
-
-    /**
-     * Getting user data from database
-     * */
     public HashMap<String, String> getUserDetails() {
         HashMap<String, String> user = new HashMap<String, String>();
         String selectQuery = "SELECT  * FROM " + TABLE_USER;
@@ -245,5 +237,112 @@ public class SQLiteHandler extends SQLiteOpenHelper {
         }
         db.close();
         return null;
+    }
+
+    public void guardarMisEvaluadores(ArrayList<Persona> evaluadores){
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        for (Persona p: evaluadores) {
+
+            ContentValues values = new ContentValues();
+            values.put("rut", p.getRut());
+            values.put("titulo", p.getNombre());
+
+            // Inserting Row
+            long id = db.insert(TABLE_NOTICIAS, null, values);
+            Log.i(TAG, "Mi evaluador guardado con id: "+id);
+        }
+        Log.i(TAG, "Todos mis evaluadores han sido guardados");
+        db.close(); // Closing database connection
+
+    }
+
+    public void guardarEvaluador(String rut, String nombre) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put("rut", rut); // Name
+        values.put("nombre", nombre); // Email
+
+        // Inserting Row
+        long id = db.insert(TABLE_MIS_EVALUADORES, null, values);
+        db.close(); // Closing database connection
+
+        Log.i(TAG, "Nuevo evaluador guardado con id: " + id);
+    }
+
+
+    public ArrayList<Persona> obtenerMisEvaluadores() {
+
+        String selectQuery = "SELECT  * FROM " + TABLE_MIS_EVALUADORES;
+
+        ArrayList<Persona> personas;
+        Persona p;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        if (cursor != null) {
+            personas = new ArrayList<>();
+            // move cursor to first row
+            if (cursor.moveToFirst()) {
+                do {
+                    p = new Persona();
+                    p.setId(cursor.getInt(cursor.getColumnIndex("id")));
+                    p.setRut(cursor.getString(cursor.getColumnIndex("rut")));
+                    p.setNombre(cursor.getString(cursor.getColumnIndex("nombre")));
+
+                    personas.add(p);
+                }while (cursor.moveToNext());
+                Log.i(TAG, "mis evaluadores obtenidos desde la db");
+            }
+            cursor.close();
+            return personas;
+        }
+        db.close();
+        return null;
+    }
+
+    public Persona obtenerEvaluador(String rut) {
+
+        String selectQuery = "SELECT  * FROM " + TABLE_MIS_EVALUADORES+" where rut='"+rut+"'";
+
+        Persona p;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        if (cursor != null) {
+            // move cursor to first row
+            if (cursor.moveToFirst()) {
+                p = new Persona();
+                p.setId(cursor.getInt(cursor.getColumnIndex("id")));
+                p.setRut(cursor.getString(cursor.getColumnIndex("rut")));
+                p.setNombre(cursor.getString(cursor.getColumnIndex("nombre")));
+
+                Log.i(TAG, "Evaluador obtenido desde la bd");
+                return p;
+            }
+            cursor.close();
+        }
+        db.close();
+        return null;
+    }
+
+    public void eliminarEvaluadores() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        // Delete All Rows
+        db.delete(TABLE_MIS_EVALUADORES, null, null);
+        db.close();
+
+        Log.i(TAG, "Todos los evaluadores fueron eliminados");
+    }
+
+    public void eliminarEvaluador(String rut) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        // Delete All Rows
+        db.delete(TABLE_MIS_EVALUADORES, "rut='"+rut+"'", null);
+        db.close();
+
+        Log.i(TAG, "El evaluador de rut: "+rut+" ah sido eliminado");
     }
 }

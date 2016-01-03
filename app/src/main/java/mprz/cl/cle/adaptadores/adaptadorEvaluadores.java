@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -23,6 +24,7 @@ public class adaptadorEvaluadores extends RecyclerView.Adapter<adaptadorEvaluado
 
     private Context cx;
     private ArrayList<Persona> personas;
+    private OnItemLongClickListener onItemLongClickListener;
     private OnItemClickListener onItemClickListener;
 
     public adaptadorEvaluadores(Context cx, ArrayList<Persona> personas) {
@@ -38,17 +40,35 @@ public class adaptadorEvaluadores extends RecyclerView.Adapter<adaptadorEvaluado
         this.onItemClickListener = listener;
     }
 
+    public interface OnItemLongClickListener {
+        void onItemLongClick(View view, Persona persona, int position);
+    }
+
+    public void setOnLongClickListener(OnItemLongClickListener listener) {
+        this.onItemLongClickListener = listener;
+    }
+
     @Override
-    public personaViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public personaViewHolder onCreateViewHolder(final ViewGroup parent, int viewType) {
 
         View itemView = LayoutInflater.from(cx).inflate(R.layout.item_buscar_evaluadores, parent,false);
         final adaptadorEvaluadores.personaViewHolder vh = new personaViewHolder(itemView);
 
+        itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                if(onItemLongClickListener != null){
+                    onItemLongClickListener.onItemLongClick(v, personas.get(vh.getAdapterPosition()),vh.getAdapterPosition());
+                }
+                return true;
+            }
+        });
+
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(View v) {
                 if(onItemClickListener != null){
-                    onItemClickListener.onItemClick(view,personas.get(vh.getAdapterPosition()),vh.getAdapterPosition());
+                    onItemClickListener.onItemClick(v, personas.get(vh.getAdapterPosition()),vh.getAdapterPosition());
                 }
             }
         });
@@ -100,5 +120,10 @@ public class adaptadorEvaluadores extends RecyclerView.Adapter<adaptadorEvaluado
         personas.clear();
         personas.addAll(data);
         notifyDataSetChanged();
+    }
+
+    public void removeItem(int position){
+        personas.remove(position);
+        notifyItemRemoved(position);
     }
 }

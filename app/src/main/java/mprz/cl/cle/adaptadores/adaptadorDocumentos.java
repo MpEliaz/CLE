@@ -2,6 +2,7 @@ package mprz.cl.cle.adaptadores;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -92,7 +93,20 @@ public class adaptadorDocumentos extends RecyclerView.Adapter<adaptadorDocumento
 
         public void bindPregunta(final Documento d){
             nombre.setText(d.getNombre());
-            imagen.setImageResource(R.drawable.icon_document);
+
+            String[] paginas = d.getPaginas();
+            if(paginas != null){
+
+                Resources resources = cx.getResources();
+                final int resourceId = resources.getIdentifier(paginas[0], "drawable", cx.getPackageName());
+
+                imagen.setImageResource(resourceId);
+            }
+            else {
+
+            }
+
+
 
         }
     }

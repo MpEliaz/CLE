@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
 
@@ -26,7 +27,7 @@ public class adaptadorPagerDocumentos extends FragmentStatePagerAdapter {
 
     @Override
     public int getCount() {
-        return this.nombres.length;
+        return 3;
 
     }
 
@@ -35,5 +36,10 @@ public class adaptadorPagerDocumentos extends FragmentStatePagerAdapter {
         return paginaDocumento.newInstance(nombres[position]);
     }
 
+    @Override
+    public void destroyItem(ViewGroup container, int position, Object object) {
+        // Remove viewpager_item.xml from ViewPager
+        ((ViewPager) container).removeView((RelativeLayout) object);
 
+    }
 }

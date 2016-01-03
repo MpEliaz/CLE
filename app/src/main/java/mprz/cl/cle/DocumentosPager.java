@@ -23,6 +23,7 @@ public class DocumentosPager extends AppCompatActivity {
         setContentView(R.layout.activity_documentos_pager);
         Bundle extras = getIntent().getExtras();
         ViewPager pager = (ViewPager)findViewById(R.id.documentos_viewer);
+        pager.setOffscreenPageLimit(2);
 
         String paginas[] = extras.getStringArray("nombres");
         ArrayList<Fragment> imagenes = getFragments(paginas);

@@ -164,6 +164,7 @@ public class ActividadPrincipal extends AppCompatActivity {
                             if(session.isLoggedIn()){
                                 session.setLogin(false);
                                 db.eliminarUsuario();
+                                db.eliminarEvaluadores();
                                 dbEncuestados.recrearTablas();
 
                                 getSupportFragmentManager().beginTransaction()

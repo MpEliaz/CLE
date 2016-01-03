@@ -69,6 +69,9 @@ public class Home extends Fragment implements adaptadorNoticiasHome.OnItemClickL
 
         Noticia a = new Noticia();
         noticias = db.obtenerNoticias();
+        if(noticias.size()==0){
+            obtenerData();
+        }
         adapter = new adaptadorNoticiasHome(getActivity(), noticias);
         adapter.setOnItemClickListener(this);
         rv = (RecyclerView) v.findViewById(R.id.noticias_rv);
