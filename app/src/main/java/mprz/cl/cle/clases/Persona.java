@@ -1,5 +1,8 @@
 package mprz.cl.cle.clases;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 /**
  * Created by elias on 26-10-15.
  */
@@ -50,5 +53,21 @@ public class Persona {
 
     public void setCategoria(String categoria) {
         this.categoria = categoria;
+    }
+
+    public JSONObject getJsonObject(){
+
+        JSONObject o = new JSONObject();
+        try {
+            o.put("id",getId());
+            o.put("rut",getRut());
+            o.put("nombre",getNombre());
+            o.put("categoria",getCategoria());
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return o;
     }
 }

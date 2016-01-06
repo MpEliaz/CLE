@@ -2,6 +2,7 @@ package mprz.cl.cle.adaptadores;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +15,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.NetworkImageView;
+import com.facebook.drawee.view.SimpleDraweeView;
 
 import java.util.ArrayList;
 
@@ -82,14 +84,15 @@ public class adaptadorNoticiasHome extends RecyclerView.Adapter<adaptadorNoticia
         private int id;
         private TextView titulo;
         private TextView cuerpo;
-        private NetworkImageView imagen;
+        private SimpleDraweeView imagen;
 
         public NoticiaViewHolder(View v) {
             super(v);
 
             titulo = (TextView)v.findViewById(R.id.titulo_noticia);
             cuerpo = (TextView)v.findViewById(R.id.resumen_noticia);
-            imagen = (NetworkImageView)v.findViewById(R.id.img_thumbnail);
+            //imagen = (NetworkImageView)v.findViewById(R.id.img_thumbnail);
+            imagen = (SimpleDraweeView) v.findViewById(R.id.img_thumbnail);
 
 
         }
@@ -98,8 +101,13 @@ public class adaptadorNoticiasHome extends RecyclerView.Adapter<adaptadorNoticia
             titulo.setText(n.getTitulo());
             cuerpo.setText(n.getCuerpo());
 
-            mImageLoader = CLESingleton.getInstance(cx).getImageLoader();
-            imagen.setImageUrl("http://cle.ejercito.cl/upload/" + n.getUrl_imagen(),mImageLoader);
+           /* mImageLoader = CLESingleton.getInstance(cx).getImageLoader();
+            imagen.setImageUrl("http://cle.ejercito.cl/upload/" + n.getUrl_imagen(),mImageLoader);*/
+
+            Uri uri = Uri.parse("http://cle.ejercito.cl/upload/" + n.getUrl_imagen());
+            imagen.setImageURI(uri);
+
+
         }
     }
 

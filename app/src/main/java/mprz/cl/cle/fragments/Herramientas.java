@@ -45,11 +45,7 @@ public class Herramientas extends Fragment {
                 url = "http://cle.ejercito.cl/cursos/Comunicacion.aspx";
                 browser = true;
             }
-            if(text.getText().equals("trabajo_en_equipo")){
-                url = "http://www.google.cl";
-                browser = true;
-            }
-
+            
 
 
             if(browser){

@@ -44,11 +44,14 @@ import static mprz.cl.cle.util.Constantes.URL;
 public class misEvaluadores extends Fragment implements adaptadorEvaluadores.OnItemLongClickListener{
 
     private String url = URL + "/ObtenerNombres?AspxAutoDetectCookieSupport=1";
+    private String url_envio = URL + "/ObtenerNombres?AspxAutoDetectCookieSupport=1";
     private int EVALUADORES = 777;
     private adaptadorEvaluadores adapter;
     private ArrayList<Persona> data;
     private SQLiteHandler db;
     FloatingActionButton fab;
+    private View.OnClickListener add_evaluadores;
+    private View.OnClickListener actualizar_evaluadores;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -56,7 +59,26 @@ public class misEvaluadores extends Fragment implements adaptadorEvaluadores.OnI
 
         setHasOptionsMenu(true);
         db = new SQLiteHandler(getActivity());
+
+        add_evaluadores = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent i = new Intent(getContext(), buscadorEvaluadores.class);
+                startActivityForResult(i, EVALUADORES);
+
+            }
+        };
+        actualizar_evaluadores = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                enviarEvaluadores();
+
+            }
+        };
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -64,24 +86,21 @@ public class misEvaluadores extends Fragment implements adaptadorEvaluadores.OnI
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_mis_evaluadores, container, false);
 
+        fab = (FloatingActionButton) v.findViewById(R.id.fab);
+        fab.setOnClickListener(add_evaluadores);
+
+        buscarEvaluadoresWS("17288811-9");
         data = new ArrayList<>();
-        RecyclerView rv = (RecyclerView)v.findViewById(R.id.rv_mis_evaluadores);
+        RecyclerView rv = (RecyclerView) v.findViewById(R.id.rv_mis_evaluadores);
         rv.setHasFixedSize(true);
         rv.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
 
-        buscarEvaluadoresWS("17288811");
+
         adapter = new adaptadorEvaluadores(getActivity(), data);
         adapter.setOnLongClickListener(this);
         rv.setAdapter(adapter);
 
-        fab = (FloatingActionButton) v.findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i = new Intent(getContext(), buscadorEvaluadores.class);
-                startActivityForResult(i, EVALUADORES);
-            }
-        });
+
 
         return v;
     }
@@ -91,7 +110,13 @@ public class misEvaluadores extends Fragment implements adaptadorEvaluadores.OnI
         super.onActivityResult(requestCode, resultCode, data);
 
         if(requestCode == EVALUADORES){
-            adapter.updateData(db.obtenerMisEvaluadores());
+            ArrayList<Persona> evaluadores = db.obtenerMisEvaluadores();
+            adapter.updateData(evaluadores);
+
+            if(evaluadores.size() >= 3){
+                fab.setImageResource(android.R.drawable.ic_menu_upload);
+                fab.setOnClickListener(actualizar_evaluadores);
+            }
 
         }
 
@@ -121,7 +146,12 @@ public class misEvaluadores extends Fragment implements adaptadorEvaluadores.OnI
                         fab.setVisibility(View.GONE);
                     }
                     else{
-                        adapter.updateData(db.obtenerMisEvaluadores());
+                        data = db.obtenerMisEvaluadores();
+                        adapter.updateData(data);
+                        if(data.size() >= 3){
+                            fab.setImageResource(android.R.drawable.ic_menu_upload);
+                            fab.setOnClickListener(actualizar_evaluadores);
+                        }
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -131,6 +161,14 @@ public class misEvaluadores extends Fragment implements adaptadorEvaluadores.OnI
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.i("respuesta", error.getMessage());
+
+                data = db.obtenerMisEvaluadores();
+                adapter.updateData(data);
+                if(data.size() >= 3){
+                    fab.setImageResource(android.R.drawable.ic_menu_upload);
+                    fab.setOnClickListener(actualizar_evaluadores);
+                }
+
             }
         }){
             @Override
@@ -146,6 +184,45 @@ public class misEvaluadores extends Fragment implements adaptadorEvaluadores.OnI
             }
         };
         CLESingleton.getInstance(getActivity()).addToRequestQueue(request);
+    }
+
+    private void enviarEvaluadores() {
+
+        StringRequest req = new StringRequest(Request.Method.POST, url_envio, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Log.i("respuesta", response);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.i("respuesta", error.getMessage());
+
+            }
+        }){
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+
+                ArrayList<Persona> evaluadores = db.obtenerMisEvaluadores();
+
+                JSONArray lista= new JSONArray();
+                for (Persona p : evaluadores) {
+                    lista.put(p.getJsonObject());
+                }
+
+
+                String param = lista.toString();
+
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("data", param);
+                return params;
+            }
+            @Override
+            public String getBodyContentType() {
+                return "application/x-www-form-urlencoded; charset=UTF-8";
+            }
+        };
+        CLESingleton.getInstance(getActivity()).addToRequestQueue(req);
     }
 
 
@@ -175,4 +252,8 @@ public class misEvaluadores extends Fragment implements adaptadorEvaluadores.OnI
 
         alertDialog.show();
     }
+
+
 }
+
+

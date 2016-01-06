@@ -9,6 +9,8 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
 
+import mprz.cl.cle.util.LruBitmapCache;
+
 /**
  * Created by elias on 01-10-15.
  */
@@ -23,21 +25,8 @@ public final class CLESingleton {
         this.context = context;
         requestQueue = getRequestQueue();
 
-        mImageLoader = new ImageLoader(requestQueue,
-                new ImageLoader.ImageCache() {
-                    private final LruCache<String, Bitmap>
-                            cache = new LruCache<String, Bitmap>(20);
+        mImageLoader = new ImageLoader(requestQueue, new LruBitmapCache(LruBitmapCache.getCacheSize(this.context)));
 
-                    @Override
-                    public Bitmap getBitmap(String url) {
-                        return cache.get(url);
-                    }
-
-                    @Override
-                    public void putBitmap(String url, Bitmap bitmap) {
-                        cache.put(url, bitmap);
-                    }
-                });
 
 
 

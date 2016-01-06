@@ -17,7 +17,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-    <com.android.volley.toolbox.NetworkImageView
+    <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/noticia_detalle_imagen"
         android:layout_width="match_parent"
         android:layout_height="200dp"

@@ -1,8 +1,10 @@
 package mprz.cl.cle;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -11,6 +13,7 @@ import android.widget.TextView;
 
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
+import com.facebook.drawee.view.SimpleDraweeView;
 
 import mprz.cl.cle.R;
 import mprz.cl.cle.clases.CLESingleton;
@@ -26,10 +29,10 @@ public class NoticiaDetalle extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_noticia_detalle);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_news);
         setSupportActionBar(toolbar);
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        inicializarToolbar();
 
 /*        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -45,15 +48,36 @@ public class NoticiaDetalle extends AppCompatActivity {
         Noticia n = db.obtenerNoticia(id);
 
         if(n != null){
-            NetworkImageView imagen = (NetworkImageView)findViewById(R.id.noticia_detalle_imagen);
+            //NetworkImageView imagen = (NetworkImageView)findViewById(R.id.noticia_detalle_imagen);
+
+            SimpleDraweeView imagen = (SimpleDraweeView)findViewById(R.id.noticia_detalle_imagen);
+            Uri uri = Uri.parse("http://cle.ejercito.cl/upload/" + n.getUrl_imagen());
+            imagen.setImageURI(uri);
+
             TextView titulo = (TextView)findViewById(R.id.noticia_detalle_titulo);
             titulo.setText(n.getTitulo());
             TextView cuerpo = (TextView)findViewById(R.id.noticia_detalle_completo);
             cuerpo.setText(n.getCuerpo());
 
-            mImageLoader = CLESingleton.getInstance(this).getImageLoader();
-            imagen.setImageUrl("http://cle.ejercito.cl/upload/" + n.getUrl_imagen(), mImageLoader);
+            /*mImageLoader = CLESingleton.getInstance(this).getImageLoader();
+            imagen.setImageUrl("http://cle.ejercito.cl/upload/" + n.getUrl_imagen(), mImageLoader);*/
         }
+    }
+
+    private void inicializarToolbar() {
+
+
+        //App bar
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_news);
+        setSupportActionBar(toolbar);
+
+        final ActionBar ab = getSupportActionBar();
+
+        if(ab != null){
+
+            ab.setDisplayHomeAsUpEnabled(true);
+        }
+
     }
 
 }
