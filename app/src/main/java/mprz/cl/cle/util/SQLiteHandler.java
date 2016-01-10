@@ -43,7 +43,7 @@ public class SQLiteHandler extends SQLiteOpenHelper {
     private static final String CREATE_USER_TABLE = "CREATE TABLE "+TABLE_USER+" (id INTEGER PRIMARY KEY,nombre TEXT, paterno TEXT, materno TEXT)";
 
     private static final String CREATE_NOTICIAS_TABLE = "CREATE TABLE NOTICIAS (id INTEGER PRIMARY KEY, usuario TEXT, titulo TEXT, resumen TEXT, completa TEXT, imagen TEXT)";
-    private static final String CREATE_MIS_EVALUADORES = "CREATE TABLE "+TABLE_MIS_EVALUADORES+" (id INTEGER PRIMARY KEY AUTOINCREMENT, rut TEXT, nombre TEXT)";
+    private static final String CREATE_MIS_EVALUADORES = "CREATE TABLE "+TABLE_MIS_EVALUADORES+" (id INTEGER PRIMARY KEY AUTOINCREMENT, rut TEXT, nombre TEXT, relacion INTEGER)";
 
     public SQLiteHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -258,12 +258,13 @@ public class SQLiteHandler extends SQLiteOpenHelper {
 
     }
 
-    public void guardarEvaluador(String rut, String nombre) {
+    public void guardarEvaluador(String rut, String nombre, int relacion) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put("rut", rut); // Name
-        values.put("nombre", nombre); // Email
+        values.put("rut", rut);
+        values.put("nombre", nombre);
+        values.put("relacion", relacion);
 
         // Inserting Row
         long id = db.insert(TABLE_MIS_EVALUADORES, null, values);
@@ -291,6 +292,7 @@ public class SQLiteHandler extends SQLiteOpenHelper {
                     p.setId(cursor.getInt(cursor.getColumnIndex("id")));
                     p.setRut(cursor.getString(cursor.getColumnIndex("rut")));
                     p.setNombre(cursor.getString(cursor.getColumnIndex("nombre")));
+                    p.setCategoria(String.valueOf(cursor.getInt(cursor.getColumnIndex("relacion"))));
 
                     personas.add(p);
                 }while (cursor.moveToNext());

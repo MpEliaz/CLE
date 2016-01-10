@@ -1,6 +1,7 @@
 package mprz.cl.cle.fragments;
 
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,6 +12,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -25,6 +29,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -41,10 +46,11 @@ import static mprz.cl.cle.util.Constantes.URL;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class misEvaluadores extends Fragment implements adaptadorEvaluadores.OnItemLongClickListener{
+public class misEvaluadores extends Fragment implements adaptadorEvaluadores.OnItemClickListener{
 
     private String url = URL + "/ObtenerNombres?AspxAutoDetectCookieSupport=1";
-    private String url_envio = URL + "/ObtenerNombres?AspxAutoDetectCookieSupport=1";
+    private String url_envio = URL + "/guardarEvaluadores?AspxAutoDetectCookieSupport=1";
+    private String url_envio_test = "http://192.168.50.19:8000/recibir_evaluadores";
     private int EVALUADORES = 777;
     private adaptadorEvaluadores adapter;
     private ArrayList<Persona> data;
@@ -52,13 +58,19 @@ public class misEvaluadores extends Fragment implements adaptadorEvaluadores.OnI
     FloatingActionButton fab;
     private View.OnClickListener add_evaluadores;
     private View.OnClickListener actualizar_evaluadores;
+    private ProgressDialog pDialog;
+    private ProgressDialog pDialog2;
 
+    Menu menu;
+    MenuItem menuDoneItem;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setHasOptionsMenu(true);
         db = new SQLiteHandler(getActivity());
+
+
 
         add_evaluadores = new View.OnClickListener() {
             @Override
@@ -77,6 +89,18 @@ public class misEvaluadores extends Fragment implements adaptadorEvaluadores.OnI
 
             }
         };
+
+        data = new ArrayList<>();
+        adapter = new adaptadorEvaluadores(getActivity(), data);
+        adapter.setOnItemClickListener(this);
+
+        pDialog = new ProgressDialog(getContext());
+        pDialog.setMessage("Obteniendo datos desde el servidor. Por favor espere...");
+        pDialog.setCancelable(false);
+
+        pDialog2 = new ProgressDialog(getContext());
+        pDialog2.setMessage("Subiendo datos al servidor. Por favor espere...");
+        pDialog2.setCancelable(false);
     }
 
 
@@ -87,22 +111,37 @@ public class misEvaluadores extends Fragment implements adaptadorEvaluadores.OnI
         View v = inflater.inflate(R.layout.fragment_mis_evaluadores, container, false);
 
         fab = (FloatingActionButton) v.findViewById(R.id.fab);
-        fab.setOnClickListener(add_evaluadores);
+        fab.setVisibility(View.GONE);
 
-        buscarEvaluadoresWS("17288811-9");
-        data = new ArrayList<>();
         RecyclerView rv = (RecyclerView) v.findViewById(R.id.rv_mis_evaluadores);
         rv.setHasFixedSize(true);
         rv.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
-
-
-        adapter = new adaptadorEvaluadores(getActivity(), data);
-        adapter.setOnLongClickListener(this);
         rv.setAdapter(adapter);
-
-
-
+        pDialog.show();
+        buscarEvaluadoresWS("17288811-9");
         return v;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+
+        inflater.inflate(R.menu.menu_mis_evaluadores, menu);
+
+        this.menu = menu;
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.update_evaluadores:
+                //Toast.makeText(getActivity(), "soy el boton actualizar", Toast.LENGTH_SHORT).show();
+                enviarEvaluadores();
+                return true;
+
+            default:
+                return false;
+        }
     }
 
     @Override
@@ -113,9 +152,28 @@ public class misEvaluadores extends Fragment implements adaptadorEvaluadores.OnI
             ArrayList<Persona> evaluadores = db.obtenerMisEvaluadores();
             adapter.updateData(evaluadores);
 
-            if(evaluadores.size() >= 3){
-                fab.setImageResource(android.R.drawable.ic_menu_upload);
-                fab.setOnClickListener(actualizar_evaluadores);
+            if(verificarSubidaLista(evaluadores)){
+
+                if(menu!= null){
+                    menuDoneItem = menu.findItem(R.id.update_evaluadores);
+                    menuDoneItem.setVisible(true);
+                    menuDoneItem.setEnabled(true);
+                }
+            }else {
+                if(menu!= null){
+                    menuDoneItem = menu.findItem(R.id.update_evaluadores);
+                    menuDoneItem.setVisible(false);
+                    menuDoneItem.setEnabled(false);
+                }
+            }
+
+            if (evaluadores.size() < 11 && evaluadores.size() >= 0){
+                fab.setImageResource(android.R.drawable.ic_input_add);
+                fab.setOnClickListener(add_evaluadores);
+                fab.setVisibility(View.VISIBLE);
+            }
+            else{
+                fab.setVisibility(View.GONE);
             }
 
         }
@@ -127,9 +185,9 @@ public class misEvaluadores extends Fragment implements adaptadorEvaluadores.OnI
         StringRequest request = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                Log.i("respuesta", response);
+                Log.i("respuesta OK", response);
 
-                data = new ArrayList<Persona>();
+                ArrayList<Persona> datos = new ArrayList<Persona>();
                 try {
                     JSONArray array = new JSONArray(response);
                     for (int i = 0; i < array.length(); i++) {
@@ -138,36 +196,52 @@ public class misEvaluadores extends Fragment implements adaptadorEvaluadores.OnI
                         Persona p = new Persona();
                         p.setRut(o.getString("id"));
                         p.setNombre(o.getString("text"));
-                        data.add(p);
+                        datos.add(p);
                     }
 
-                    if(data.size()>0){
-                        adapter.updateData(data);
-                        fab.setVisibility(View.GONE);
+                    if(datos.size()>0){
+                        adapter.updateData(datos);
+
                     }
                     else{
-                        data = db.obtenerMisEvaluadores();
-                        adapter.updateData(data);
-                        if(data.size() >= 3){
-                            fab.setImageResource(android.R.drawable.ic_menu_upload);
-                            fab.setOnClickListener(actualizar_evaluadores);
+                        datos = db.obtenerMisEvaluadores();
+                        adapter.updateData(datos);
+                        if(verificarSubidaLista(datos)){
+                            if(menu!= null){
+                                menuDoneItem = menu.findItem(R.id.update_evaluadores);
+                                menuDoneItem.setVisible(true);
+                                menuDoneItem.setEnabled(true);
+                            }
+
+                        }
+                        else {
+                            if(menu!= null){
+                                menuDoneItem = menu.findItem(R.id.update_evaluadores);
+                                menuDoneItem.setVisible(false);
+                                menuDoneItem.setEnabled(false);
+                            }
+                        }
+
+                        if (datos.size() < 11 && datos.size() >= 0){
+                            fab.setImageResource(android.R.drawable.ic_input_add);
+                            fab.setOnClickListener(add_evaluadores);
+                            fab.setVisibility(View.VISIBLE);
+                        }
+                        else{
+                            fab.setVisibility(View.GONE);
                         }
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+                pDialog.hide();
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.i("respuesta", error.getMessage());
-
-                data = db.obtenerMisEvaluadores();
-                adapter.updateData(data);
-                if(data.size() >= 3){
-                    fab.setImageResource(android.R.drawable.ic_menu_upload);
-                    fab.setOnClickListener(actualizar_evaluadores);
-                }
+                Log.i("error conexion", error.getMessage());
+                pDialog.hide();
+                Toast.makeText(getActivity(), "Imposible conectar con el servidor, intente mas tarde.", Toast.LENGTH_LONG).show();
 
             }
         }){
@@ -188,61 +262,110 @@ public class misEvaluadores extends Fragment implements adaptadorEvaluadores.OnI
 
     private void enviarEvaluadores() {
 
-        StringRequest req = new StringRequest(Request.Method.POST, url_envio, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                Log.i("respuesta", response);
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.i("respuesta", error.getMessage());
-
-            }
-        }){
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-
-                ArrayList<Persona> evaluadores = db.obtenerMisEvaluadores();
-
-                JSONArray lista= new JSONArray();
-                for (Persona p : evaluadores) {
-                    lista.put(p.getJsonObject());
+        pDialog2.show();
+        final ArrayList<Persona> lista = db.obtenerMisEvaluadores();
+        if(verificarSubidaLista(lista))
+        {
+            StringRequest req = new StringRequest(Request.Method.POST, url_envio_test, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    Log.i("respuesta", response);
+                    pDialog2.hide();
+                    //TODO: manejar la respuesta que entregue el servidor
                 }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.i("respuesta", error.getMessage());
+                    pDialog2.hide();
+
+                }
+            }){
+                @Override
+                protected Map<String, String> getParams() throws AuthFailureError {
+
+                    Map<String, String> params = new HashMap<String, String>();
+                    String runEvaluado ="";
+                    params.put("par1", "");
+                    params.put("par2", "");
+                    params.put("par3", "");
+                    params.put("par4", "");
+                    params.put("par5", "");
+                    params.put("sub1", "");
+                    params.put("sub2", "");
+                    params.put("sub3", "");
+                    params.put("sub4", "");
+                    params.put("sub5", "");
 
 
-                String param = lista.toString();
 
-                Map<String, String> params = new HashMap<String, String>();
-                params.put("data", param);
-                return params;
-            }
-            @Override
-            public String getBodyContentType() {
-                return "application/x-www-form-urlencoded; charset=UTF-8";
-            }
-        };
-        CLESingleton.getInstance(getActivity()).addToRequestQueue(req);
+                    int par=1;
+                    int sub=1;
+
+                    params.put("run_evaluado", runEvaluado);
+                    for (Persona p : lista) {
+                        if(p.getCategoria().equals("1")){
+                            params.put("sup", p.getRut());
+
+                        }else if(p.getCategoria().equals("2")){
+                            params.put("par"+par, p.getRut());
+                            par++;
+                        }else if(p.getCategoria().equals("3")){
+                            params.put("sub"+sub, p.getRut());
+                            sub++;
+                        }
+
+                    }
+
+                    return params;
+                }
+                @Override
+                public String getBodyContentType() {
+                    return "application/x-www-form-urlencoded; charset=UTF-8";
+                }
+            };
+            CLESingleton.getInstance(getActivity()).addToRequestQueue(req);
+        }
     }
 
-
     @Override
-    public void onItemLongClick(View view, final Persona persona, final int position) {
+    public void onItemClick(View view, final Persona persona, final int position) {
 
         AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).create();
         alertDialog.setCancelable(false);
         alertDialog.setTitle("Confirmación");
         alertDialog.setMessage("¿Desea eliminar de su lista de evaluadores?");
-        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK",
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Si",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         adapter.removeItem(position);
                         db.eliminarEvaluador(persona.getRut());
+
+                        if(verificarSubidaLista(db.obtenerMisEvaluadores())){
+                            if(menu!= null){
+                                menuDoneItem = menu.findItem(R.id.update_evaluadores);
+                                menuDoneItem.setVisible(true);
+                                menuDoneItem.setEnabled(true);
+                            }
+                        }
+                        else {
+                            menuDoneItem = menu.findItem(R.id.update_evaluadores);
+                            menuDoneItem.setVisible(false);
+                            menuDoneItem.setEnabled(false);
+                        }
+                        if (adapter.getItemCount() < 11 && adapter.getItemCount() >= 0){
+                            fab.setImageResource(android.R.drawable.ic_input_add);
+                            fab.setOnClickListener(add_evaluadores);
+                            fab.setVisibility(View.VISIBLE);
+                        }
+                        else{
+                            fab.setVisibility(View.GONE);
+                        }
                         dialog.dismiss();
                     }
                 });
 
-        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "NO",
+        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "No",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
@@ -253,6 +376,39 @@ public class misEvaluadores extends Fragment implements adaptadorEvaluadores.OnI
         alertDialog.show();
     }
 
+    private boolean verificarSubidaLista(ArrayList<Persona> data){
+
+        boolean pase = false;
+        int superiores = 0;
+        int pares = 0;
+        int subalternos = 0;
+
+        for (Persona p: data) {
+
+            switch (p.getCategoria()){
+                case "1":
+                    superiores++;
+                    break;
+                case "2":
+                    pares++;
+                    break;
+                case "3":
+                    subalternos++;
+                    break;
+            }
+        }
+
+        if(superiores == 1){
+            if(pares >= 3 && pares <= 5){
+                if(subalternos >=3 && subalternos <=5)
+                {
+                    pase = true;
+                }
+            }
+        }
+
+        return pase;
+    }
 
 }
 

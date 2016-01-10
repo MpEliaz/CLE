@@ -57,6 +57,7 @@ public class MisEncuestas extends Fragment implements adaptadorEncuestados.OnIte
         super.onCreate(savedInstanceState);
 
         setHasOptionsMenu(true);
+        db = new SQLiteEncuestasHandler(getActivity());
     }
 
     @Override
@@ -64,7 +65,6 @@ public class MisEncuestas extends Fragment implements adaptadorEncuestados.OnIte
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_mis_encuestas, container, false);
 
-        db = new SQLiteEncuestasHandler(getActivity());
 
         //llamar al getData para obtener a los encuestados
 

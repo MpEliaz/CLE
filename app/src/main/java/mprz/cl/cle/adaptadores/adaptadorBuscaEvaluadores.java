@@ -5,30 +5,25 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.CheckBox;
-import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 
 import mprz.cl.cle.R;
-import mprz.cl.cle.clases.Documento;
-import mprz.cl.cle.clases.Encuesta;
 import mprz.cl.cle.clases.Persona;
 
 /**
  * Created by elias on 01-11-15.
  */
-public class adaptadorEvaluadores extends RecyclerView.Adapter<adaptadorEvaluadores.personaViewHolder> {
+public class adaptadorBuscaEvaluadores extends RecyclerView.Adapter<adaptadorBuscaEvaluadores.personaViewHolder> {
 
     private Context cx;
     private ArrayList<Persona> personas;
     private OnItemLongClickListener onItemLongClickListener;
     private OnItemClickListener onItemClickListener;
 
-    public adaptadorEvaluadores(Context cx, ArrayList<Persona> personas) {
+    public adaptadorBuscaEvaluadores(Context cx, ArrayList<Persona> personas) {
         this.cx = cx;
         this.personas = personas;
     }
@@ -52,12 +47,20 @@ public class adaptadorEvaluadores extends RecyclerView.Adapter<adaptadorEvaluado
     @Override
     public personaViewHolder onCreateViewHolder(final ViewGroup parent, int viewType) {
 
-        View itemView = LayoutInflater.from(cx).inflate(R.layout.item_evaluadores, parent,false);
-        final adaptadorEvaluadores.personaViewHolder vh = new personaViewHolder(itemView);
+        View itemView = LayoutInflater.from(cx).inflate(R.layout.item_buscar_evaluadores, parent,false);
+        final adaptadorBuscaEvaluadores.personaViewHolder vh = new personaViewHolder(itemView);
 
-        ImageButton btn = (ImageButton) itemView.findViewById(R.id.delete_evaluador);
+        itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                if(onItemLongClickListener != null){
+                    onItemLongClickListener.onItemLongClick(v, personas.get(vh.getAdapterPosition()),vh.getAdapterPosition());
+                }
+                return true;
+            }
+        });
 
-        btn.setOnClickListener(new View.OnClickListener() {
+        itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(onItemClickListener != null){
@@ -89,14 +92,15 @@ public class adaptadorEvaluadores extends RecyclerView.Adapter<adaptadorEvaluado
         private int id;
         private TextView nombre;
         private TextView rut;
-        private ImageButton delete;
+        private CheckBox checkBox;
 
         public personaViewHolder(View itemView) {
             super(itemView);
 
             nombre = (TextView)itemView.findViewById(R.id.nombre_evaluador);
             rut = (TextView)itemView.findViewById(R.id.rut_evaluador);
-            //delete = (ImageButton)itemView.findViewById(R.id.delete_evaluador);
+            checkBox = (CheckBox)itemView.findViewById(R.id.checkbox);
+
 
         }
 

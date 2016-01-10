@@ -16,6 +16,7 @@ import mprz.cl.cle.buscadorEvaluadores;
 public class EvaluadoresDialog extends DialogFragment {
     String nombre;
     String rut;
+    int relacion;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -24,6 +25,7 @@ public class EvaluadoresDialog extends DialogFragment {
         Bundle mArgs = getArguments();
         nombre = mArgs.getString("nombre");
         rut = mArgs.getString("rut");
+        relacion = -1;
 
     }
 
@@ -31,25 +33,33 @@ public class EvaluadoresDialog extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
 
+        String[] categorias ={"Superior","Par", "Subalterno"};
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
-        builder.setTitle("Confirmar");
+        builder.setTitle("Confirmar su relación");
         builder.setIcon(android.R.drawable.ic_dialog_alert);
-        builder.setMessage("¿Desea elejir a " + nombre + " como su evaluador?");
-
-        builder.setPositiveButton("Sí", new DialogInterface.OnClickListener() {
+        builder.setSingleChoiceItems(categorias, -1, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
-                ((buscadorEvaluadores)getActivity()).doPositiveClick(rut, nombre);
+                relacion = which+1;
+            }
+        });
+        //builder.setMessage("¿Desea elejir a " + nombre + " como su evaluador?");
+
+        builder.setPositiveButton("Agregar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                ((buscadorEvaluadores) getActivity()).doPositiveClick(rut, nombre, relacion);
 
             }
         });
 
-        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                ((buscadorEvaluadores)getActivity()).doNegativeClick();
+                ((buscadorEvaluadores) getActivity()).doNegativeClick();
 
             }
         });

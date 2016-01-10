@@ -33,7 +33,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import mprz.cl.cle.R;
-import mprz.cl.cle.adaptadores.adaptadorEvaluadores;
+import mprz.cl.cle.adaptadores.adaptadorBuscaEvaluadores;
 import mprz.cl.cle.clases.CLESingleton;
 import mprz.cl.cle.clases.Encuesta;
 import mprz.cl.cle.clases.Persona;
@@ -43,12 +43,13 @@ import mprz.cl.cle.util.SQLiteHandler;
 
 import static mprz.cl.cle.util.Constantes.URL;
 
-public class buscadorEvaluadores extends AppCompatActivity implements adaptadorEvaluadores.OnItemClickListener {
+public class buscadorEvaluadores extends AppCompatActivity implements adaptadorBuscaEvaluadores.OnItemClickListener {
 
     private String url = URL + "/ObtenerNombres?AspxAutoDetectCookieSupport=1";
+    private String url_test = "http://192.168.50.19:8000/buscar_evaluadores";
     private ArrayList<Persona> data;
     private SQLiteHandler db;
-    adaptadorEvaluadores adapter;
+    adaptadorBuscaEvaluadores adapter;
 
 
     @Override
@@ -65,7 +66,7 @@ public class buscadorEvaluadores extends AppCompatActivity implements adaptadorE
         rv.setHasFixedSize(true);
         rv.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
 
-        adapter = new adaptadorEvaluadores(this,data);
+        adapter = new adaptadorBuscaEvaluadores(this,data);
         adapter.setOnItemClickListener(this);
         rv.setAdapter(adapter);
 
@@ -74,7 +75,7 @@ public class buscadorEvaluadores extends AppCompatActivity implements adaptadorE
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_mis_evaluadores, menu);
+        getMenuInflater().inflate(R.menu.menu_busqueda_evaluadores, menu);
 
         MenuItem searchItem = menu.findItem(R.id.search_evaluadores);
         SearchManager searchManager = (SearchManager)getSystemService(Context.SEARCH_SERVICE);
@@ -100,7 +101,7 @@ public class buscadorEvaluadores extends AppCompatActivity implements adaptadorE
 
                 @Override
                 public boolean onQueryTextChange(String q) {
-                    Log.i("search",q);
+                   // Log.i("search",q);
 
                     return true;
                 }
@@ -114,7 +115,7 @@ public class buscadorEvaluadores extends AppCompatActivity implements adaptadorE
 
     private void buscarEvaluadores(final String q){
 
-        StringRequest request = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+        StringRequest request = new StringRequest(Request.Method.GET, url_test, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 Log.i("respuesta", response);
@@ -173,11 +174,13 @@ public class buscadorEvaluadores extends AppCompatActivity implements adaptadorE
         newFragment.show(getSupportFragmentManager(), "dialog_evaluadores");
     }
 
-    public void doPositiveClick(String rut, String nombre) {
+    public void doPositiveClick(String rut, String nombre, int relacion) {
 
+        boolean  pase = false;
         if(db.obtenerEvaluador(rut) == null){
-            db.guardarEvaluador(rut,nombre);
-            finish();
+
+            validarListaDeEvaluadores(rut, nombre, relacion);
+
         }
         else {
             Toast.makeText(this, "Evaluador seleccionado ya existe.", Toast.LENGTH_SHORT).show();
@@ -186,6 +189,64 @@ public class buscadorEvaluadores extends AppCompatActivity implements adaptadorE
 
     public void doNegativeClick() {
 
+    }
+
+    private void validarListaDeEvaluadores(String rut, String nombre, int relacion){
+
+        boolean pase = false;
+        int superiores = 0;
+        int pares = 0;
+        int subalternos = 0;
+
+        ArrayList<Persona> data = db.obtenerMisEvaluadores();
+
+        for (Persona p: data) {
+
+            switch (p.getCategoria()){
+                case "1":
+                    superiores++;
+                    break;
+                case "2":
+                    pares++;
+                    break;
+                case "3":
+                    subalternos++;
+                    break;
+            }
+        }
+
+        if(relacion == 1){
+            if(superiores < 1){
+                pase = true;
+            }
+            else{
+                Toast.makeText(this, "Ya has agregado un Superior a tu lista", Toast.LENGTH_LONG).show();
+            }
+        }
+
+
+        if(relacion == 2){
+            if(pares < 5){
+                pase = true;
+            }
+            else {
+                Toast.makeText(this, "Ya has llegado al limite de pares agregados a tu lista", Toast.LENGTH_LONG).show();
+            }
+        }
+
+        if(relacion == 3){
+            if(subalternos < 5){
+                pase = true;
+            }
+            else {
+                Toast.makeText(this, "Ya has llegado al limite de subalternos agregados a tu lista", Toast.LENGTH_LONG).show();
+            }
+        }
+
+        if(pase){
+            db.guardarEvaluador(rut, nombre, relacion);
+            finish();
+        }
     }
 
 }
