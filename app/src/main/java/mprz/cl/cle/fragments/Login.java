@@ -29,6 +29,7 @@ import java.util.Map;
 
 import mprz.cl.cle.R;
 import mprz.cl.cle.clases.CLESingleton;
+import mprz.cl.cle.clases.Persona;
 import mprz.cl.cle.clases.Pregunta;
 import mprz.cl.cle.clases.Respuesta;
 import mprz.cl.cle.util.SQLiteEncuestasHandler;
@@ -46,12 +47,31 @@ public class Login extends Fragment {
     private ProgressDialog pDialog;
     private SessionManager session;
     private SQLiteEncuestasHandler db;
+    private Bundle extras;
+    private String origen;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
 
+        // SQLite database handler
+        db = new SQLiteEncuestasHandler(getActivity());
+        //SessionManager
+        session = new SessionManager(getActivity());
+
+        extras = getArguments();
+        origen = extras.getString("origen");
+        if (session.isLoggedIn()) {
+            if(origen != null && origen.equals("misEncuestas")){
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.content_fragment, new MisEncuestas()).commit();
+            }
+
+            if(origen != null && origen.equals("misEvaluadores")){
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.content_fragment, new misEvaluadores()).commit();
+            }
+
+        }
     }
 
     @Override
@@ -68,19 +88,6 @@ public class Login extends Fragment {
         pDialog = new ProgressDialog(getActivity());
         pDialog.setCancelable(false);
 
-        // SQLite database handler
-        db = new SQLiteEncuestasHandler(getActivity());
-
-        //SessionManager
-        session = new SessionManager(getActivity());
-
-        // Check if user is already logged in or not
-        if (session.isLoggedIn()) {
-            // User is already logged in. Take him to main activity
-           /* Intent intent = new Intent(Login.this, MisEncuestas.class);
-            startActivity(intent);
-            finish();*/
-        }
 
         btn_login.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -137,12 +144,19 @@ public class Login extends Fragment {
 
                     String error = o.getString("resp");
                     if(error.equals("OK")){
+                        session.guardarUsuarioLogeado(new Persona("rut", o.getString("nombres")));
+                        db.guardarUsuario(o.getString("nombres"), o.getString("paterno"), o.getString("materno"));
 
-                        session.setLogin(true);
+                        if (session.isLoggedIn()) {
+                            if(origen != null && origen.equals("misEncuestas")){
+                                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.content_fragment, new MisEncuestas()).commit();
+                            }
 
-                       db.guardarUsuario(o.getString("nombres"), o.getString("paterno"), o.getString("materno"));
+                            if(origen != null && origen.equals("misEvaluadores")){
+                                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.content_fragment, new misEvaluadores()).commit();
+                            }
 
-                        obtenerEncuesta();
+                        }
                     }
                     else{
                         Toast.makeText(getActivity(),"Error en las credenciales",Toast.LENGTH_LONG).show();

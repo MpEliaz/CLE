@@ -5,6 +5,8 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.util.Log;
 
+import mprz.cl.cle.clases.Persona;
+
 /**
  * Created by Elias Millachine on 19-10-2015.
  */
@@ -15,7 +17,6 @@ public class SessionManager {
 
     //Shared Prefereces
     SharedPreferences pref;
-
     Editor editor;
     Context context;
 
@@ -23,7 +24,6 @@ public class SessionManager {
 
     //Shared Preferences file name
     private static final String PREF_NAME = "CLE";
-    private static final String KEY_IS_LOGGED_IN = "isLoggedIn";
 
     public SessionManager(Context context) {
         this.context = context;
@@ -31,13 +31,34 @@ public class SessionManager {
         editor = pref.edit();
     }
 
-    public void setLogin(boolean isLoggedIn){
-        editor.putBoolean(KEY_IS_LOGGED_IN,isLoggedIn);
+    public void guardarUsuarioLogeado(Persona p){
+        editor.putString("rut", p.getRut());
+        editor.putString("nombre", p.getNombre());
+        editor.putBoolean("logeado", true);
         editor.commit();
-        Log.d(TAG, "User login session modified!");
+
+        Log.d(TAG, "Nuevas credenciales guardadas");
+    }
+
+    public Persona obtenerUsuarioLogeado(){
+        String rut = pref.getString("rut", "");
+        String nombre = pref.getString("nombre", "");
+
+        Persona p = new Persona();
+        p.setRut(rut);
+        p.setNombre(nombre);
+        Log.d(TAG, "usuario logeado obtenido");
+        return p;
+    }
+
+    public void EliminarUsuarioLogeado(){
+        editor.clear();
+        editor.commit();
+
+        Log.d(TAG, "usuario logeado eliminado");
     }
 
     public boolean isLoggedIn(){
-        return pref.getBoolean(KEY_IS_LOGGED_IN, false);
+        return pref.getBoolean("logeado", false);
     }
 }

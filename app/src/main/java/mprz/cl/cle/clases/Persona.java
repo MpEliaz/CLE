@@ -16,6 +16,11 @@ public class Persona {
     public Persona() {
     }
 
+    public Persona(String rut, String nombre) {
+        this.rut = rut;
+        this.nombre = nombre;
+    }
+
     public Persona(int id, String rut, String nombre, String categoria) {
         this.id = id;
         this.rut = rut;

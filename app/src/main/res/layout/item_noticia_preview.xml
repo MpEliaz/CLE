@@ -46,10 +46,11 @@
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:text="Small Text"
             android:id="@+id/resumen_noticia"
-            android:layout_marginTop="5dp"
-            android:lines="3"
+            android:lines="5"
             android:ellipsize="end"
-            android:maxLines="3" />
+            android:maxLines="5"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp" />
 
     </LinearLayout>
 

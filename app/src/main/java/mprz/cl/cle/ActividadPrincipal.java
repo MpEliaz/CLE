@@ -11,6 +11,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 
@@ -132,19 +133,25 @@ public class ActividadPrincipal extends AppCompatActivity {
                             }
                             else{
                                 fragment = new Login();
+                                Bundle args = new Bundle();
+                                args.putString("origen", "misEncuestas");
+                                fragment.setArguments(args);
                                 fragmentTransaction = true;
                             }
                             break;
                         case R.id.nav_mis_evaluadores:
-/*                            if (session.isLoggedIn())
-                            {*/
+                            if (session.isLoggedIn())
+                            {
                                 fragment = new misEvaluadores();
                                 fragmentTransaction = true;
-/*                            }
+                            }
                             else{
                                 fragment = new Login();
+                                Bundle args = new Bundle();
+                                args.putString("origen", "misEvaluadores");
+                                fragment.setArguments(args);
                                 fragmentTransaction = true;
-                            }*/
+                            }
                             break;
                         case R.id.nav_mision:
                             fragment = new Mision();
@@ -166,7 +173,7 @@ public class ActividadPrincipal extends AppCompatActivity {
                             break;
                         case R.id.nav_log_out:
                             if(session.isLoggedIn()){
-                                session.setLogin(false);
+                                session.EliminarUsuarioLogeado();
                                 db.eliminarUsuario();
                                 db.eliminarEvaluadores();
                                 dbEncuestados.recrearTablas();
@@ -174,7 +181,7 @@ public class ActividadPrincipal extends AppCompatActivity {
                                 getSupportFragmentManager().beginTransaction()
                                         .replace(R.id.content_fragment, new Home())
                                         .commit();
-
+                                Toast.makeText(getApplicationContext(),"Sesion cerrada", Toast.LENGTH_LONG).show();
                             }
                             break;
                     }
