@@ -28,7 +28,7 @@ public class SQLiteHandler extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 1;
 
     // Database Name
-    private static final String DATABASE_NAME = "android_api";
+    private static final String DATABASE_NAME = "ec_db";
 
     // Login table name
     private static final String TABLE_USER = "USUARIO";
@@ -37,10 +37,11 @@ public class SQLiteHandler extends SQLiteOpenHelper {
 
     // Login Table Columns names
     private static final String KEY_ID = "id";
+    private static final String KEY_RUT = "rut";
     private static final String KEY_NOMBRE = "nombre";
     private static final String KEY_PATERNO = "paterno";
     private static final String KEY_MATERNO = "materno";
-    private static final String CREATE_USER_TABLE = "CREATE TABLE "+TABLE_USER+" (id INTEGER PRIMARY KEY,nombre TEXT, paterno TEXT, materno TEXT)";
+    private static final String CREATE_USER_TABLE = "CREATE TABLE "+TABLE_USER+" (id INTEGER PRIMARY KEY,rut TEXT, nombre TEXT, paterno TEXT, materno TEXT)";
 
     private static final String CREATE_NOTICIAS_TABLE = "CREATE TABLE NOTICIAS (id INTEGER PRIMARY KEY, usuario TEXT, titulo TEXT, resumen TEXT, completa TEXT, imagen TEXT)";
     private static final String CREATE_MIS_EVALUADORES = "CREATE TABLE "+TABLE_MIS_EVALUADORES+" (id INTEGER PRIMARY KEY AUTOINCREMENT, rut TEXT, nombre TEXT, relacion INTEGER)";
@@ -74,10 +75,11 @@ public class SQLiteHandler extends SQLiteOpenHelper {
     /**
      * Storing user details in database
      * */
-    public void guardarUsuario(String nombres, String paterno, String materno) {
+    public void guardarUsuario(String rut, String nombres, String paterno, String materno) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
+        values.put(KEY_RUT, rut); // Rut
         values.put(KEY_NOMBRE, nombres); // Name
         values.put(KEY_PATERNO, paterno); // Email
         values.put(KEY_MATERNO, materno); // Email
@@ -346,5 +348,19 @@ public class SQLiteHandler extends SQLiteOpenHelper {
         db.close();
 
         Log.i(TAG, "El evaluador de rut: "+rut+" ah sido eliminado");
+    }
+
+    public void recrearTablas() {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_USER);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NOTICIAS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_MIS_EVALUADORES);
+
+        db.execSQL(CREATE_USER_TABLE);
+        db.execSQL(CREATE_NOTICIAS_TABLE);
+        db.execSQL(CREATE_MIS_EVALUADORES);
+
+        Log.i(TAG, "tablas recreadas");
     }
 }

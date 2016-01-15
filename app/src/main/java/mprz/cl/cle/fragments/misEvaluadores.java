@@ -40,6 +40,7 @@ import mprz.cl.cle.buscadorEvaluadores;
 import mprz.cl.cle.clases.CLESingleton;
 import mprz.cl.cle.clases.Persona;
 import mprz.cl.cle.util.SQLiteHandler;
+import mprz.cl.cle.util.SessionManager;
 
 import static mprz.cl.cle.util.Constantes.URL;
 
@@ -48,7 +49,7 @@ import static mprz.cl.cle.util.Constantes.URL;
  */
 public class misEvaluadores extends Fragment implements adaptadorEvaluadores.OnItemClickListener{
 
-    private String url = URL + "/ObtenerNombres?AspxAutoDetectCookieSupport=1";
+    private String url = URL + "/listaEvaluadores?AspxAutoDetectCookieSupport=1";
     private String url_envio = URL + "/guardarEvaluadores?AspxAutoDetectCookieSupport=1";
     private String url_envio_test = "http://192.168.50.19:8000/recibir_evaluadores";
     private int EVALUADORES = 777;
@@ -60,6 +61,7 @@ public class misEvaluadores extends Fragment implements adaptadorEvaluadores.OnI
     private View.OnClickListener actualizar_evaluadores;
     private ProgressDialog pDialog;
     private ProgressDialog pDialog2;
+    private SessionManager session;
 
     Menu menu;
     MenuItem menuDoneItem;
@@ -69,7 +71,7 @@ public class misEvaluadores extends Fragment implements adaptadorEvaluadores.OnI
 
         setHasOptionsMenu(true);
         db = new SQLiteHandler(getActivity());
-
+        session = new SessionManager(getContext());
 
 
         add_evaluadores = new View.OnClickListener() {
@@ -91,7 +93,7 @@ public class misEvaluadores extends Fragment implements adaptadorEvaluadores.OnI
         };
 
         data = new ArrayList<>();
-        adapter = new adaptadorEvaluadores(getActivity(), data);
+        adapter = new adaptadorEvaluadores(getActivity(), data, 1);
         adapter.setOnItemClickListener(this);
 
         pDialog = new ProgressDialog(getContext());
@@ -118,7 +120,8 @@ public class misEvaluadores extends Fragment implements adaptadorEvaluadores.OnI
         rv.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
         rv.setAdapter(adapter);
         pDialog.show();
-        buscarEvaluadoresWS("17288811-9");
+        Persona p = session.obtenerUsuarioLogeado();
+        buscarEvaluadoresWS(p.getRut());
         return v;
     }
 
@@ -150,7 +153,7 @@ public class misEvaluadores extends Fragment implements adaptadorEvaluadores.OnI
 
         if(requestCode == EVALUADORES){
             ArrayList<Persona> evaluadores = db.obtenerMisEvaluadores();
-            adapter.updateData(evaluadores);
+            adapter.updateData(evaluadores, 1);
 
             if(verificarSubidaLista(evaluadores)){
 
@@ -186,6 +189,7 @@ public class misEvaluadores extends Fragment implements adaptadorEvaluadores.OnI
             @Override
             public void onResponse(String response) {
                 Log.i("respuesta OK", response);
+                Log.i("rut: ", rut);
 
                 ArrayList<Persona> datos = new ArrayList<Persona>();
                 try {
@@ -194,18 +198,20 @@ public class misEvaluadores extends Fragment implements adaptadorEvaluadores.OnI
                         JSONObject o = array.getJSONObject(i);
 
                         Persona p = new Persona();
-                        p.setRut(o.getString("id"));
-                        p.setNombre(o.getString("text"));
+                        p.setRut(o.getString("run_evaluador"));
+                        p.setNombre(o.getString("nombre_evaluador"));
+                        p.setEstado_encuesta(o.getString("estado"));
+                        p.setCategoria(o.getString("relacion"));
                         datos.add(p);
                     }
 
                     if(datos.size()>0){
-                        adapter.updateData(datos);
+                        adapter.updateData(datos,2);
 
                     }
                     else{
                         datos = db.obtenerMisEvaluadores();
-                        adapter.updateData(datos);
+                        adapter.updateData(datos,1);
                         if(verificarSubidaLista(datos)){
                             if(menu!= null){
                                 menuDoneItem = menu.findItem(R.id.update_evaluadores);
@@ -249,7 +255,7 @@ public class misEvaluadores extends Fragment implements adaptadorEvaluadores.OnI
             protected Map<String, String> getParams() throws AuthFailureError {
 
                 Map<String, String> params = new HashMap<String, String>();
-                params.put("q", "kjhkj");
+                params.put("run", rut);
                 return params;
             }
             @Override

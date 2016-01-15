@@ -12,6 +12,7 @@ public class Encuesta {
     private int periodo;
     private String relacion;
     private String estado;
+    private int id_encuesta;
 
     public Encuesta() {
     }
@@ -70,5 +71,13 @@ public class Encuesta {
 
     public void setEstado(String estado) {
         this.estado = estado;
+    }
+
+    public int getId_encuesta() {
+        return id_encuesta;
+    }
+
+    public void setId_encuesta(int id_encuesta) {
+        this.id_encuesta = id_encuesta;
     }
 }

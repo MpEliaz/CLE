@@ -43,10 +43,10 @@ public class Login extends Fragment {
     private EditText et_user;
     private EditText et_pass;
     private String url = URL + "/LoginJson?AspxAutoDetectCookieSupport=1";
-    private String url_encuesta = URL + "/encuestaJson?AspxAutoDetectCookieSupport=1";
     private ProgressDialog pDialog;
     private SessionManager session;
-    private SQLiteEncuestasHandler db;
+    private SQLiteEncuestasHandler db_encuestas;
+    private SQLiteHandler db;
     private Bundle extras;
     private String origen;
 
@@ -56,7 +56,8 @@ public class Login extends Fragment {
 
 
         // SQLite database handler
-        db = new SQLiteEncuestasHandler(getActivity());
+        db_encuestas = new SQLiteEncuestasHandler(getActivity());
+        db = new SQLiteHandler(getActivity());
         //SessionManager
         session = new SessionManager(getActivity());
 
@@ -144,8 +145,8 @@ public class Login extends Fragment {
 
                     String error = o.getString("resp");
                     if(error.equals("OK")){
-                        session.guardarUsuarioLogeado(new Persona("rut", o.getString("nombres")));
-                        db.guardarUsuario(o.getString("nombres"), o.getString("paterno"), o.getString("materno"));
+                        session.guardarUsuarioLogeado(new Persona(user, o.getString("nombres")));
+                        db.guardarUsuario(user, o.getString("nombres"), o.getString("paterno"), o.getString("materno"));
 
                         if (session.isLoggedIn()) {
                             if(origen != null && origen.equals("misEncuestas")){
@@ -192,83 +193,6 @@ public class Login extends Fragment {
         CLESingleton.getInstance(getActivity()).addToRequestQueue(request);
         }
 
-    private void obtenerEncuesta() {
-
-        StringRequest req = new StringRequest(Request.Method.POST, url_encuesta, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-
-                int id_encuesta;
-
-                try {
-                    JSONObject o = new JSONObject(response);
-                    id_encuesta = Integer.parseInt(o.getString("id"));
-
-                    JSONArray preguntas = o.getJSONArray("preguntas");
-                    ArrayList<Pregunta> set_Preguntas = new ArrayList<Pregunta>();
-
-                    for (int i = 0; i < preguntas.length(); i++) {
-
-                        JSONObject pregunta = preguntas.getJSONObject(i);
-                        Pregunta p = new Pregunta();
-                        p.setId(Integer.parseInt(pregunta.getString("id")));
-                        p.setTitulo(pregunta.getString("pregunta"));
-
-                        JSONArray respuestas = pregunta.getJSONArray("respuestas");
-                        ArrayList<Respuesta> setRespuestas = new ArrayList<Respuesta>();
-
-                        for (int j = 0; j < respuestas.length(); j++) {
-                            JSONObject resp = respuestas.getJSONObject(j);
-                            Respuesta r = new Respuesta();
-                            r.setId(Integer.parseInt(resp.getString("id")));
-                            r.setRespuesta(resp.getString("respuesta"));
-                            setRespuestas.add(r);
-                        }
-
-                        p.setRespuestas(setRespuestas);
-                        set_Preguntas.add(p);
-                    }
-
-                    db.guardarEncuesta(set_Preguntas, id_encuesta);
-
-                    // Launch main activity
-                    /*Intent i = new Intent(Login.this, MisEncuestas.class);
-                    startActivity(i);*/
-                    MisEncuestas nextFrag= new MisEncuestas();
-                    getActivity().getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.content_fragment, nextFrag)
-                            .commit();
-
-                }catch (JSONException e)
-                {
-                    e.printStackTrace();
-                    Toast.makeText(getActivity(), "Json error: " + e.getMessage(), Toast.LENGTH_LONG).show();
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-
-
-            }
-        }){
-
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-
-                Map<String,String> params = new HashMap<String, String>();
-                params.put("id", "1");
-                return params;
-            }
-
-            @Override
-            public String getBodyContentType() {
-                return "application/x-www-form-urlencoded; charset=UTF-8";
-            }
-
-        };
-        CLESingleton.getInstance(getActivity()).addToRequestQueue(req);
-    }
 
     private void showDialog() {
         if (!pDialog.isShowing())

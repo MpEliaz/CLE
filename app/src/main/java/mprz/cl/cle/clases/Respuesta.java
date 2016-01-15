@@ -5,6 +5,7 @@ package mprz.cl.cle.clases;
  */
 public class Respuesta {
     private int id;
+    private String id_texto;
     private String respuesta;
 
     public Respuesta() {
@@ -16,6 +17,14 @@ public class Respuesta {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getId_texto() {
+        return id_texto;
+    }
+
+    public void setId_texto(String id_texto) {
+        this.id_texto = id_texto;
     }
 
     public String getRespuesta() {

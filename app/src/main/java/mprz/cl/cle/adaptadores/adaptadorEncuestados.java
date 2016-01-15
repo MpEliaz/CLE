@@ -72,6 +72,7 @@ public class adaptadorEncuestados extends RecyclerView.Adapter<adaptadorEncuesta
     public static class EncuestadosViewHolder extends RecyclerView.ViewHolder {
 
         private String rut;
+        private int id_encuesta;
         private TextView nombre;
         private TextView categoria;
         private Button btn;
@@ -105,6 +106,7 @@ public class adaptadorEncuestados extends RecyclerView.Adapter<adaptadorEncuesta
                 public void onClick(View view) {
                     Intent i = new Intent(cx.getApplicationContext(), showEncuesta.class);
                     i.putExtra("runEvaluado",e.getRunEvaluado());
+                    i.putExtra("id_encuesta",e.getId_encuesta());
                     cx.startActivity(i);
                 }
             });

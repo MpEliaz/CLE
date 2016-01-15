@@ -176,6 +176,7 @@ public class ActividadPrincipal extends AppCompatActivity {
                                 session.EliminarUsuarioLogeado();
                                 db.eliminarUsuario();
                                 db.eliminarEvaluadores();
+                                db.recrearTablas();
                                 dbEncuestados.recrearTablas();
 
                                 getSupportFragmentManager().beginTransaction()

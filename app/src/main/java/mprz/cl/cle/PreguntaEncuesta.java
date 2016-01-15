@@ -80,8 +80,8 @@ public class PreguntaEncuesta extends Fragment {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
 
-                db.saveQuestionWithAnswer(pregunta.getId(), i);
-                Toast.makeText(getActivity(), "presionado: respuesta" + i + " de pregunta:" + pregunta.getId(), Toast.LENGTH_SHORT).show();
+                db.saveQuestionWithAnswer(pregunta.getId_texto(), i);
+                Toast.makeText(getActivity(), "presionado: respuesta" + i + " de pregunta:" + pregunta.getId_texto(), Toast.LENGTH_SHORT).show();
             }
         });
 

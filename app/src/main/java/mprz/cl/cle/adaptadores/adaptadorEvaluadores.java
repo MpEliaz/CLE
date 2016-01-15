@@ -5,17 +5,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.CheckBox;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 
 import mprz.cl.cle.R;
-import mprz.cl.cle.clases.Documento;
-import mprz.cl.cle.clases.Encuesta;
 import mprz.cl.cle.clases.Persona;
 
 /**
@@ -27,10 +22,14 @@ public class adaptadorEvaluadores extends RecyclerView.Adapter<adaptadorEvaluado
     private ArrayList<Persona> personas;
     private OnItemLongClickListener onItemLongClickListener;
     private OnItemClickListener onItemClickListener;
+    public static final int LAYOUT_LOCAL = 1;
+    public static final int LAYOUT_WS = 2;
+    private int viewtype;
 
-    public adaptadorEvaluadores(Context cx, ArrayList<Persona> personas) {
+    public adaptadorEvaluadores(Context cx, ArrayList<Persona> personas,int viewtype) {
         this.cx = cx;
         this.personas = personas;
+        this.viewtype = viewtype;
     }
 
     public interface OnItemClickListener {
@@ -52,21 +51,31 @@ public class adaptadorEvaluadores extends RecyclerView.Adapter<adaptadorEvaluado
     @Override
     public personaViewHolder onCreateViewHolder(final ViewGroup parent, int viewType) {
 
-        View itemView = LayoutInflater.from(cx).inflate(R.layout.item_evaluadores, parent,false);
-        final adaptadorEvaluadores.personaViewHolder vh = new personaViewHolder(itemView);
+        final adaptadorEvaluadores.personaViewHolder vh;
+        final View itemView;
+        switch (viewType){
+            case LAYOUT_LOCAL:
+                itemView = LayoutInflater.from(cx).inflate(R.layout.item_evaluadores_local, parent,false);
+                vh = new personaViewHolder(itemView);
+                ImageButton btn = (ImageButton) itemView.findViewById(R.id.delete_evaluador);
 
-        ImageButton btn = (ImageButton) itemView.findViewById(R.id.delete_evaluador);
+                btn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if(onItemClickListener != null){
+                            onItemClickListener.onItemClick(v, personas.get(vh.getAdapterPosition()),vh.getAdapterPosition());
+                        }
+                    }
+                });
 
-        btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(onItemClickListener != null){
-                    onItemClickListener.onItemClick(v, personas.get(vh.getAdapterPosition()),vh.getAdapterPosition());
-                }
-            }
-        });
+                return vh;
+            case LAYOUT_WS:
+                itemView = LayoutInflater.from(cx).inflate(R.layout.item_evaluadores_ws, parent,false);
+                vh = new personaViewHolder(itemView);
+                return vh;
+        }
 
-        return vh;
+        return null;
     }
 
     @Override
@@ -108,14 +117,20 @@ public class adaptadorEvaluadores extends RecyclerView.Adapter<adaptadorEvaluado
         }
     }
 
-    public void updateData(ArrayList<Persona> data) {
+    public void updateData(ArrayList<Persona> data, int viewtype) {
         personas.clear();
         personas.addAll(data);
+        this.viewtype = viewtype;
         notifyDataSetChanged();
     }
 
     public void removeItem(int position){
         personas.remove(position);
         notifyItemRemoved(position);
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return viewtype;
     }
 }

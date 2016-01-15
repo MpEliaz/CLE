@@ -12,6 +12,7 @@ import java.util.List;
 public class Pregunta implements Parcelable{
 
     private int id;
+    private String id_texto;
     private String titulo;
     private ArrayList<Respuesta> respuestas;
 
@@ -28,6 +29,14 @@ public class Pregunta implements Parcelable{
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getId_texto() {
+        return id_texto;
+    }
+
+    public void setId_texto(String id_texto) {
+        this.id_texto = id_texto;
     }
 
     public String getTitulo() {
@@ -55,6 +64,7 @@ public class Pregunta implements Parcelable{
     public void writeToParcel(Parcel parcel, int i) {
 
         parcel.writeInt(id);
+        parcel.writeString(id_texto);
         parcel.writeString(titulo);
         parcel.writeList(respuestas);
 
@@ -62,6 +72,7 @@ public class Pregunta implements Parcelable{
 
     private void readFromParcel(Parcel in) {
         this.id = in.readInt();
+        this.id_texto = in.readString();
         this.titulo = in.readString();
         this.respuestas = in.readArrayList(null);
     }

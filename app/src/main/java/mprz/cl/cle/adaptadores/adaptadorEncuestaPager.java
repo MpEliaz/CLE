@@ -9,6 +9,7 @@ import android.view.View;
 import java.util.ArrayList;
 
 import mprz.cl.cle.PreguntaEncuesta;
+import mprz.cl.cle.clases.Encuesta;
 import mprz.cl.cle.clases.Pregunta;
 
 /**
@@ -34,4 +35,9 @@ public class adaptadorEncuestaPager extends FragmentPagerAdapter {
         return preguntas.get(position);
     }
 
+    public void updateData(ArrayList<Fragment> encuestas) {
+        preguntas.clear();
+        preguntas.addAll(encuestas);
+        notifyDataSetChanged();
+    }
 }

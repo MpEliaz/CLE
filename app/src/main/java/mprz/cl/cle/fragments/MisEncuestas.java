@@ -38,6 +38,7 @@ import mprz.cl.cle.clases.Encuesta;
 import mprz.cl.cle.clases.Persona;
 import mprz.cl.cle.util.SQLiteEncuestasHandler;
 import mprz.cl.cle.util.SQLiteHandler;
+import mprz.cl.cle.util.SessionManager;
 
 import static mprz.cl.cle.util.Constantes.URL;
 
@@ -51,6 +52,8 @@ public class MisEncuestas extends Fragment implements adaptadorEncuestados.OnIte
     private adaptadorEncuestados adapter;
     private ProgressDialog pDialog;
     private SQLiteEncuestasHandler db;
+    private SessionManager session;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -58,6 +61,7 @@ public class MisEncuestas extends Fragment implements adaptadorEncuestados.OnIte
 
         setHasOptionsMenu(true);
         db = new SQLiteEncuestasHandler(getActivity());
+        session = new SessionManager(getActivity());
     }
 
     @Override
@@ -65,12 +69,13 @@ public class MisEncuestas extends Fragment implements adaptadorEncuestados.OnIte
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_mis_encuestas, container, false);
 
-
-        //llamar al getData para obtener a los encuestados
-
         // Progress dialog
         pDialog = new ProgressDialog(getActivity());
         pDialog.setCancelable(false);
+
+        //llamar al getData para obtener a los encuestados
+        Persona p = session.obtenerUsuarioLogeado();
+        getData(p.getRut());
 
         RecyclerView rv = (RecyclerView) v.findViewById(R.id.rv_encuestas);
         rv.setHasFixedSize(true);
@@ -100,6 +105,7 @@ public class MisEncuestas extends Fragment implements adaptadorEncuestados.OnIte
                         JSONObject o = array.getJSONObject(i);
 
                         Encuesta e = new Encuesta();
+                        e.setId_encuesta(Integer.parseInt(o.getString("id_encuesta")));
                         e.setRunEvaluador(o.getString("runEvaluador"));
                         e.setRunEvaluado(o.getString("runEvaluado"));
                         e.setNombreEvaluado(o.getString("nombreEvaluado"));
@@ -168,7 +174,8 @@ public class MisEncuestas extends Fragment implements adaptadorEncuestados.OnIte
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()){
             case R.id.update_encuestas:
-                getData("17939855-9");
+                Persona p = session.obtenerUsuarioLogeado();
+                getData(p.getRut());
                // Toast.makeText(getActivity(), "Actualizado", Toast.LENGTH_LONG).show();
                 return true;
         }

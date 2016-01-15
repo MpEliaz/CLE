@@ -115,7 +115,7 @@ public class buscadorEvaluadores extends AppCompatActivity implements adaptadorB
 
     private void buscarEvaluadores(final String q){
 
-        StringRequest request = new StringRequest(Request.Method.GET, url_test, new Response.Listener<String>() {
+        StringRequest request = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 Log.i("respuesta", response);
@@ -145,7 +145,7 @@ public class buscadorEvaluadores extends AppCompatActivity implements adaptadorB
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.i("respuesta", error.getMessage());
+                //Log.i("respuesta", error.getMessage());
             }
         }){
             @Override

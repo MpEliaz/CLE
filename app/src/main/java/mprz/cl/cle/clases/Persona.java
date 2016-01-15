@@ -12,6 +12,7 @@ public class Persona {
     private String rut;
     private String nombre;
     private String categoria;
+    private String estado_encuesta;
 
     public Persona() {
     }
@@ -21,11 +22,12 @@ public class Persona {
         this.nombre = nombre;
     }
 
-    public Persona(int id, String rut, String nombre, String categoria) {
+    public Persona(int id, String rut, String nombre, String categoria, String estado_encuesta) {
         this.id = id;
         this.rut = rut;
         this.nombre = nombre;
         this.categoria = categoria;
+        this.estado_encuesta = estado_encuesta;
     }
 
     public int getId() {
@@ -58,6 +60,14 @@ public class Persona {
 
     public void setCategoria(String categoria) {
         this.categoria = categoria;
+    }
+
+    public String getEstado_encuesta() {
+        return estado_encuesta;
+    }
+
+    public void setEstado_encuesta(String estado_encuesta) {
+        this.estado_encuesta = estado_encuesta;
     }
 
     public JSONObject getJsonObject(){
