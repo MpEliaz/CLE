@@ -11,6 +11,7 @@ import java.util.ArrayList;
 
 import mprz.cl.cle.clases.Encuesta;
 import mprz.cl.cle.clases.Pregunta;
+import mprz.cl.cle.clases.PreguntaResuelta;
 import mprz.cl.cle.clases.Respuesta;
 
 /**
@@ -27,10 +28,10 @@ public class SQLiteEncuestasHandler extends SQLiteOpenHelper {
     private static final String TABLE_ENCUESTAS_TERMINADAS = "ENCUESTAS_TERMINADAS";
     private static final String TABLE_RESPUESTAS = "RESPUESTAS";
 
-    private static final String CREATE_ENCUESTADOS_TABLE = "CREATE TABLE "+TABLE_ENCUESTADOS+" (id INTEGER PRIMARY KEY AUTOINCREMENT, id_encuesta INTEGER, runevaluado TEXT, nombreevaluado TEXT, relacion TEXT, estado TEXT, terminado INTEGER)";
-    private static final String CREATE_PREGUNTAS_TABLE = "CREATE TABLE "+TABLE_PREGUNTAS_ENCUESTA+" (id INTEGER PRIMARY KEY AUTOINCREMENT, id_encuesta INTEGER, id_pregunta TEXT, pregunta TEXT)";
-    private static final String CREATE_ENCUESTAS_TERMINADAS_TABLE = "CREATE TABLE "+TABLE_ENCUESTAS_TERMINADAS+" (id INTEGER PRIMARY KEY AUTOINCREMENT, id_encuesta INTEGER, id_pregunta TEXT, id_respuesta INTEGER)";
-    private static final String CREATE_RESPUESTAS_TABLE = "CREATE TABLE "+TABLE_RESPUESTAS+" (id INTEGER PRIMARY KEY AUTOINCREMENT, id_encuesta INTEGER, id_pregunta INTEGER, id_pregunta_texto TEXT, id_respuesta INTEGER, respuesta TEXT)";
+    private static final String CREATE_ENCUESTADOS_TABLE = "CREATE TABLE "+TABLE_ENCUESTADOS+" (id INTEGER PRIMARY KEY AUTOINCREMENT, id_encuesta INTEGER, runevaluado TEXT, nombreevaluado TEXT, relacion TEXT, cod_relacion TEXT, estado TEXT, terminado INTEGER)";
+    private static final String CREATE_PREGUNTAS_TABLE = "CREATE TABLE "+TABLE_PREGUNTAS_ENCUESTA+" (id INTEGER PRIMARY KEY AUTOINCREMENT, cod_relacion TEXT, id_pregunta TEXT, pregunta TEXT)";
+    private static final String CREATE_RESPUESTAS_TABLE = "CREATE TABLE "+TABLE_RESPUESTAS+" (id INTEGER PRIMARY KEY AUTOINCREMENT, cod_relacion TEXT, id_pregunta TEXT, id_respuesta INTEGER, respuesta TEXT)";
+    private static final String CREATE_ENCUESTAS_TERMINADAS_TABLE = "CREATE TABLE "+TABLE_ENCUESTAS_TERMINADAS+" (id INTEGER PRIMARY KEY AUTOINCREMENT, run_evaluado TEXT, id_encuesta TEXT, id_pregunta TEXT, id_respuesta INTEGER)";
 
 
     public SQLiteEncuestasHandler(Context context) {
@@ -70,6 +71,7 @@ public class SQLiteEncuestasHandler extends SQLiteOpenHelper {
             values.put("relacion", e.getRelacion());
             values.put("estado", e.getEstado());
             values.put("id_encuesta", e.getId_encuesta());
+            values.put("cod_relacion", e.getCod_relacion());
 
             // Inserting Row
             long id = db.insert(TABLE_ENCUESTADOS, null, values);
@@ -95,6 +97,7 @@ public class SQLiteEncuestasHandler extends SQLiteOpenHelper {
                     e.setRunEvaluado(cursor.getString(cursor.getColumnIndex("runevaluado")));
                     e.setNombreEvaluado(cursor.getString(cursor.getColumnIndex("nombreevaluado")));
                     e.setRelacion(cursor.getString(cursor.getColumnIndex("relacion")));
+                    e.setCod_relacion(cursor.getString(cursor.getColumnIndex("cod_relacion")));
                     e.setEstado(cursor.getString(cursor.getColumnIndex("estado")));
 
                     encuestados.add(e);
@@ -117,24 +120,26 @@ public class SQLiteEncuestasHandler extends SQLiteOpenHelper {
         Log.i(TAG, "tabla encuestados borrada");
     }
 
-    public void saveQuestionWithAnswer(String id_pregunta, int id_respuesta) {
+    public void saveQuestionWithAnswer(String id_pregunta, int id_respuesta, String cod_relacion, String run_evaluado) {
 
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put("id_respuesta", id_respuesta); // id_respuesta
-        values.put("id_encuesta", 1);
+        values.put("run_evaluado", run_evaluado);
+        values.put("id_encuesta", cod_relacion);
+        values.put("id_respuesta", id_respuesta);
 
-        if (comprobarRespuestaEnBd(id_pregunta).equals("")) {
+
+        if (comprobarRespuestaEnBd(id_pregunta, cod_relacion).equals("")) {
 
             // Inserting Row
             values.put("id_pregunta", id_pregunta); // id_pregunta
             long id = db.insert(TABLE_ENCUESTAS_TERMINADAS, null, values);
-            Log.i(TAG, "Nueva pregunta con respuesta insertada: id:" + id + ", id_pregunta:'" + id_pregunta + "', id_respuesta:" + id_respuesta);
+            Log.i(TAG, "Nueva pregunta con respuesta insertada: id:" + id + ", id_encuesta:'"+cod_relacion+"', id_pregunta:'" + id_pregunta + "', id_respuesta:" + id_respuesta);
         }
         else
         {
             long id = db.update(TABLE_ENCUESTAS_TERMINADAS, values, "id_pregunta='"+id_pregunta+"'", null);
-            Log.i(TAG, "pregunta con respuesta actualizada: id:" + id + ", id_pregunta:'" + id_pregunta + "', id_respuesta:" + id_respuesta);
+            Log.i(TAG, "pregunta con respuesta actualizada: id:" + id + ", id_encuesta:'"+cod_relacion+"' id_pregunta:'" + id_pregunta + "', id_respuesta:" + id_respuesta);
         }
 
         if (db != null && db.isOpen()) {
@@ -142,8 +147,39 @@ public class SQLiteEncuestasHandler extends SQLiteOpenHelper {
         }
     }
 
-    public String comprobarRespuestaEnBd(String id) {
-        String selectQuery = "SELECT id_pregunta FROM " + TABLE_ENCUESTAS_TERMINADAS + " where id_pregunta='"+ id+"'";
+    public ArrayList<PreguntaResuelta> ObtenerProgresoEncuesta(String run_evaluado, String cod_relacion) {
+        ArrayList<PreguntaResuelta> progreso = new ArrayList<PreguntaResuelta>();
+        String selectQuery = "SELECT  * FROM " + TABLE_ENCUESTAS_TERMINADAS+" where run_evaluado='"+run_evaluado+"' and id_encuesta='"+cod_relacion+"'";
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        if (cursor != null) {
+            // move cursor to first row
+            if (cursor.moveToFirst()) {
+                do {
+                    PreguntaResuelta p = new PreguntaResuelta();
+
+                    p.setId(cursor.getInt(cursor.getColumnIndex("id")));
+                    p.setRun_evaluado(cursor.getString(cursor.getColumnIndex("run_evaluado")));
+                    p.setId_encuesta(cursor.getString(cursor.getColumnIndex("id_encuesta")));
+                    p.setId_pregunta(cursor.getString(cursor.getColumnIndex("id_pregunta")));
+                    p.setId_respuesta(cursor.getInt(cursor.getColumnIndex("id_respuesta")));
+
+
+                    progreso.add(p);
+                    Log.i(TAG, "pregunta resuelta id:"+p.getId()+", run: "+p.getRun_evaluado()+", id_encuesta:"+p.getId_encuesta()+", id_pregunta:"+p.getId_pregunta()+", id_respuesta:"+p.getId_respuesta());
+                    // move to next row
+                } while (cursor.moveToNext());
+            }
+            cursor.close();
+        }
+        db.close();
+        return progreso;
+    }
+
+    public String comprobarRespuestaEnBd(String id, String cod_relacion) {
+        String selectQuery = "SELECT id_pregunta FROM " + TABLE_ENCUESTAS_TERMINADAS + " where id_pregunta='"+ id+"' and id_encuesta='"+cod_relacion+"'";
         String result = "";
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
@@ -186,9 +222,9 @@ public class SQLiteEncuestasHandler extends SQLiteOpenHelper {
         Log.i(TAG, "respuestas eliminadas desde bd");
     }
 
-    public ArrayList<Pregunta> ObtenerEncuestaFromDB(int id_encuesta) {
+    public ArrayList<Pregunta> ObtenerEncuestaFromDB(String cod_relacion) {
         ArrayList<Pregunta> lista_preguntas = new ArrayList<Pregunta>();
-        String selectQuery = "SELECT  * FROM " + TABLE_PREGUNTAS_ENCUESTA +" where id_encuesta="+id_encuesta;
+        String selectQuery = "SELECT  * FROM " + TABLE_PREGUNTAS_ENCUESTA +" where cod_relacion='"+cod_relacion+"'";
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
@@ -201,7 +237,7 @@ public class SQLiteEncuestasHandler extends SQLiteOpenHelper {
                     p.setId_texto(cursor.getString(cursor.getColumnIndex("id_pregunta")));
                     p.setTitulo(cursor.getString(cursor.getColumnIndex("pregunta")));
 
-                    Cursor preg = db.rawQuery("SELECT * FROM "+TABLE_RESPUESTAS+" where id_encuesta="+id_encuesta+" and id_pregunta_texto='"+p.getId_texto()+"'", null);
+                    Cursor preg = db.rawQuery("SELECT * FROM "+TABLE_RESPUESTAS+" where cod_relacion='"+cod_relacion+"' and id_pregunta='"+p.getId_texto()+"'", null);
                     ArrayList<Respuesta> respuestas = new ArrayList<>();
                     if(preg != null){
                         if(preg.moveToFirst()){
@@ -227,28 +263,28 @@ public class SQLiteEncuestasHandler extends SQLiteOpenHelper {
         return lista_preguntas;
     }
 
-    public void guardarEncuesta(ArrayList<Pregunta> datos, int id_encuesta) {
+    public void guardarEncuesta(ArrayList<Pregunta> datos, String cod_relacion) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         for (Pregunta p: datos) {
 
             ContentValues values = new ContentValues();
-            values.put("id_encuesta", id_encuesta);
+            values.put("cod_relacion", cod_relacion);
             values.put("id_pregunta", p.getId_texto());
             values.put("pregunta", p.getTitulo());
 
             // Inserting Row
             long id = db.insert(TABLE_PREGUNTAS_ENCUESTA, null, values);
-            Log.i(TAG, "nueva pregunta con id: "+p.getId_texto()+" de la encuesta: "+id_encuesta);
+            Log.i(TAG, "nueva pregunta con id: "+p.getId_texto()+" de la encuesta: "+cod_relacion);
             for (Respuesta r: p.getRespuestas()) {
                 ContentValues data = new ContentValues();
-                data.put("id_encuesta", id_encuesta);
-                data.put("id_pregunta_texto", p.getId_texto());
+                data.put("cod_relacion", cod_relacion);
+                data.put("id_pregunta", p.getId_texto());
                 data.put("id_respuesta", r.getId());
                 data.put("respuesta", r.getRespuesta());
 
                 long id_p = db.insert(TABLE_RESPUESTAS, null, data);
-                Log.i(TAG, "---> nueva respuesta: "+r.getId()+" de la pregunta:"+p.getId_texto()+" de la encuesta: "+id_encuesta);
+                Log.i(TAG, "---> nueva respuesta: "+r.getId()+" de la pregunta:"+p.getId_texto()+" de la encuesta: "+cod_relacion);
             }
 
 

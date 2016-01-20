@@ -29,20 +29,24 @@ public class PreguntaEncuesta extends Fragment {
     public static final String PREGUNTA = "PREGUNTA";
     private Pregunta pregunta;
     private SQLiteEncuestasHandler db;
+    private String run_evaluado;
+    private String cod_relacion;
    // private OnFragmentInteractionListener mListener;
 
-    public static final PreguntaEncuesta newIntance(Pregunta p){
+    public static final PreguntaEncuesta newIntance(Pregunta p, String run_evaluado, String cod_relacion){
 
         PreguntaEncuesta frag = new PreguntaEncuesta();
         Bundle bundle = new Bundle(1);
         bundle.putParcelable(PREGUNTA, p);
+        bundle.putString("run_evaluado", run_evaluado);
+        bundle.putString("cod_relacion", cod_relacion);
         frag.setArguments(bundle);
 
         return frag;
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         db = new SQLiteEncuestasHandler(getActivity());
@@ -52,6 +56,10 @@ public class PreguntaEncuesta extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         pregunta = getArguments().getParcelable(PREGUNTA);
+        run_evaluado = getArguments().getString("run_evaluado");
+        cod_relacion = getArguments().getString("cod_relacion");
+
+        getArguments().remove(PREGUNTA);
 
         View v = inflater.inflate(R.layout.item_pregunta_encuesta, container, false);
 
@@ -71,6 +79,7 @@ public class PreguntaEncuesta extends Fragment {
                 rb.setButtonTintList(ColorStateList.valueOf(textColor));
             }
             rb.setText(r.getRespuesta());
+            rb.setTextSize(getResources().getDimension(R.dimen.respuesta_size));
             rprms = new RadioGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             rg.addView(rb, rprms);
         }
@@ -80,8 +89,8 @@ public class PreguntaEncuesta extends Fragment {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
 
-                db.saveQuestionWithAnswer(pregunta.getId_texto(), i);
-                Toast.makeText(getActivity(), "presionado: respuesta" + i + " de pregunta:" + pregunta.getId_texto(), Toast.LENGTH_SHORT).show();
+                db.saveQuestionWithAnswer(pregunta.getId_texto(), i, cod_relacion , run_evaluado);
+                Toast.makeText(getActivity(), "presionado: respuesta" + i + " de pregunta:" + pregunta.getId_texto()+" del evaluado: "+run_evaluado, Toast.LENGTH_SHORT).show();
             }
         });
 

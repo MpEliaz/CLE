@@ -29,8 +29,6 @@ public class NoticiaDetalle extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_noticia_detalle);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_news);
-        setSupportActionBar(toolbar);
 
         inicializarToolbar();
 
@@ -70,13 +68,8 @@ public class NoticiaDetalle extends AppCompatActivity {
         //App bar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_news);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        final ActionBar ab = getSupportActionBar();
-
-        if(ab != null){
-
-            ab.setDisplayHomeAsUpEnabled(true);
-        }
 
     }
 

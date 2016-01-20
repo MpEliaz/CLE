@@ -73,14 +73,19 @@ public class MisEncuestas extends Fragment implements adaptadorEncuestados.OnIte
         pDialog = new ProgressDialog(getActivity());
         pDialog.setCancelable(false);
 
-        //llamar al getData para obtener a los encuestados
-        Persona p = session.obtenerUsuarioLogeado();
-        getData(p.getRut());
-
         RecyclerView rv = (RecyclerView) v.findViewById(R.id.rv_encuestas);
         rv.setHasFixedSize(true);
         rv.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
-        adapter = new adaptadorEncuestados(db.ObtenerEncuestados(), getActivity());
+
+        ArrayList<Encuesta> encuestados = db.ObtenerEncuestados();
+
+        if(encuestados.size() == 0){
+            //si la bd devuelve 0 encuestados llama al getData para obtener a los encuestados del ws
+            Persona p = session.obtenerUsuarioLogeado();
+            getData(p.getRut());
+        }
+
+        adapter = new adaptadorEncuestados(encuestados, getActivity());
         adapter.setOnItemClickListener(this);
         rv.setAdapter(adapter);
 
@@ -110,6 +115,7 @@ public class MisEncuestas extends Fragment implements adaptadorEncuestados.OnIte
                         e.setRunEvaluado(o.getString("runEvaluado"));
                         e.setNombreEvaluado(o.getString("nombreEvaluado"));
                         e.setRelacion(o.getString("relacion"));
+                        e.setCod_relacion(o.getString("cod_relacion"));
                         e.setEstado(o.getString("estado"));
                         data.add(e);
                     }
@@ -134,7 +140,7 @@ public class MisEncuestas extends Fragment implements adaptadorEncuestados.OnIte
 
                 Map<String, String> params = new HashMap<String, String>();
                 params.put("runEvaluador", rut);
-                params.put("periodo", "2015");
+                params.put("periodo", "0");
                 return params;
             }
 

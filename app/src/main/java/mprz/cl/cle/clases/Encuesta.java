@@ -13,6 +13,7 @@ public class Encuesta {
     private String relacion;
     private String estado;
     private int id_encuesta;
+    private String cod_relacion;
 
     public Encuesta() {
     }
@@ -79,5 +80,13 @@ public class Encuesta {
 
     public void setId_encuesta(int id_encuesta) {
         this.id_encuesta = id_encuesta;
+    }
+
+    public String getCod_relacion() {
+        return cod_relacion;
+    }
+
+    public void setCod_relacion(String cod_relacion) {
+        this.cod_relacion = cod_relacion;
     }
 }

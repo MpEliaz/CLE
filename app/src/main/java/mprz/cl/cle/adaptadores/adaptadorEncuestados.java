@@ -99,19 +99,16 @@ public class adaptadorEncuestados extends RecyclerView.Adapter<adaptadorEncuesta
             else {
                 btn.setText("Evaluar");
                 btn.setEnabled(true);
+                btn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent i = new Intent(cx.getApplicationContext(), showEncuesta.class);
+                        i.putExtra("runEvaluado", e.getRunEvaluado());
+                        i.putExtra("cod_relacion", e.getCod_relacion());
+                        cx.startActivity(i);
+                    }
+                });
             }
-
-            btn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent i = new Intent(cx.getApplicationContext(), showEncuesta.class);
-                    i.putExtra("runEvaluado",e.getRunEvaluado());
-                    i.putExtra("id_encuesta",e.getId_encuesta());
-                    cx.startActivity(i);
-                }
-            });
-
-
         }
     }
 

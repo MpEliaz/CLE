@@ -23,6 +23,11 @@
             android:icon="@drawable/ic_thumb_up_black_48dp"
             android:title="@string/mision" />
         <item
+            android:id="@+id/nav_organica"
+            android:checked="true"
+            android:icon="@drawable/ic_domain_black_48dp"
+            android:title="@string/organica" />
+        <item
             android:id="@+id/nav_doctrina"
             android:checked="true"
             android:icon="@drawable/ic_school_black_48dp"
@@ -32,11 +37,6 @@
             android:checked="true"
             android:icon="@drawable/ic_settings_black_48dp"
             android:title="@string/herramientas" />
-        <item
-            android:id="@+id/nav_organica"
-            android:checked="true"
-            android:icon="@drawable/ic_domain_black_48dp"
-            android:title="@string/organica" />
         <item
             android:id="@+id/nav_acerca_de"
             android:checked="true"

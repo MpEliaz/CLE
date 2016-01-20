@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -37,6 +38,7 @@ import mprz.cl.cle.clases.CLESingleton;
 import mprz.cl.cle.clases.Encuesta;
 import mprz.cl.cle.clases.Persona;
 import mprz.cl.cle.clases.Pregunta;
+import mprz.cl.cle.clases.PreguntaResuelta;
 import mprz.cl.cle.clases.Respuesta;
 import mprz.cl.cle.fragments.MisEncuestas;
 import mprz.cl.cle.util.SQLiteEncuestasHandler;
@@ -56,7 +58,7 @@ public class showEncuesta extends AppCompatActivity {
     private Menu menu;
     private ProgressDialog pDialog;
     private String run_evaluado;
-    private int id_encuesta_;
+    private String cod_relacion;
     private SessionManager session;
 
     @Override
@@ -71,22 +73,29 @@ public class showEncuesta extends AppCompatActivity {
         Persona p = session.obtenerUsuarioLogeado();
         Bundle extras = getIntent().getExtras();
         run_evaluado = extras.getString("runEvaluado");
-        id_encuesta_ = extras.getInt("id_encuesta");
+        cod_relacion = extras.getString("cod_relacion");
 
         pDialog = new ProgressDialog(this);
         pDialog.setCancelable(false);
 
         pager = (ViewPager) findViewById(R.id.EncuestaPager);
 
+        pager.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return true;
+            }
+        });
 
-        ArrayList<Pregunta> list = db_encuestas.ObtenerEncuestaFromDB(id_encuesta_);
+
+        ArrayList<Pregunta> list = db_encuestas.ObtenerEncuestaFromDB(cod_relacion);
         ArrayList<Fragment> fragments = new ArrayList<>();
 
         if(list.size() > 0){
-            fragments = getFragments(list);
+            fragments = getFragments(list, db_encuestas.ObtenerProgresoEncuesta(run_evaluado, cod_relacion));
         }
         else{
-            obtenerEncuesta(p.getRut(), run_evaluado);
+            obtenerEncuesta(p.getRut(), run_evaluado, cod_relacion);
         }
 
 
@@ -114,12 +123,22 @@ public class showEncuesta extends AppCompatActivity {
 
     }
 
-    private ArrayList<Fragment> getFragments(ArrayList<Pregunta> list) {
+    private ArrayList<Fragment> getFragments(ArrayList<Pregunta> list, ArrayList<PreguntaResuelta> resultado) {
         ArrayList<Fragment> items = new ArrayList<Fragment>();
 
-        for (Pregunta p : list) {
 
-            items.add(PreguntaEncuesta.newIntance(p));
+
+
+        for(PreguntaResuelta pr: resultado){
+
+            for (Pregunta p : list) {
+
+                if(!p.getId_texto().equals(pr.getId_pregunta())){
+
+                    items.add(PreguntaEncuesta.newIntance(p, run_evaluado, cod_relacion));
+                }
+
+            }
 
         }
         FragmentFinalEncuesta f = new FragmentFinalEncuesta();
@@ -172,7 +191,7 @@ public class showEncuesta extends AppCompatActivity {
         }
     }
 
-    private void obtenerEncuesta(final String evaluador, final String evaluado) {
+    private void obtenerEncuesta(final String evaluador, final String evaluado, final String cod_relacion) {
 
         pDialog.setMessage("Obteniendo encuesta...");
         showDialog();
@@ -181,11 +200,9 @@ public class showEncuesta extends AppCompatActivity {
             @Override
             public void onResponse(String response) {
 
-                int id_encuesta;
 
                 try {
                     JSONObject o = new JSONObject(response);
-                    id_encuesta = Integer.parseInt(o.getString("id"));
 
                     JSONArray preguntas = o.getJSONArray("preguntas");
                     ArrayList<Pregunta> set_Preguntas = new ArrayList<Pregunta>();
@@ -204,6 +221,8 @@ public class showEncuesta extends AppCompatActivity {
                             JSONObject resp = respuestas.getJSONObject(j);
                             Respuesta r = new Respuesta();
                             r.setId(Integer.parseInt(resp.getString("id")));
+                            r.setCod_relacion(cod_relacion);
+                            r.setId_pregunta(p.getId_texto());
                             r.setRespuesta(resp.getString("respuesta"));
                             setRespuestas.add(r);
                         }
@@ -212,10 +231,10 @@ public class showEncuesta extends AppCompatActivity {
                         set_Preguntas.add(p);
                     }
 
-                    db_encuestas.guardarEncuesta(set_Preguntas, id_encuesta);
+                    db_encuestas.guardarEncuesta(set_Preguntas,cod_relacion);
 
-                    ArrayList<Pregunta> list = db_encuestas.ObtenerEncuestaFromDB(id_encuesta);
-                    ArrayList<Fragment> fragments = getFragments(list);
+                    ArrayList<Pregunta> list = db_encuestas.ObtenerEncuestaFromDB(cod_relacion);
+                    ArrayList<Fragment> fragments = getFragments(list, db_encuestas.ObtenerProgresoEncuesta(run_evaluado, cod_relacion));
                     adapter.updateData(fragments);
                     hideDialog();
 

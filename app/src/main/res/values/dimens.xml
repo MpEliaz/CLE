@@ -8,5 +8,6 @@
 
     <dimen name="perfil_image_size">64dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
+    <dimen name="respuesta_size">9dp</dimen>
 
 </resources>

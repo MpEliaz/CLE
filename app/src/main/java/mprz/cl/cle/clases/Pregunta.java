@@ -14,6 +14,7 @@ public class Pregunta implements Parcelable{
     private int id;
     private String id_texto;
     private String titulo;
+    private String run_evaluado;
     private ArrayList<Respuesta> respuestas;
 
     public Pregunta() {
