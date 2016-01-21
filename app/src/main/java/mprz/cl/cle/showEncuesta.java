@@ -49,7 +49,7 @@ import static mprz.cl.cle.util.Constantes.URL;
 
 public class showEncuesta extends AppCompatActivity {
 
-    private String url_encuesta = URL + "/encuestaJson2?AspxAutoDetectCookieSupport=1";
+    private String url_encuesta = URL + "/ObtenerEncuestaRelacion?AspxAutoDetectCookieSupport=1";
     private TextView test;
     private RecyclerView rv_encuesta;
     private ViewPager pager;
@@ -92,10 +92,10 @@ public class showEncuesta extends AppCompatActivity {
         ArrayList<Fragment> fragments = new ArrayList<>();
 
         if(list.size() > 0){
-            fragments = getFragments(list, db_encuestas.ObtenerProgresoEncuesta(run_evaluado, cod_relacion));
+            fragments = getFragments(list);
         }
         else{
-            obtenerEncuesta(p.getRut(), run_evaluado, cod_relacion);
+            obtenerEncuesta(cod_relacion);
         }
 
 
@@ -123,24 +123,20 @@ public class showEncuesta extends AppCompatActivity {
 
     }
 
-    private ArrayList<Fragment> getFragments(ArrayList<Pregunta> list, ArrayList<PreguntaResuelta> resultado) {
+    private ArrayList<Fragment> getFragments(ArrayList<Pregunta> list) {
         ArrayList<Fragment> items = new ArrayList<Fragment>();
 
 
 
-
-        for(PreguntaResuelta pr: resultado){
-
             for (Pregunta p : list) {
 
-                if(!p.getId_texto().equals(pr.getId_pregunta())){
-
+                if(!db_encuestas.ComprobarPreguntaResuelta(run_evaluado,cod_relacion, p.getId_texto()))
+                {
                     items.add(PreguntaEncuesta.newIntance(p, run_evaluado, cod_relacion));
                 }
 
             }
 
-        }
         FragmentFinalEncuesta f = new FragmentFinalEncuesta();
         items.add(f);
 
@@ -191,7 +187,7 @@ public class showEncuesta extends AppCompatActivity {
         }
     }
 
-    private void obtenerEncuesta(final String evaluador, final String evaluado, final String cod_relacion) {
+    private void obtenerEncuesta(final String cod_relacion) {
 
         pDialog.setMessage("Obteniendo encuesta...");
         showDialog();
@@ -234,7 +230,7 @@ public class showEncuesta extends AppCompatActivity {
                     db_encuestas.guardarEncuesta(set_Preguntas,cod_relacion);
 
                     ArrayList<Pregunta> list = db_encuestas.ObtenerEncuestaFromDB(cod_relacion);
-                    ArrayList<Fragment> fragments = getFragments(list, db_encuestas.ObtenerProgresoEncuesta(run_evaluado, cod_relacion));
+                    ArrayList<Fragment> fragments = getFragments(list);
                     adapter.updateData(fragments);
                     hideDialog();
 
@@ -256,8 +252,7 @@ public class showEncuesta extends AppCompatActivity {
             protected Map<String, String> getParams() throws AuthFailureError {
 
                 Map<String,String> params = new HashMap<String, String>();
-                params.put("run_evaluador", evaluador);
-                params.put("run_evaluado", evaluado);
+                params.put("relacion", cod_relacion);
                 return params;
             }
 

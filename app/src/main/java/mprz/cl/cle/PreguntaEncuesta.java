@@ -90,7 +90,7 @@ public class PreguntaEncuesta extends Fragment {
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
 
                 db.saveQuestionWithAnswer(pregunta.getId_texto(), i, cod_relacion , run_evaluado);
-                Toast.makeText(getActivity(), "presionado: respuesta" + i + " de pregunta:" + pregunta.getId_texto()+" del evaluado: "+run_evaluado, Toast.LENGTH_SHORT).show();
+               // Toast.makeText(getActivity(), "presionado: respuesta" + i + " de pregunta:" + pregunta.getId_texto()+" del evaluado: "+run_evaluado, Toast.LENGTH_SHORT).show();
             }
         });
 

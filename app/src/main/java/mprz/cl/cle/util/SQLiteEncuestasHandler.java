@@ -178,6 +178,34 @@ public class SQLiteEncuestasHandler extends SQLiteOpenHelper {
         return progreso;
     }
 
+    public boolean ComprobarPreguntaResuelta(String run_evaluado, String cod_relacion, String id_pregunta) {
+        String selectQuery = "SELECT  * FROM " + TABLE_ENCUESTAS_TERMINADAS+" where run_evaluado='"+run_evaluado+"' and id_encuesta='"+cod_relacion+"' and id_pregunta='"+id_pregunta+"'";
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        PreguntaResuelta p = null;
+
+        if (cursor != null) {
+            // move cursor to first row
+            if (cursor.moveToFirst()) {
+
+                    p = new PreguntaResuelta();
+
+                    p.setId(cursor.getInt(cursor.getColumnIndex("id")));
+                    p.setRun_evaluado(cursor.getString(cursor.getColumnIndex("run_evaluado")));
+                    p.setId_encuesta(cursor.getString(cursor.getColumnIndex("id_encuesta")));
+                    p.setId_pregunta(cursor.getString(cursor.getColumnIndex("id_pregunta")));
+                    p.setId_respuesta(cursor.getInt(cursor.getColumnIndex("id_respuesta")));
+
+                    Log.i(TAG, "pregunta resuelta id:"+p.getId()+", run: "+p.getRun_evaluado()+", id_encuesta:"+p.getId_encuesta()+", id_pregunta:"+p.getId_pregunta()+", id_respuesta:"+p.getId_respuesta());
+                    // move to next row
+            }
+            cursor.close();
+        }
+        db.close();
+        return p != null;
+    }
     public String comprobarRespuestaEnBd(String id, String cod_relacion) {
         String selectQuery = "SELECT id_pregunta FROM " + TABLE_ENCUESTAS_TERMINADAS + " where id_pregunta='"+ id+"' and id_encuesta='"+cod_relacion+"'";
         String result = "";
