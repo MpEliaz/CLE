@@ -1,14 +1,17 @@
 package mprz.cl.cle;
 
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -41,6 +44,7 @@ import mprz.cl.cle.clases.Pregunta;
 import mprz.cl.cle.clases.PreguntaResuelta;
 import mprz.cl.cle.clases.Respuesta;
 import mprz.cl.cle.fragments.MisEncuestas;
+import mprz.cl.cle.fragments.introEncuesta;
 import mprz.cl.cle.util.SQLiteEncuestasHandler;
 import mprz.cl.cle.util.SQLiteHandler;
 import mprz.cl.cle.util.SessionManager;
@@ -60,6 +64,8 @@ public class showEncuesta extends AppCompatActivity {
     private String run_evaluado;
     private String cod_relacion;
     private SessionManager session;
+    private boolean salir = false;
+    AlertDialog.Builder alertbuilder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,6 +108,22 @@ public class showEncuesta extends AppCompatActivity {
         adapter = new adaptadorEncuestaPager(getSupportFragmentManager(), fragments);
         pager.setAdapter(adapter);
 
+        alertbuilder = new AlertDialog.Builder(this);
+        alertbuilder.setMessage("¿Desea salir de la encuesta?");
+        alertbuilder.setPositiveButton("SI", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                finish();
+            }
+        });
+        alertbuilder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                salir = false;
+            }
+        });
+
 
 
     }
@@ -112,14 +134,12 @@ public class showEncuesta extends AppCompatActivity {
         //App bar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_encuesta);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Encuesta");
 
-/*        final ActionBar ab = getSupportActionBar();
+        final ActionBar ab = getSupportActionBar();
 
         if(ab != null){
-            ab.setHomeAsUpIndicator(R.drawable.ic_menu);
-            ab.setDisplayHomeAsUpEnabled(true);
-        }*/
+            ab.setTitle("Encuesta");
+        }
 
     }
 
@@ -127,6 +147,7 @@ public class showEncuesta extends AppCompatActivity {
         ArrayList<Fragment> items = new ArrayList<Fragment>();
 
 
+            items.add(introEncuesta.newInstance(cod_relacion));
 
             for (Pregunta p : list) {
 
@@ -136,9 +157,7 @@ public class showEncuesta extends AppCompatActivity {
                 }
 
             }
-
-        FragmentFinalEncuesta f = new FragmentFinalEncuesta();
-        items.add(f);
+        items.add(FragmentFinalEncuesta.newInstance(run_evaluado));
 
         return items;
     }
@@ -170,20 +189,28 @@ public class showEncuesta extends AppCompatActivity {
     private void avancePagina(){
 
         Fragment f = adapter.getItem(pager.getCurrentItem());
-        RadioGroup rg = (RadioGroup)f.getView().findViewById(R.id.rg_preg);
-        int checked = rg.getCheckedRadioButtonId();
 
-        if(checked == -1){
-            Toast.makeText(showEncuesta.this, "Seleccione opción", Toast.LENGTH_SHORT).show();
+        if(f instanceof introEncuesta)
+        {
+            pager.setCurrentItem(pager.getCurrentItem()+1);
         }
         else{
-            int total = adapter.getCount();
-            int actual = pager.getCurrentItem()+1;
+            RadioGroup rg = (RadioGroup)f.getView().findViewById(R.id.rg_preg);
+            int checked = rg.getCheckedRadioButtonId();
 
-            if(actual < total){
-
-                pager.setCurrentItem(pager.getCurrentItem()+1);
+            if(checked == -1){
+                Toast.makeText(showEncuesta.this, "Seleccione opción", Toast.LENGTH_SHORT).show();
             }
+            else{
+                int total = adapter.getCount();
+                int actual = pager.getCurrentItem()+1;
+
+                if(actual < total){
+
+                    pager.setCurrentItem(pager.getCurrentItem()+1);
+                }
+            }
+
         }
     }
 
@@ -199,6 +226,15 @@ public class showEncuesta extends AppCompatActivity {
 
                 try {
                     JSONObject o = new JSONObject(response);
+
+                    String titulo_intro = o.getString("titulo_introduccion");
+                    String intro = o.getString("introduccion");
+                    String titulo_comp = o.getString("titulo_competencias");
+                    String comp = o.getString("competencias");
+                    String titulo_atrib = o.getString("titulo_atributos");
+                    String atrib = o.getString("atributos");
+
+                    db_encuestas.guardarIntroduccionAEncuesta(cod_relacion,titulo_intro,intro,titulo_comp,comp,titulo_atrib,atrib);
 
                     JSONArray preguntas = o.getJSONArray("preguntas");
                     ArrayList<Pregunta> set_Preguntas = new ArrayList<Pregunta>();
@@ -274,4 +310,21 @@ public class showEncuesta extends AppCompatActivity {
         if (pDialog.isShowing())
             pDialog.dismiss();
     }
+
+    @Override
+    public boolean onKeyDown(final int keyCode, final KeyEvent event) {
+
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+
+            alertbuilder.show();
+
+            return true;
+        } else {
+            return true;
+        }
+    }
+
+
+
+
 }

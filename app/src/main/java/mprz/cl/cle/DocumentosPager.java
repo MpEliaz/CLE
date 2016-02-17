@@ -25,12 +25,15 @@ public class DocumentosPager extends AppCompatActivity {
         ViewPager pager = (ViewPager)findViewById(R.id.documentos_viewer);
         pager.setOffscreenPageLimit(2);
 
+
         String paginas[] = extras.getStringArray("nombres");
+
         ArrayList<Fragment> imagenes = getFragments(paginas);
-        adaptadorPagerDocumentos adapter = new adaptadorPagerDocumentos(getSupportFragmentManager(), paginas);
+        adaptadorPagerDocumentos adapter = new adaptadorPagerDocumentos(paginas);
 
         pager.setAdapter(adapter);
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

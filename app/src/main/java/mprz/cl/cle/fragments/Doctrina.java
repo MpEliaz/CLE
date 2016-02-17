@@ -33,7 +33,7 @@ public class Doctrina extends Fragment implements adaptadorDocumentos.OnItemClic
         rv.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
 
         Documento d = new Documento();
-        adaptadorDocumentos adapter = new adaptadorDocumentos(getActivity(), new ArrayList<Documento>());
+        adaptadorDocumentos adapter = new adaptadorDocumentos(getActivity(), d.datos_ejemplo());
         adapter.setOnItemClickListener(this);
         rv.setAdapter(adapter);
 

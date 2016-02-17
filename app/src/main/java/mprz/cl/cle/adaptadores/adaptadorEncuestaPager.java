@@ -40,4 +40,6 @@ public class adaptadorEncuestaPager extends FragmentPagerAdapter {
         preguntas.addAll(encuestas);
         notifyDataSetChanged();
     }
+
+
 }

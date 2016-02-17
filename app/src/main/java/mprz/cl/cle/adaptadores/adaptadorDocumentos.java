@@ -93,18 +93,7 @@ public class adaptadorDocumentos extends RecyclerView.Adapter<adaptadorDocumento
 
         public void bindPregunta(final Documento d){
             nombre.setText(d.getNombre());
-
-            String[] paginas = d.getPaginas();
-            if(paginas != null){
-
-                Resources resources = cx.getResources();
-                final int resourceId = resources.getIdentifier(paginas[0], "drawable", cx.getPackageName());
-
-                imagen.setImageResource(resourceId);
-            }
-            else {
-
-            }
+            imagen.setImageResource(R.drawable.icon_document);
 
 
 

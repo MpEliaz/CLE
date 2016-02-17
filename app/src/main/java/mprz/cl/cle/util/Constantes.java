@@ -5,5 +5,6 @@ package mprz.cl.cle.util;
  */
 public class Constantes {
 
+    //public static String URL = "http://cletest.ejercito.cl/ServiciosCle.asmx";
     public static String URL = "http://cle.ejercito.cl/ServiciosCle.asmx";
 }

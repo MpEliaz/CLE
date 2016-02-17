@@ -4,58 +4,68 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link FragmentFinalEncuesta.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link FragmentFinalEncuesta#newInstance} factory method to
- * create an instance of this fragment.
- */
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import mprz.cl.cle.clases.CLESingleton;
+import mprz.cl.cle.util.SQLiteEncuestasHandler;
+import mprz.cl.cle.util.SessionManager;
+
+
 public class FragmentFinalEncuesta extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private static final String RUN_EVALUADO = "run_evaluado";
 
-    private String mParam1;
-    private String mParam2;
+    private String run_evaluado;
+    private Button btn_finalizar;
+    private SQLiteEncuestasHandler db_encuestas;
+
 
     //private OnFragmentInteractionListener mListener;
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment FragmentFinalEncuesta.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static FragmentFinalEncuesta newInstance() {
+
+    public static FragmentFinalEncuesta newInstance(String run_Evaluado) {
         FragmentFinalEncuesta fragment = new FragmentFinalEncuesta();
-/*        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);*/
+        Bundle args = new Bundle();
+        args.putString(RUN_EVALUADO, run_Evaluado);
+
+        fragment.setArguments(args);
         return fragment;
     }
 
     public FragmentFinalEncuesta() {
-        // Required empty public constructor
+        setHasOptionsMenu(true);
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            run_evaluado = getArguments().getString(RUN_EVALUADO);
         }
+
+        db_encuestas = new SQLiteEncuestasHandler(getContext());
+
+
 
     }
 
@@ -63,46 +73,56 @@ public class FragmentFinalEncuesta extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_finalizar_encuesta, container, false);
+        View v = inflater.inflate(R.layout.fragment_finalizar_encuesta, container, false);
+        btn_finalizar = (Button)v.findViewById(R.id.finalizar);
+
+        btn_finalizar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                SessionManager s = new SessionManager(getContext());
+                final JSONObject encuesta = db_encuestas.ObtenerEncuestaResuelta(run_evaluado, s.obtenerRutUsuarioLogeado());
+
+                //TODO falta agregar la url de envio al servidor y manejar respuesta del servidor.
+                StringRequest req = new StringRequest(StringRequest.Method.POST, "url", new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                    }
+                }){
+                    @Override
+                    protected Map<String, String> getParams() throws AuthFailureError {
+
+                        Map<String, String> params = new HashMap<String, String>();
+                        params.put("encuesta", encuesta.toString());
+                        return params;
+                    }
+
+                    @Override
+                    public String getBodyContentType() {
+                        return "application/x-www-form-urlencoded; charset=UTF-8";
+                    }
+                };
+                CLESingleton.getInstance(getActivity()).addToRequestQueue(req);
+
+
+            }
+        });
+
+        return v;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-/*    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        try {
-            mListener = (OnFragmentInteractionListener) context;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
+    public void onPrepareOptionsMenu(Menu menu) {
+
+        //Hides MenuItem action_edit
+        MenuItem menuItem = menu.findItem(R.id.next_question);
+        menuItem.setVisible(false);
     }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
-    *//**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     *//*
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        public void onFragmentInteraction(Uri uri);
-    }*/
-
 }

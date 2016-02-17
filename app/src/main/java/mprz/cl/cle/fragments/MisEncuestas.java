@@ -169,14 +169,14 @@ public class MisEncuestas extends Fragment implements adaptadorEncuestados.OnIte
         Toast.makeText(getActivity(), "nombre: " + encuesta.getNombreEvaluado(), Toast.LENGTH_SHORT).show();
     }
 
-    @Override
+/*    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
 
         inflater.inflate(R.menu.menu_mis_encuestas, menu);
-    }
+    }*/
 
-    @Override
+/*    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()){
             case R.id.update_encuestas:
@@ -187,6 +187,8 @@ public class MisEncuestas extends Fragment implements adaptadorEncuestados.OnIte
         }
 
         return super.onOptionsItemSelected(item);
-    }
+    }*/
+
+
 }
 

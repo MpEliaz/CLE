@@ -1,10 +1,12 @@
 package mprz.cl.cle;
 
+import android.content.DialogInterface;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -173,16 +175,42 @@ public class ActividadPrincipal extends AppCompatActivity {
                             break;
                         case R.id.nav_log_out:
                             if(session.isLoggedIn()){
-                                session.EliminarUsuarioLogeado();
-                                db.eliminarUsuario();
-                                db.eliminarEvaluadores();
-                                db.recrearTablas();
-                                dbEncuestados.recrearTablas();
 
-                                getSupportFragmentManager().beginTransaction()
-                                        .replace(R.id.content_fragment, new Home())
-                                        .commit();
-                                Toast.makeText(getApplicationContext(),"Sesion cerrada", Toast.LENGTH_LONG).show();
+                                final AlertDialog alert = new AlertDialog.Builder(ActividadPrincipal.this).create();
+
+                                alert.setTitle("¿Desea cerrar la sesión?");
+                                alert.setMessage("Al cerrar la sesion eliminará todo progreso en las encuestas que no haya enviado a nuestra base de datos");
+                                alert.setIcon(android.R.drawable.ic_dialog_alert);
+                                alert.setCancelable(true);
+                                alert.setCanceledOnTouchOutside(true);
+                                alert.setButton(DialogInterface.BUTTON_POSITIVE, "SI", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+
+                                        alert.dismiss();
+                                        session.EliminarUsuarioLogeado();
+                                        db.eliminarUsuario();
+                                        db.eliminarEvaluadores();
+                                        db.recrearTablas();
+                                        dbEncuestados.recrearTablas();
+
+                                        getSupportFragmentManager().beginTransaction()
+                                                .replace(R.id.content_fragment, new Home())
+                                                .commit();
+                                        Toast.makeText(getApplicationContext(), "Sesion cerrada", Toast.LENGTH_LONG).show();
+
+                                    }
+                                });
+
+                                alert.setButton(DialogInterface.BUTTON_NEGATIVE, "NO", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+
+                                        alert.dismiss();
+                                    }
+                                });
+                                alert.show();
+
                             }
                             break;
                     }

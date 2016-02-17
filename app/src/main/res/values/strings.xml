@@ -17,7 +17,6 @@
     <string name="acerca_de">Acerca de</string>
     <string name="salir">Salir</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">TEXTO DE PRUEBA!</string>
     <string name="title_activity_encuesta">Encuesta</string>
     <string name="title_activity_documentos_pager">DocumentosPager</string>

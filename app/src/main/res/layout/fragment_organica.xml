@@ -5,7 +5,6 @@
     tools:context="mprz.cl.cle.fragments.Organica"
     android:background="@drawable/fondo_mision1">
 
-    <!-- TODO: Update blank fragment layout -->
 
     <ImageView
         android:layout_width="match_parent"

@@ -7,6 +7,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -32,21 +33,11 @@ public class NoticiaDetalle extends AppCompatActivity {
 
         inicializarToolbar();
 
-/*        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });*/
-
         int id = getIntent().getIntExtra("id_noticia",-1);
         db = new SQLiteHandler(this);
         Noticia n = db.obtenerNoticia(id);
 
         if(n != null){
-            //NetworkImageView imagen = (NetworkImageView)findViewById(R.id.noticia_detalle_imagen);
 
             SimpleDraweeView imagen = (SimpleDraweeView)findViewById(R.id.noticia_detalle_imagen);
             Uri uri = Uri.parse("http://cle.ejercito.cl/upload/" + n.getUrl_imagen());
@@ -57,20 +48,20 @@ public class NoticiaDetalle extends AppCompatActivity {
             TextView cuerpo = (TextView)findViewById(R.id.noticia_detalle_completo);
             cuerpo.setText(n.getCuerpo());
 
-            /*mImageLoader = CLESingleton.getInstance(this).getImageLoader();
-            imagen.setImageUrl("http://cle.ejercito.cl/upload/" + n.getUrl_imagen(), mImageLoader);*/
         }
     }
 
     private void inicializarToolbar() {
-
 
         //App bar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_news);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        return super.onCreateOptionsMenu(menu);
+    }
 }

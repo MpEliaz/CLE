@@ -51,6 +51,11 @@ public class SessionManager {
         return p;
     }
 
+    public String obtenerRutUsuarioLogeado(){
+        String rut = pref.getString("rut", "");
+        return rut;
+    }
+
     public void EliminarUsuarioLogeado(){
         editor.clear();
         editor.commit();

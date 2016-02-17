@@ -48,9 +48,9 @@ public class Documento {
         ArrayList<Documento> data = new ArrayList<>();
 
         Documento d1 = new Documento(1, "Atributos");
-        d1.setPaginas(new String[]{"competencias_pag_01",
-                "competencias_pag_02",
-                "competencias_pag_03",
+        d1.setPaginas(new String[]{"competencias_pag_01_",
+                "competencias_pag_02_",
+                "competencias_pag_03_",
                 "competencias_pag_04",
                 "competencias_pag_05",
                 "competencias_pag_06",
@@ -72,12 +72,9 @@ public class Documento {
                 "competencias_pag_22",
                 "competencias_pag_23",
         });
-        Documento d2 = new Documento(2, "Competencias");
-        Documento d3 = new Documento(3, "Herramientas");
+
 
         data.add(d1);
-        data.add(d2);
-        data.add(d3);
 
         return data;
     }

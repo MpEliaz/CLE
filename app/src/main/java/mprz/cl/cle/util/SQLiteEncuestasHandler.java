@@ -7,6 +7,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 import mprz.cl.cle.clases.Encuesta;
@@ -27,11 +30,14 @@ public class SQLiteEncuestasHandler extends SQLiteOpenHelper {
     private static final String TABLE_PREGUNTAS_ENCUESTA = "PREGUNTAS";
     private static final String TABLE_ENCUESTAS_TERMINADAS = "ENCUESTAS_TERMINADAS";
     private static final String TABLE_RESPUESTAS = "RESPUESTAS";
+    private static final String TABLE_INTRO_ENCUESTAS = "INTRO_ENCUESTAS";
+
 
     private static final String CREATE_ENCUESTADOS_TABLE = "CREATE TABLE "+TABLE_ENCUESTADOS+" (id INTEGER PRIMARY KEY AUTOINCREMENT, id_encuesta INTEGER, runevaluado TEXT, nombreevaluado TEXT, relacion TEXT, cod_relacion TEXT, estado TEXT, terminado INTEGER)";
     private static final String CREATE_PREGUNTAS_TABLE = "CREATE TABLE "+TABLE_PREGUNTAS_ENCUESTA+" (id INTEGER PRIMARY KEY AUTOINCREMENT, cod_relacion TEXT, id_pregunta TEXT, pregunta TEXT)";
     private static final String CREATE_RESPUESTAS_TABLE = "CREATE TABLE "+TABLE_RESPUESTAS+" (id INTEGER PRIMARY KEY AUTOINCREMENT, cod_relacion TEXT, id_pregunta TEXT, id_respuesta INTEGER, respuesta TEXT)";
     private static final String CREATE_ENCUESTAS_TERMINADAS_TABLE = "CREATE TABLE "+TABLE_ENCUESTAS_TERMINADAS+" (id INTEGER PRIMARY KEY AUTOINCREMENT, run_evaluado TEXT, id_encuesta TEXT, id_pregunta TEXT, id_respuesta INTEGER)";
+    private static final String CREATE_TEXTOS_ENCUESTA = "CREATE TABLE "+TABLE_INTRO_ENCUESTAS+" (id INTEGER PRIMARY KEY AUTOINCREMENT, cod_relacion TEXT, titulo_introduccion TEXT, introduccion TEXT, titulo_competencias TEXT, competencias TEXT, titulo_atributos TEXT, atributos TEXT)";
 
 
     public SQLiteEncuestasHandler(Context context) {
@@ -45,6 +51,7 @@ public class SQLiteEncuestasHandler extends SQLiteOpenHelper {
         db.execSQL(CREATE_ENCUESTAS_TERMINADAS_TABLE);
         db.execSQL(CREATE_PREGUNTAS_TABLE);
         db.execSQL(CREATE_RESPUESTAS_TABLE);
+        db.execSQL(CREATE_TEXTOS_ENCUESTA);
         Log.i("CLE", "bases de datos encuestas creada");
     }
 
@@ -56,8 +63,76 @@ public class SQLiteEncuestasHandler extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + CREATE_PREGUNTAS_TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_ENCUESTAS_TERMINADAS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_RESPUESTAS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_INTRO_ENCUESTAS);
 
         onCreate(db);
+    }
+
+    public void guardarIntroduccionAEncuesta(String cod_relacion, String titulo_introduccion, String introduccion, String titulo_competencias, String competencias, String titulo_atributos, String atributos){
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        String query = "SELECT id FROM "+TABLE_INTRO_ENCUESTAS + " where cod_relacion='"+cod_relacion+"'";
+        Cursor cursor = db.rawQuery(query, null);
+
+        long id = -1;
+
+        if(cursor != null){
+            if(cursor.moveToFirst()){
+                id = cursor.getInt(cursor.getColumnIndex("id"));
+            }
+
+            ContentValues values = new ContentValues();
+            values.put("cod_relacion", cod_relacion);
+            values.put("titulo_introduccion", titulo_introduccion);
+            values.put("introduccion", introduccion);
+            values.put("titulo_competencias", titulo_competencias);
+            values.put("competencias", competencias);
+            values.put("titulo_atributos", titulo_atributos);
+            values.put("atributos", atributos);
+
+            if(id == -1){
+
+                long resp = db.insert(TABLE_INTRO_ENCUESTAS, null, values);
+                Log.i(TAG, "nuevo registro de introduccion insertado con id: " + resp);
+
+            }
+            else{
+                long resp = db.update(TABLE_INTRO_ENCUESTAS, values, "cod_relacion='"+cod_relacion+"'", null);
+                Log.i(TAG, "nuevo registro de introduccion actualizado con id: " + resp);
+            }
+
+            db.close();
+            cursor.close();
+        }
+
+    }
+
+    public String[] obtenerIntroduccionAEncuesta(String cod_relacion){
+        String[] datos = new String[7];
+        String selectQuery = "SELECT  * FROM " + TABLE_INTRO_ENCUESTAS +" where cod_relacion='"+cod_relacion+"'";
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        if (cursor != null) {
+            // move cursor to first row
+            if (cursor.moveToFirst()) {
+                do {
+                    datos[0] = cursor.getString(cursor.getColumnIndex("titulo_introduccion"));
+                    datos[1] = cursor.getString(cursor.getColumnIndex("introduccion"));
+                    datos[2] = cursor.getString(cursor.getColumnIndex("titulo_competencias"));
+                    datos[3] = cursor.getString(cursor.getColumnIndex("competencias"));
+                    datos[4] = cursor.getString(cursor.getColumnIndex("titulo_atributos"));
+                    datos[5] = cursor.getString(cursor.getColumnIndex("atributos"));
+
+                    Log.i(TAG, "intro obtenida desde bd");
+                    // move to next row
+                } while (cursor.moveToNext());
+            }
+            cursor.close();
+        }
+        db.close();
+        return datos;
     }
 
     public void guardarEncuestados(ArrayList<Encuesta> datos) {
@@ -228,6 +303,42 @@ public class SQLiteEncuestasHandler extends SQLiteOpenHelper {
             db.close();
         }*/
         return result;
+    }
+
+    public JSONObject ObtenerEncuestaResuelta(String run_evaluado, String run_evaluador) {
+        String selectQuery = "SELECT * FROM " + TABLE_ENCUESTAS_TERMINADAS + " where run_evaluado='"+run_evaluado+"'";
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        ArrayList<PreguntaResuelta> resueltas = new ArrayList<>();
+        JSONObject obj = new JSONObject();
+
+        if (cursor != null) {
+            // move cursor to first row
+            if (cursor.moveToFirst()) {
+
+                try {
+
+                    obj.put("run_evaluador", run_evaluador);
+                    obj.put("run_evaluado", cursor.getString(cursor.getColumnIndex("run_evaluado")));
+                    JSONObject o = new JSONObject();
+                    do {
+
+                        o.put(cursor.getString(cursor.getColumnIndex("id_pregunta")), cursor.getInt(cursor.getColumnIndex("id_respuesta")));
+
+                    } while (cursor.moveToNext());
+
+                    obj.put("preguntas", o);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+            cursor.close();
+        }
+        if (db != null && db.isOpen()) {
+            db.close();
+        }
+
+        return obj;
     }
 
     public void eliminarRespuestasContestadas() {

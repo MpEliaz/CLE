@@ -1,8 +1,10 @@
 package mprz.cl.cle.fragments;
 
 
+import android.app.ProgressDialog;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -60,21 +62,45 @@ public class paginaDocumento extends Fragment {
 
         image = (ImageView)v.findViewById(R.id.img_documento);
 
+        loadImage load = new loadImage(image,nombre_imagen);
+        load.execute();
         return v;
     }
 
+    class loadImage extends AsyncTask<Void, Void, Bitmap>{
 
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        int resId = getResources().getIdentifier(nombre_imagen , "drawable", getActivity().getPackageName());
-        image.setImageResource(resId); // Load image into ImageView
+        ImageView image;
+        String nombre;
+        ProgressDialog progressDialog;
+
+        public loadImage(ImageView i, String nombre) {
+            image = i;
+            this.nombre = nombre;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialog = new ProgressDialog(getContext());
+            progressDialog.show();
+        }
+
+        @Override
+        protected Bitmap doInBackground(Void... params) {
+
+            int resId = getResources().getIdentifier(nombre, "drawable", getActivity().getPackageName());
+            Bitmap bitmap = BitmapFactory.decodeResource(getContext().getResources(), resId);
+
+            return bitmap;
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap bitmap) {
+            super.onPostExecute(bitmap);
+
+            image.setImageBitmap(bitmap);
+            progressDialog.hide();
+        }
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        bitmap.recycle();
-        bitmap = null;
-    }
 }

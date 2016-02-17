@@ -245,7 +245,7 @@ public class misEvaluadores extends Fragment implements adaptadorEvaluadores.OnI
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.i("error conexion", error.getMessage());
+                //Log.i("error conexion", error.getMessage());
                 pDialog.hide();
                 Toast.makeText(getActivity(), "Imposible conectar con el servidor, intente mas tarde.", Toast.LENGTH_LONG).show();
 
