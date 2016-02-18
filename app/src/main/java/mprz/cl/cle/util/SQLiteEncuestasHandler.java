@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -320,14 +321,16 @@ public class SQLiteEncuestasHandler extends SQLiteOpenHelper {
 
                     obj.put("run_evaluador", run_evaluador);
                     obj.put("run_evaluado", cursor.getString(cursor.getColumnIndex("run_evaluado")));
-                    JSONObject o = new JSONObject();
+                    JSONArray array = new JSONArray();
                     do {
-
-                        o.put(cursor.getString(cursor.getColumnIndex("id_pregunta")), cursor.getInt(cursor.getColumnIndex("id_respuesta")));
+                        JSONObject o = new JSONObject();
+                        o.put("cod_pregunta",cursor.getString(cursor.getColumnIndex("id_pregunta")));
+                        o.put("cod_respuesta",cursor.getInt(cursor.getColumnIndex("id_respuesta")));
+                        array.put(o);
 
                     } while (cursor.moveToNext());
+                    obj.put("respuestas", array);
 
-                    obj.put("preguntas", o);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

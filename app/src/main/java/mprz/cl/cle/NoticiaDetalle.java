@@ -2,22 +2,14 @@ package mprz.cl.cle;
 
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
-import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.volley.toolbox.ImageLoader;
-import com.android.volley.toolbox.NetworkImageView;
 import com.facebook.drawee.view.SimpleDraweeView;
 
-import mprz.cl.cle.R;
-import mprz.cl.cle.clases.CLESingleton;
 import mprz.cl.cle.clases.Noticia;
 import mprz.cl.cle.util.SQLiteHandler;
 

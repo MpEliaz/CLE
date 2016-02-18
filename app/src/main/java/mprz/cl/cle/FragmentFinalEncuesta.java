@@ -1,20 +1,16 @@
 package mprz.cl.cle;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
@@ -28,6 +24,8 @@ import mprz.cl.cle.clases.CLESingleton;
 import mprz.cl.cle.util.SQLiteEncuestasHandler;
 import mprz.cl.cle.util.SessionManager;
 
+import static mprz.cl.cle.util.Constantes.URL;
+
 
 public class FragmentFinalEncuesta extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -36,6 +34,7 @@ public class FragmentFinalEncuesta extends Fragment {
     private String run_evaluado;
     private Button btn_finalizar;
     private SQLiteEncuestasHandler db_encuestas;
+    private String url = URL + "/GuardarPreguntas?AspxAutoDetectCookieSupport=1";
 
 
     //private OnFragmentInteractionListener mListener;
@@ -82,9 +81,10 @@ public class FragmentFinalEncuesta extends Fragment {
 
                 SessionManager s = new SessionManager(getContext());
                 final JSONObject encuesta = db_encuestas.ObtenerEncuestaResuelta(run_evaluado, s.obtenerRutUsuarioLogeado());
+                Log.i("CLE", encuesta.toString());
 
                 //TODO falta agregar la url de envio al servidor y manejar respuesta del servidor.
-                StringRequest req = new StringRequest(StringRequest.Method.POST, "url", new Response.Listener<String>() {
+                StringRequest req = new StringRequest(StringRequest.Method.POST, "", new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
 
@@ -99,7 +99,7 @@ public class FragmentFinalEncuesta extends Fragment {
                     protected Map<String, String> getParams() throws AuthFailureError {
 
                         Map<String, String> params = new HashMap<String, String>();
-                        params.put("encuesta", encuesta.toString());
+                        params.put("sJson", encuesta.toString());
                         return params;
                     }
 
