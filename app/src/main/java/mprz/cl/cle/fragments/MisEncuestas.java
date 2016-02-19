@@ -53,6 +53,7 @@ public class MisEncuestas extends Fragment implements adaptadorEncuestados.OnIte
     private ProgressDialog pDialog;
     private SQLiteEncuestasHandler db;
     private SessionManager session;
+    SwipeRefreshLayout mSwipeRefreshLayout;
 
 
     @Override
@@ -69,9 +70,6 @@ public class MisEncuestas extends Fragment implements adaptadorEncuestados.OnIte
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_mis_encuestas, container, false);
 
-        // Progress dialog
-        pDialog = new ProgressDialog(getActivity());
-        pDialog.setCancelable(false);
 
         RecyclerView rv = (RecyclerView) v.findViewById(R.id.rv_encuestas);
         rv.setHasFixedSize(true);
@@ -81,9 +79,24 @@ public class MisEncuestas extends Fragment implements adaptadorEncuestados.OnIte
 
         if(encuestados.size() == 0){
             //si la bd devuelve 0 encuestados llama al getData para obtener a los encuestados del ws
+            // Progress dialog
+            pDialog = new ProgressDialog(getActivity());
+            pDialog.setCancelable(false);
+
             Persona p = session.obtenerUsuarioLogeado();
             getData(p.getRut());
         }
+
+        //pull to refresh!
+        mSwipeRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.refresh_mis_encuestas);
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+
+                Persona p = session.obtenerUsuarioLogeado();
+                getData(p.getRut());
+            }
+        });
 
         adapter = new adaptadorEncuestados(encuestados, getActivity());
         adapter.setOnItemClickListener(this);
@@ -94,15 +107,18 @@ public class MisEncuestas extends Fragment implements adaptadorEncuestados.OnIte
 
     private void getData(final String rut) {
 
-        pDialog.setMessage("Obteniendo datos...");
-        showDialog();
+        if( pDialog != null){
+            pDialog.setMessage("Obteniendo datos...");
+            showDialog();
+        }
+
 
         StringRequest req = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
 
             @Override
             public void onResponse(String response) {
 
-                Log.i("CLE", "encuestas OK");
+                Log.i("CLE", "encuestas OK: "+response);
                 data = new ArrayList<Encuesta>();
                 try {
                     JSONArray array = new JSONArray(response);
@@ -119,11 +135,14 @@ public class MisEncuestas extends Fragment implements adaptadorEncuestados.OnIte
                         e.setEstado(o.getString("estado"));
                         data.add(e);
                     }
-                    hideDialog();
+                    if( pDialog != null){
+                        hideDialog();
+                    }
                     db.eliminarEncuestados();
                     db.guardarEncuestados(data);
                     data = db.ObtenerEncuestados();
                     adapter.updateData(data);
+                    mSwipeRefreshLayout.setRefreshing(false);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -133,6 +152,7 @@ public class MisEncuestas extends Fragment implements adaptadorEncuestados.OnIte
             public void onErrorResponse(VolleyError error) {
                 Log.i("CLE", "encuestas Error: " + error.getMessage());
                 hideDialog();
+                mSwipeRefreshLayout.setRefreshing(false);
             }
         }) {
             @Override

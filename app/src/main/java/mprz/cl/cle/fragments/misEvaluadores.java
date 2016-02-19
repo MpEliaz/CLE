@@ -272,7 +272,7 @@ public class misEvaluadores extends Fragment implements adaptadorEvaluadores.OnI
         final ArrayList<Persona> lista = db.obtenerMisEvaluadores();
         if(verificarSubidaLista(lista))
         {
-            StringRequest req = new StringRequest(Request.Method.POST, url_envio_test, new Response.Listener<String>() {
+            StringRequest req = new StringRequest(Request.Method.POST, url_envio, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
                     Log.i("respuesta", response);

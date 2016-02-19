@@ -15,6 +15,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
@@ -84,15 +85,24 @@ public class FragmentFinalEncuesta extends Fragment {
                 Log.i("CLE", encuesta.toString());
 
                 //TODO falta agregar la url de envio al servidor y manejar respuesta del servidor.
-                StringRequest req = new StringRequest(StringRequest.Method.POST, "", new Response.Listener<String>() {
+                StringRequest req = new StringRequest(StringRequest.Method.POST, url, new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
 
+                        Log.i("exito", response);
+                        try {
+                            JSONObject o = new JSONObject(response);
+                            if(o.getString("respuesta").equals("Exito")){
+
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-
+                        Log.i("error", error.getMessage());
                     }
                 }){
                     @Override
