@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -62,6 +63,7 @@ public class misEvaluadores extends Fragment implements adaptadorEvaluadores.OnI
     private ProgressDialog pDialog;
     private ProgressDialog pDialog2;
     private SessionManager session;
+    private Persona user;
 
     Menu menu;
     MenuItem menuDoneItem;
@@ -120,8 +122,8 @@ public class misEvaluadores extends Fragment implements adaptadorEvaluadores.OnI
         rv.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
         rv.setAdapter(adapter);
         pDialog.show();
-        Persona p = session.obtenerUsuarioLogeado();
-        buscarEvaluadoresWS(p.getRut());
+        user = session.obtenerUsuarioLogeado();
+        buscarEvaluadoresWS(user.getRut());
         return v;
     }
 
@@ -263,6 +265,7 @@ public class misEvaluadores extends Fragment implements adaptadorEvaluadores.OnI
                 return "application/x-www-form-urlencoded; charset=UTF-8";
             }
         };
+        request.setRetryPolicy(new DefaultRetryPolicy(5000,DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         CLESingleton.getInstance(getActivity()).addToRequestQueue(request);
     }
 
@@ -282,7 +285,7 @@ public class misEvaluadores extends Fragment implements adaptadorEvaluadores.OnI
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    Log.i("respuesta", error.getMessage());
+
                     pDialog2.hide();
 
                 }
@@ -291,7 +294,6 @@ public class misEvaluadores extends Fragment implements adaptadorEvaluadores.OnI
                 protected Map<String, String> getParams() throws AuthFailureError {
 
                     Map<String, String> params = new HashMap<String, String>();
-                    String runEvaluado ="";
                     params.put("par1", "");
                     params.put("par2", "");
                     params.put("par3", "");
@@ -308,7 +310,7 @@ public class misEvaluadores extends Fragment implements adaptadorEvaluadores.OnI
                     int par=1;
                     int sub=1;
 
-                    params.put("run_evaluado", runEvaluado);
+                    params.put("run_evaluado", user.getRut());
                     for (Persona p : lista) {
                         if(p.getCategoria().equals("1")){
                             params.put("sup", p.getRut());
@@ -330,6 +332,7 @@ public class misEvaluadores extends Fragment implements adaptadorEvaluadores.OnI
                     return "application/x-www-form-urlencoded; charset=UTF-8";
                 }
             };
+            req.setRetryPolicy(new DefaultRetryPolicy(5000,DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
             CLESingleton.getInstance(getActivity()).addToRequestQueue(req);
         }
     }

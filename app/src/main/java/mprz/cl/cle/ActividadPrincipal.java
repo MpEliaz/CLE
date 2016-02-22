@@ -64,7 +64,21 @@ public class ActividadPrincipal extends AppCompatActivity {
 
     }
 
-
+    @Override
+    public void onBackPressed() {
+        new AlertDialog.Builder(this)
+                .setTitle("Confirmación")
+                .setMessage("¿Desea salir de la applicacion?")
+                .setCancelable(true)
+                .setPositiveButton("SI", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        ActividadPrincipal.this.finish();
+                    }
+                })
+                .setNegativeButton("NO", null)
+                .show();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

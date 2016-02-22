@@ -15,9 +15,6 @@ import mprz.cl.cle.util.SQLiteHandler;
 
 public class NoticiaDetalle extends AppCompatActivity {
 
-    private SQLiteHandler db;
-    ImageLoader mImageLoader;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,7 +23,7 @@ public class NoticiaDetalle extends AppCompatActivity {
         inicializarToolbar();
 
         int id = getIntent().getIntExtra("id_noticia",-1);
-        db = new SQLiteHandler(this);
+        SQLiteHandler db = new SQLiteHandler(this);
         Noticia n = db.obtenerNoticia(id);
 
         if(n != null){

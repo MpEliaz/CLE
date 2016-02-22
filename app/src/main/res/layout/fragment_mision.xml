@@ -24,7 +24,9 @@
             android:layout_height="match_parent"
             android:layout_below="@+id/imageView2"
             android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true">
+            android:layout_alignParentStart="true"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -57,11 +59,11 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceSmall"
                 android:text="2.- Asesorar en el ámbito directivo para el levantamiento de las políticas de liderazgo institucionales. "
                 android:id="@+id/textView5"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="10dp"/>
+                android:layout_marginBottom="10dp"
+                android:textIsSelectable="false" />
 
             <TextView
                 android:layout_width="wrap_content"
