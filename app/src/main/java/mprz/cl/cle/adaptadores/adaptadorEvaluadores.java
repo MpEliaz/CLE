@@ -111,7 +111,7 @@ public class adaptadorEvaluadores extends RecyclerView.Adapter<adaptadorEvaluado
 
         public void bindPersona(final Persona p){
             nombre.setText(p.getNombre());
-            rut.setText(p.getRut());
+            rut.setText(p.getCategoria());
 
 
         }
@@ -133,4 +133,6 @@ public class adaptadorEvaluadores extends RecyclerView.Adapter<adaptadorEvaluado
     public int getItemViewType(int position) {
         return viewtype;
     }
+
+
 }

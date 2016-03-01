@@ -93,7 +93,7 @@ public class adaptadorDocumentos extends RecyclerView.Adapter<adaptadorDocumento
 
         public void bindPregunta(final Documento d){
             nombre.setText(d.getNombre());
-            imagen.setImageResource(R.drawable.icon_document);
+            imagen.setImageResource(d.getPaginas()[0]);
 
 
 

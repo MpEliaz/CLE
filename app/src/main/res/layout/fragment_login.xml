@@ -43,7 +43,6 @@
                 android:hint="Usuario"
                 android:singleLine="true"
                 android:textIsSelectable="false"
-                android:text="11111111-1"
                 android:textColorHint="@color/black"
                 android:backgroundTint="@color/color_primary" />
 
@@ -61,7 +60,6 @@
                 android:ems="10"
                 android:id="@+id/et_password"
                 android:hint="Contraseña"
-                android:text="juanperez"
                 android:backgroundTint="@color/color_primary" />
 
         </android.support.design.widget.TextInputLayout>

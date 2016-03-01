@@ -294,7 +294,7 @@ public class SQLiteHandler extends SQLiteOpenHelper {
                     p.setId(cursor.getInt(cursor.getColumnIndex("id")));
                     p.setRut(cursor.getString(cursor.getColumnIndex("rut")));
                     p.setNombre(cursor.getString(cursor.getColumnIndex("nombre")));
-                    p.setCategoria(String.valueOf(cursor.getInt(cursor.getColumnIndex("relacion"))));
+                    p.setCategoria(nombre_evaluador(cursor.getInt(cursor.getColumnIndex("relacion"))));
 
                     personas.add(p);
                 }while (cursor.moveToNext());
@@ -362,5 +362,18 @@ public class SQLiteHandler extends SQLiteOpenHelper {
         db.execSQL(CREATE_MIS_EVALUADORES);
 
         Log.i(TAG, "tablas recreadas");
+    }
+
+    //obtiene la relacion a traves del id
+    private String nombre_evaluador(int cod){
+        switch (cod){
+            case 1:
+                return "Superior";
+            case 2:
+                return "Par";
+            case 3:
+                return "Subalterno";
+        }
+        return "";
     }
 }

@@ -203,13 +203,13 @@ public class buscadorEvaluadores extends AppCompatActivity implements adaptadorB
         for (Persona p: data) {
 
             switch (p.getCategoria()){
-                case "1":
+                case "Superior":
                     superiores++;
                     break;
-                case "2":
+                case "Par":
                     pares++;
                     break;
-                case "3":
+                case "Subalterno":
                     subalternos++;
                     break;
             }
@@ -245,7 +245,8 @@ public class buscadorEvaluadores extends AppCompatActivity implements adaptadorB
 
         if(pase){
             db.guardarEvaluador(rut, nombre, relacion);
-            finish();
+            Toast.makeText(this, "Agregado a tu lista.", Toast.LENGTH_LONG).show();
+            //finish();
         }
     }
 

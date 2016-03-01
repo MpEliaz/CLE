@@ -52,7 +52,7 @@ public class misEvaluadores extends Fragment implements adaptadorEvaluadores.OnI
 
     private String url = URL + "/listaEvaluadores?AspxAutoDetectCookieSupport=1";
     private String url_envio = URL + "/guardarEvaluadores?AspxAutoDetectCookieSupport=1";
-    private String url_envio_test = "http://192.168.50.19:8000/recibir_evaluadores";
+    //private String url_envio_test = "http://192.168.50.19:8000/recibir_evaluadores";
     private int EVALUADORES = 777;
     private adaptadorEvaluadores adapter;
     private ArrayList<Persona> data;
@@ -280,6 +280,12 @@ public class misEvaluadores extends Fragment implements adaptadorEvaluadores.OnI
                 public void onResponse(String response) {
                     Log.i("respuesta", response);
                     pDialog2.hide();
+                    if(response.equals("false")){
+                        Toast.makeText(getContext(), "Hubo un error al enviar los datos, intente mas tarde.", Toast.LENGTH_SHORT).show();
+                    }
+                    else{
+
+                    }
                     //TODO: manejar la respuesta que entregue el servidor
                 }
             }, new Response.ErrorListener() {
@@ -287,6 +293,7 @@ public class misEvaluadores extends Fragment implements adaptadorEvaluadores.OnI
                 public void onErrorResponse(VolleyError error) {
 
                     pDialog2.hide();
+                    Toast.makeText(getContext(), "Hubo un error al enviar los datos, intente mas tarde.", Toast.LENGTH_SHORT).show();
 
                 }
             }){
@@ -304,6 +311,8 @@ public class misEvaluadores extends Fragment implements adaptadorEvaluadores.OnI
                     params.put("sub3", "");
                     params.put("sub4", "");
                     params.put("sub5", "");
+                    params.put("sub6", "");
+                    params.put("sub7", "");
 
 
 
@@ -312,13 +321,13 @@ public class misEvaluadores extends Fragment implements adaptadorEvaluadores.OnI
 
                     params.put("run_evaluado", user.getRut());
                     for (Persona p : lista) {
-                        if(p.getCategoria().equals("1")){
+                        if(p.getCategoria().equals("Superior")){
                             params.put("sup", p.getRut());
 
-                        }else if(p.getCategoria().equals("2")){
+                        }else if(p.getCategoria().equals("Par")){
                             params.put("par"+par, p.getRut());
                             par++;
-                        }else if(p.getCategoria().equals("3")){
+                        }else if(p.getCategoria().equals("Subalterno")){
                             params.put("sub"+sub, p.getRut());
                             sub++;
                         }
@@ -395,13 +404,13 @@ public class misEvaluadores extends Fragment implements adaptadorEvaluadores.OnI
         for (Persona p: data) {
 
             switch (p.getCategoria()){
-                case "1":
+                case "Superior":
                     superiores++;
                     break;
-                case "2":
+                case "Par":
                     pares++;
                     break;
-                case "3":
+                case "Subalterno":
                     subalternos++;
                     break;
             }
@@ -409,7 +418,7 @@ public class misEvaluadores extends Fragment implements adaptadorEvaluadores.OnI
 
         if(superiores == 1){
             if(pares >= 3 && pares <= 5){
-                if(subalternos >=3 && subalternos <=5)
+                if(subalternos >=5 && subalternos <=7)
                 {
                     pase = true;
                 }

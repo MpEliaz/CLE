@@ -32,6 +32,7 @@ public class SQLiteEncuestasHandler extends SQLiteOpenHelper {
     private static final String TABLE_ENCUESTAS_TERMINADAS = "ENCUESTAS_TERMINADAS";
     private static final String TABLE_RESPUESTAS = "RESPUESTAS";
     private static final String TABLE_INTRO_ENCUESTAS = "INTRO_ENCUESTAS";
+    private static final String TABLE_RESPUESTAS_ABIERTAS = "RESPUESTAS_ABIERTAS";
 
 
     private static final String CREATE_ENCUESTADOS_TABLE = "CREATE TABLE "+TABLE_ENCUESTADOS+" (id INTEGER PRIMARY KEY AUTOINCREMENT, id_encuesta INTEGER, runevaluado TEXT, nombreevaluado TEXT, relacion TEXT, cod_relacion TEXT, estado TEXT, terminado INTEGER)";
@@ -39,6 +40,7 @@ public class SQLiteEncuestasHandler extends SQLiteOpenHelper {
     private static final String CREATE_RESPUESTAS_TABLE = "CREATE TABLE "+TABLE_RESPUESTAS+" (id INTEGER PRIMARY KEY AUTOINCREMENT, cod_relacion TEXT, id_pregunta TEXT, id_respuesta INTEGER, respuesta TEXT)";
     private static final String CREATE_ENCUESTAS_TERMINADAS_TABLE = "CREATE TABLE "+TABLE_ENCUESTAS_TERMINADAS+" (id INTEGER PRIMARY KEY AUTOINCREMENT, run_evaluado TEXT, id_encuesta TEXT, id_pregunta TEXT, id_respuesta INTEGER)";
     private static final String CREATE_TEXTOS_ENCUESTA = "CREATE TABLE "+TABLE_INTRO_ENCUESTAS+" (id INTEGER PRIMARY KEY AUTOINCREMENT, cod_relacion TEXT, titulo_introduccion TEXT, introduccion TEXT, titulo_competencias TEXT, competencias TEXT, titulo_atributos TEXT, atributos TEXT)";
+    private static final String CREATE_RESPUESTAS_ABIERTAS_TABLE = "CREATE TABLE "+TABLE_RESPUESTAS_ABIERTAS+" (id INTEGER PRIMARY KEY AUTOINCREMENT, run_evaluado TEXT, id_respuesta TEXT, respuesta TEXT)";
 
 
     public SQLiteEncuestasHandler(Context context) {
@@ -53,6 +55,7 @@ public class SQLiteEncuestasHandler extends SQLiteOpenHelper {
         db.execSQL(CREATE_PREGUNTAS_TABLE);
         db.execSQL(CREATE_RESPUESTAS_TABLE);
         db.execSQL(CREATE_TEXTOS_ENCUESTA);
+        db.execSQL(CREATE_RESPUESTAS_ABIERTAS_TABLE);
         Log.i("CLE", "bases de datos encuestas creada");
     }
 
@@ -62,9 +65,10 @@ public class SQLiteEncuestasHandler extends SQLiteOpenHelper {
 
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_ENCUESTADOS);
         db.execSQL("DROP TABLE IF EXISTS " + CREATE_PREGUNTAS_TABLE);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_ENCUESTAS_TERMINADAS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_PREGUNTAS_ENCUESTA);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_RESPUESTAS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_INTRO_ENCUESTAS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_RESPUESTAS_ABIERTAS);
 
         onCreate(db);
     }
@@ -210,6 +214,33 @@ public class SQLiteEncuestasHandler extends SQLiteOpenHelper {
             // Inserting Row
             values.put("id_pregunta", id_pregunta); // id_pregunta
             long id = db.insert(TABLE_ENCUESTAS_TERMINADAS, null, values);
+            Log.i(TAG, "Nueva pregunta con respuesta insertada: run evaluado:"+run_evaluado+" ,id:" + id + ", id_encuesta:'"+cod_relacion+"', id_pregunta:'" + id_pregunta + "', id_respuesta:" + id_respuesta);
+        }
+        else
+        {
+            long id = db.update(TABLE_ENCUESTAS_TERMINADAS, values, "id_pregunta='"+id_pregunta+"' and run_evaluado='"+run_evaluado+"'", null);
+            Log.i(TAG, "pregunta con respuesta actualizada: run evaluado:"+run_evaluado+", id:" + id + ", id_encuesta:'"+cod_relacion+"' id_pregunta:'" + id_pregunta + "', id_respuesta:" + id_respuesta);
+        }
+
+        if (db != null && db.isOpen()) {
+            db.close();
+        }
+    }
+
+/*    public void guardarRespuestaAbierta(String run_evaluado, String id_respuesta, String respuesta) {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("run_evaluado", run_evaluado);
+        values.put("id_encuesta", id_respuesta);
+        values.put("id_respuesta", id_respuesta);
+
+
+        if (comprobarRespuestaEnBd(id_pregunta, cod_relacion).equals("")) {
+
+            // Inserting Row
+            values.put("id_pregunta", id_pregunta); // id_pregunta
+            long id = db.insert(TABLE_ENCUESTAS_TERMINADAS, null, values);
             Log.i(TAG, "Nueva pregunta con respuesta insertada: id:" + id + ", id_encuesta:'"+cod_relacion+"', id_pregunta:'" + id_pregunta + "', id_respuesta:" + id_respuesta);
         }
         else
@@ -221,7 +252,7 @@ public class SQLiteEncuestasHandler extends SQLiteOpenHelper {
         if (db != null && db.isOpen()) {
             db.close();
         }
-    }
+    }*/
 
     public ArrayList<PreguntaResuelta> ObtenerProgresoEncuesta(String run_evaluado, String cod_relacion) {
         ArrayList<PreguntaResuelta> progreso = new ArrayList<PreguntaResuelta>();
@@ -441,11 +472,15 @@ public class SQLiteEncuestasHandler extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_PREGUNTAS_ENCUESTA);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_ENCUESTAS_TERMINADAS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_RESPUESTAS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_INTRO_ENCUESTAS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_RESPUESTAS_ABIERTAS);
 
         db.execSQL(CREATE_ENCUESTADOS_TABLE);
         db.execSQL(CREATE_ENCUESTAS_TERMINADAS_TABLE);
         db.execSQL(CREATE_PREGUNTAS_TABLE);
         db.execSQL(CREATE_RESPUESTAS_TABLE);
+        db.execSQL(CREATE_TEXTOS_ENCUESTA);
+        db.execSQL(CREATE_RESPUESTAS_ABIERTAS_TABLE);
 
         Log.i(TAG, "tablas encuestados recreadas");
     }

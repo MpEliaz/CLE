@@ -1,6 +1,7 @@
 package mprz.cl.cle.fragments;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -43,10 +44,18 @@ public class Doctrina extends Fragment implements adaptadorDocumentos.OnItemClic
     @Override
     public void onItemClick(View view, Documento documento, int position) {
 
-        Toast.makeText(getActivity(), "nombre: " + documento.getNombre(), Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getActivity(), "nombre: " + documento.getNombre(), Toast.LENGTH_SHORT).show();
         Intent i = new Intent(getActivity(), DocumentosPager.class);
-        i.putExtra("nombres",documento.getPaginas());
+        i.putExtra("ids",documento.getPaginas());
         startActivity(i);
+    }
+
+    private class loadDocuments extends AsyncTask<Void, Void, Void>{
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            return null;
+        }
     }
 
 
