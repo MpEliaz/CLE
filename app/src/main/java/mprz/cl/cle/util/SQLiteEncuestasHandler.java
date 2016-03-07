@@ -38,7 +38,7 @@ public class SQLiteEncuestasHandler extends SQLiteOpenHelper {
     private static final String CREATE_ENCUESTADOS_TABLE = "CREATE TABLE "+TABLE_ENCUESTADOS+" (id INTEGER PRIMARY KEY AUTOINCREMENT, id_encuesta INTEGER, runevaluado TEXT, nombreevaluado TEXT, relacion TEXT, cod_relacion TEXT, estado TEXT, terminado INTEGER)";
     private static final String CREATE_PREGUNTAS_TABLE = "CREATE TABLE "+TABLE_PREGUNTAS_ENCUESTA+" (id INTEGER PRIMARY KEY AUTOINCREMENT, cod_relacion TEXT, id_pregunta TEXT, pregunta TEXT)";
     private static final String CREATE_RESPUESTAS_TABLE = "CREATE TABLE "+TABLE_RESPUESTAS+" (id INTEGER PRIMARY KEY AUTOINCREMENT, cod_relacion TEXT, id_pregunta TEXT, id_respuesta INTEGER, respuesta TEXT)";
-    private static final String CREATE_ENCUESTAS_TERMINADAS_TABLE = "CREATE TABLE "+TABLE_ENCUESTAS_TERMINADAS+" (id INTEGER PRIMARY KEY AUTOINCREMENT, run_evaluado TEXT, id_encuesta TEXT, id_pregunta TEXT, id_respuesta INTEGER)";
+    private static final String CREATE_ENCUESTAS_TERMINADAS_TABLE = "CREATE TABLE "+TABLE_ENCUESTAS_TERMINADAS+" (id INTEGER PRIMARY KEY AUTOINCREMENT, run_evaluado TEXT, id_encuesta TEXT, id_pregunta TEXT, id_respuesta TEXT)";
     private static final String CREATE_TEXTOS_ENCUESTA = "CREATE TABLE "+TABLE_INTRO_ENCUESTAS+" (id INTEGER PRIMARY KEY AUTOINCREMENT, cod_relacion TEXT, titulo_introduccion TEXT, introduccion TEXT, titulo_competencias TEXT, competencias TEXT, titulo_atributos TEXT, atributos TEXT)";
     private static final String CREATE_RESPUESTAS_ABIERTAS_TABLE = "CREATE TABLE "+TABLE_RESPUESTAS_ABIERTAS+" (id INTEGER PRIMARY KEY AUTOINCREMENT, run_evaluado TEXT, id_respuesta TEXT, respuesta TEXT)";
 
@@ -200,7 +200,7 @@ public class SQLiteEncuestasHandler extends SQLiteOpenHelper {
         Log.i(TAG, "tabla encuestados borrada");
     }
 
-    public void saveQuestionWithAnswer(String id_pregunta, int id_respuesta, String cod_relacion, String run_evaluado) {
+    public void saveQuestionWithAnswer(String id_pregunta, String id_respuesta, String cod_relacion, String run_evaluado) {
 
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -209,7 +209,7 @@ public class SQLiteEncuestasHandler extends SQLiteOpenHelper {
         values.put("id_respuesta", id_respuesta);
 
 
-        if (comprobarRespuestaEnBd(id_pregunta, cod_relacion).equals("")) {
+        if (comprobarRespuestaEnBd(id_pregunta, cod_relacion, run_evaluado).equals("")) {
 
             // Inserting Row
             values.put("id_pregunta", id_pregunta); // id_pregunta
@@ -239,7 +239,6 @@ public class SQLiteEncuestasHandler extends SQLiteOpenHelper {
         if (comprobarRespuestaEnBd(id_pregunta, cod_relacion).equals("")) {
 
             // Inserting Row
-            values.put("id_pregunta", id_pregunta); // id_pregunta
             long id = db.insert(TABLE_ENCUESTAS_TERMINADAS, null, values);
             Log.i(TAG, "Nueva pregunta con respuesta insertada: id:" + id + ", id_encuesta:'"+cod_relacion+"', id_pregunta:'" + id_pregunta + "', id_respuesta:" + id_respuesta);
         }
@@ -313,8 +312,8 @@ public class SQLiteEncuestasHandler extends SQLiteOpenHelper {
         db.close();
         return p != null;
     }
-    public String comprobarRespuestaEnBd(String id, String cod_relacion) {
-        String selectQuery = "SELECT id_pregunta FROM " + TABLE_ENCUESTAS_TERMINADAS + " where id_pregunta='"+ id+"' and id_encuesta='"+cod_relacion+"'";
+    public String comprobarRespuestaEnBd(String id, String cod_relacion, String run_evaluado) {
+        String selectQuery = "SELECT id_pregunta FROM " + TABLE_ENCUESTAS_TERMINADAS + " where id_pregunta='"+ id+"' and run_evaluado='"+run_evaluado+"' and id_encuesta='"+cod_relacion+"'";
         String result = "";
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
@@ -356,7 +355,7 @@ public class SQLiteEncuestasHandler extends SQLiteOpenHelper {
                     do {
                         JSONObject o = new JSONObject();
                         o.put("cod_pregunta",cursor.getString(cursor.getColumnIndex("id_pregunta")));
-                        o.put("cod_respuesta",cursor.getInt(cursor.getColumnIndex("id_respuesta")));
+                        o.put("cod_respuesta",cursor.getString(cursor.getColumnIndex("id_respuesta")));
                         array.put(o);
 
                     } while (cursor.moveToNext());

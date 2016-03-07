@@ -1,0 +1,101 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="mprz.cl.cle.PreguntasAbiertas"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Indique 3 características que usted identifica como FORTALEZAS en la persona que está evaluando."
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="10dp"/>
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/fortaleza1"
+            android:background="@drawable/edittext_border"
+            android:layout_margin="10dp"
+            android:padding="10dp"
+            android:singleLine="true"/>
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/edittext_border"
+            android:id="@+id/fortaleza2"
+            android:layout_margin="10dp"
+            android:padding="10dp"
+            android:singleLine="true" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/edittext_border"
+            android:id="@+id/fortaleza3"
+            android:layout_margin="10dp"
+            android:padding="10dp"
+            android:singleLine="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text=" Indique 3 características que usted identifica como ÁREAS DE MEJORA en la persona que está evaluando"
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="10dp" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/mejora1"
+            android:background="@drawable/edittext_border"
+            android:layout_margin="10dp"
+            android:padding="10dp"
+            android:singleLine="true" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/edittext_border"
+            android:id="@+id/mejora2"
+            android:layout_margin="10dp"
+            android:padding="10dp"
+            android:singleLine="true" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/edittext_border"
+            android:id="@+id/mejora3"
+            android:layout_margin="10dp"
+            android:padding="10dp"
+            android:singleLine="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Indique cualquier COMENTARIO ADICIONAL sobre el evaluado y/o que permita aclarar cualquier respuesta."
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="10dp" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/edittext_border"
+            android:id="@+id/comentario"
+            android:layout_margin="10dp"
+            android:lines="4"
+            android:padding="5dp"
+            android:maxLines="4" />
+    </LinearLayout>
+
+</ScrollView>
