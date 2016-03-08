@@ -320,7 +320,7 @@ public class showEncuesta extends AppCompatActivity {
     }
 
     private void hideDialog() {
-        if (pDialog.isShowing())
+        if (pDialog != null && pDialog.isShowing())
             pDialog.dismiss();
     }
 

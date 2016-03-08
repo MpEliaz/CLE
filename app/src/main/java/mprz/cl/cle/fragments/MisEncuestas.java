@@ -179,7 +179,7 @@ public class MisEncuestas extends Fragment implements adaptadorEncuestados.OnIte
     }
 
     private void hideDialog() {
-        if (pDialog.isShowing())
+        if (pDialog != null && pDialog.isShowing())
             pDialog.dismiss();
     }
 

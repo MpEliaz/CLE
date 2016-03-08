@@ -92,8 +92,9 @@ public class FragmentFinalEncuesta extends Fragment {
                         Log.i("exito", response);
                         try {
                             JSONObject o = new JSONObject(response);
-                            if(o.getString("respuesta").equals("Exito")){
+                            if(o.getString("respuesta").equals("OK")){
 
+                                getActivity().finish();
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -102,7 +103,7 @@ public class FragmentFinalEncuesta extends Fragment {
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.i("error", error.getMessage());
+//                        Log.i("error", error.getMessage());
                     }
                 }){
                     @Override
