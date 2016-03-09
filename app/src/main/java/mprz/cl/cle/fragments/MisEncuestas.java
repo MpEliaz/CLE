@@ -186,7 +186,7 @@ public class MisEncuestas extends Fragment implements adaptadorEncuestados.OnIte
     @Override
     public void onItemClick(View view, Encuesta encuesta, int position) {
 
-        Toast.makeText(getActivity(), "nombre: " + encuesta.getNombreEvaluado(), Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getActivity(), "nombre: " + encuesta.getNombreEvaluado(), Toast.LENGTH_SHORT).show();
     }
 
 /*    @Override

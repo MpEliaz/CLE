@@ -186,6 +186,7 @@ public class ActividadPrincipal extends AppCompatActivity {
                             fragmentTransaction = true;
                             break;
                         case R.id.nav_acerca_de:
+                            Toast.makeText(ActividadPrincipal.this, "Esta aplicación fue desarrollada a medida para el Ejército de Chile por: CMT y Mprz. \n \r cmartinezt.91@gmail.com \n \r Versión 1.0", Toast.LENGTH_LONG).show();
                             break;
                         case R.id.nav_log_out:
                             if(session.isLoggedIn()){

@@ -41,5 +41,12 @@
         android:layout_marginTop="10dp"
         android:layout_gravity="center_horizontal"
         android:gravity="left|center_vertical" />
+
+        <!--<WebView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/noticia_detalle_completo2"
+            android:layout_marginTop="15dp">
+        </WebView>-->
     </LinearLayout>
 </android.support.v4.widget.NestedScrollView>

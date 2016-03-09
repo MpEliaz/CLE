@@ -99,7 +99,7 @@ public class Home extends Fragment implements adaptadorNoticiasHome.OnItemClickL
                         n.setUsuario(o.getString("usuario"));
                         n.setTitulo(o.getString("Titulo"));
                         n.setResumen(o.getString("Resumen"));
-                        n.setCuerpo(o.getString("Completa"));
+                        n.setCuerpo(o.getString("Completa").replace("\n", "").replace("\r", ""));
                         n.setUrl_imagen(o.getString("Imagen"));
 
                         noticias.add(n);

@@ -11,6 +11,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.davemorrissey.labs.subscaleview.ImageSource;
+import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
+
 import mprz.cl.cle.R;
 import uk.co.senab.photoview.PhotoViewAttacher;
 
@@ -33,11 +36,14 @@ public class Organica extends Fragment {
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_organica, container, false);
 
-    mImageView = (ImageView)v.findViewById(R.id.organica_img);
+        SubsamplingScaleImageView imageView = (SubsamplingScaleImageView)v.findViewById(R.id.organica_img);
+        imageView.setImage(ImageSource.resource(R.drawable.organigrama));
+
+/*        mImageView = (ImageView)v.findViewById(R.id.organica_img);
         Drawable bitmap = getResources().getDrawable(R.drawable.organigrama);
         mImageView.setImageDrawable(bitmap);
 
-        mAttacher = new PhotoViewAttacher(mImageView);
+        mAttacher = new PhotoViewAttacher(mImageView);*/
 
         return v;
     }

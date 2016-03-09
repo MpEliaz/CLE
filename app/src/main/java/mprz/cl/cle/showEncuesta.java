@@ -147,8 +147,8 @@ public class showEncuesta extends AppCompatActivity {
         ArrayList<Fragment> items = new ArrayList<Fragment>();
 
 
-
             items.add(introEncuesta.newInstance(cod_relacion));
+
 
             for (Pregunta p : list) {
 
@@ -160,6 +160,7 @@ public class showEncuesta extends AppCompatActivity {
             }
             items.add(PreguntasAbiertas.newInstance(run_evaluado,cod_relacion));
             items.add(FragmentFinalEncuesta.newInstance(run_evaluado));
+
 
         return items;
     }
@@ -201,7 +202,7 @@ public class showEncuesta extends AppCompatActivity {
            boolean resp = ((PreguntasAbiertas) f).guardar();
 
             if(resp == false){
-                Toast.makeText(showEncuesta.this, "Responde las preguntas gil!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(showEncuesta.this, "Responde todas las preguntas antes de continuar.", Toast.LENGTH_SHORT).show();
             }
             else {
                 pager.setCurrentItem(pager.getCurrentItem()+1);

@@ -5,6 +5,9 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
+import android.view.MenuItem;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
 import android.widget.TextView;
 
 import com.android.volley.toolbox.ImageLoader;
@@ -35,7 +38,13 @@ public class NoticiaDetalle extends AppCompatActivity {
             TextView titulo = (TextView)findViewById(R.id.noticia_detalle_titulo);
             titulo.setText(n.getTitulo());
             TextView cuerpo = (TextView)findViewById(R.id.noticia_detalle_completo);
+            //WebView cuerpo = (WebView) findViewById(R.id.noticia_detalle_completo2);
             cuerpo.setText(n.getCuerpo());
+/*            WebSettings settings = cuerpo.getSettings();
+            settings.setDefaultTextEncodingName("utf-8");
+            String text = "<html><meta charset=\"UTF-8\"><body style=\"background-color:#FFDFDDDD\"><p align=\"justify\">"+n.getCuerpo()+"</p></body></html>";
+            cuerpo.loadData(text, "text/html; charset=utf-8", "utf-8");*/
+
 
         }
     }
@@ -50,7 +59,13 @@ public class NoticiaDetalle extends AppCompatActivity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        return super.onCreateOptionsMenu(menu);
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            // Respond to the action bar's Up/Home button
+            case android.R.id.home:
+                finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

@@ -185,7 +185,7 @@ public class SQLiteHandler extends SQLiteOpenHelper {
 
     public ArrayList<Noticia> obtenerNoticias() {
         ArrayList<Noticia> noticias = new ArrayList<Noticia>();
-        String selectQuery = "SELECT  * FROM " + TABLE_NOTICIAS;
+        String selectQuery = "SELECT  * FROM " + TABLE_NOTICIAS + " order by id desc";
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);

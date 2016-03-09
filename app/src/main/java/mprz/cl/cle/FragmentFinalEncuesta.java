@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Response;
@@ -94,6 +95,7 @@ public class FragmentFinalEncuesta extends Fragment {
                             JSONObject o = new JSONObject(response);
                             if(o.getString("respuesta").equals("OK")){
 
+                                Toast.makeText(getActivity(), "Encuesta Enviada!", Toast.LENGTH_SHORT).show();
                                 getActivity().finish();
                             }
                         } catch (JSONException e) {
