@@ -1,5 +1,6 @@
 package mprz.cl.cle.adaptadores;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import mprz.cl.cle.ActividadPrincipal;
 import mprz.cl.cle.R;
 import mprz.cl.cle.clases.Encuesta;
 import mprz.cl.cle.showEncuesta;
@@ -102,10 +104,11 @@ public class adaptadorEncuestados extends RecyclerView.Adapter<adaptadorEncuesta
                 btn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Intent i = new Intent(cx.getApplicationContext(), showEncuesta.class);
+                        Intent i = new Intent(cx, showEncuesta.class);
                         i.putExtra("runEvaluado", e.getRunEvaluado());
                         i.putExtra("cod_relacion", e.getCod_relacion());
-                        cx.startActivity(i);
+                        //cx.startActivity(i);
+                        ((ActividadPrincipal)cx).startActivityForResult(i, 123);
                     }
                 });
             }

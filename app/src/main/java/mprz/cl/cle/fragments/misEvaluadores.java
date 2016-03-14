@@ -280,10 +280,17 @@ public class misEvaluadores extends Fragment implements adaptadorEvaluadores.OnI
                 public void onResponse(String response) {
                     Log.i("respuesta", response);
                     pDialog2.hide();
-                    if(response.equals("false")){
-                        Toast.makeText(getContext(), "Hubo un error al enviar los datos, intente mas tarde.", Toast.LENGTH_SHORT).show();
+                    if(response.equals("true")){
+                        ArrayList<Persona> evaluadores = db.obtenerMisEvaluadores();
+                        adapter.updateData(evaluadores, 2);
+                        fab.setVisibility(View.GONE);
+                        menuDoneItem = menu.findItem(R.id.update_evaluadores);
+                        menuDoneItem.setVisible(false);
+                        menuDoneItem.setEnabled(false);
+                        Toast.makeText(getContext(), "Datos enviados correctamente.", Toast.LENGTH_SHORT).show();
                     }
                     else{
+                        Toast.makeText(getContext(), "Hubo un error al enviar los datos, intente mas tarde.", Toast.LENGTH_SHORT).show();
 
                     }
                     //TODO: manejar la respuesta que entregue el servidor

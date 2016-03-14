@@ -235,7 +235,7 @@ public class buscadorEvaluadores extends AppCompatActivity implements adaptadorB
         }
 
         if(relacion == 3){
-            if(subalternos < 5){
+            if(subalternos < 7){
                 pase = true;
             }
             else {

@@ -2,13 +2,12 @@ package mprz.cl.cle;
 
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
@@ -19,36 +18,25 @@ import android.view.View;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-
-import mprz.cl.cle.adaptadores.adaptadorEncuesta;
 import mprz.cl.cle.adaptadores.adaptadorEncuestaPager;
-import mprz.cl.cle.adaptadores.adaptadorEncuestados;
 import mprz.cl.cle.clases.CLESingleton;
-import mprz.cl.cle.clases.Encuesta;
 import mprz.cl.cle.clases.Persona;
 import mprz.cl.cle.clases.Pregunta;
-import mprz.cl.cle.clases.PreguntaResuelta;
 import mprz.cl.cle.clases.Respuesta;
-import mprz.cl.cle.fragments.MisEncuestas;
 import mprz.cl.cle.fragments.introEncuesta;
 import mprz.cl.cle.util.SQLiteEncuestasHandler;
-import mprz.cl.cle.util.SQLiteHandler;
 import mprz.cl.cle.util.SessionManager;
-
 import static mprz.cl.cle.util.Constantes.URL;
 
 public class showEncuesta extends AppCompatActivity {
@@ -338,7 +326,10 @@ public class showEncuesta extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
 
 
-
+    }
 }

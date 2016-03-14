@@ -1,5 +1,6 @@
 package mprz.cl.cle;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -85,7 +86,6 @@ public class FragmentFinalEncuesta extends Fragment {
                 final JSONObject encuesta = db_encuestas.ObtenerEncuestaResuelta(run_evaluado, s.obtenerRutUsuarioLogeado());
                 Log.i("CLE", encuesta.toString());
 
-                //TODO falta agregar la url de envio al servidor y manejar respuesta del servidor.
                 StringRequest req = new StringRequest(StringRequest.Method.POST, url, new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -93,9 +93,12 @@ public class FragmentFinalEncuesta extends Fragment {
                         Log.i("exito", response);
                         try {
                             JSONObject o = new JSONObject(response);
-                            if(o.getString("respuesta").equals("OK")){
+                            String resp = o.getString("respuesta");
+                            if(resp.equals("OK")){
 
-                                Toast.makeText(getActivity(), "Encuesta Enviada!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getActivity(), "Encuesta Enviada!", Toast.LENGTH_LONG).show();
+                                Intent i = getActivity().getIntent();
+                                i.putExtra("RESULTADO", 1);
                                 getActivity().finish();
                             }
                         } catch (JSONException e) {

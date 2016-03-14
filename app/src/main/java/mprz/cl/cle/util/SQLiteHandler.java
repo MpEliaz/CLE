@@ -354,11 +354,11 @@ public class SQLiteHandler extends SQLiteOpenHelper {
 
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_USER);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NOTICIAS);
+        //db.execSQL("DROP TABLE IF EXISTS " + TABLE_NOTICIAS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_MIS_EVALUADORES);
 
         db.execSQL(CREATE_USER_TABLE);
-        db.execSQL(CREATE_NOTICIAS_TABLE);
+        //db.execSQL(CREATE_NOTICIAS_TABLE);
         db.execSQL(CREATE_MIS_EVALUADORES);
 
         Log.i(TAG, "tablas recreadas");

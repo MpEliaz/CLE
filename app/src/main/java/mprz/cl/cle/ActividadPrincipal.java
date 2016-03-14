@@ -1,8 +1,10 @@
 package mprz.cl.cle;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -212,7 +214,7 @@ public class ActividadPrincipal extends AppCompatActivity {
                                         getSupportFragmentManager().beginTransaction()
                                                 .replace(R.id.content_fragment, new Home())
                                                 .commit();
-                                        Toast.makeText(getApplicationContext(), "Sesion cerrada", Toast.LENGTH_LONG).show();
+                                        Toast.makeText(ActividadPrincipal.this, "Sesion cerrada", Toast.LENGTH_LONG).show();
 
                                     }
                                 });
@@ -246,6 +248,22 @@ public class ActividadPrincipal extends AppCompatActivity {
                     return true;
                 }
             });
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == 123){
+
+            int result =data.getExtras().getInt("RESULTADO");
+            if(result == 1){
+
+
+
+
+            }
         }
     }
 }
