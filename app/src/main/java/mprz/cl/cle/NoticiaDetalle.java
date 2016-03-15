@@ -11,6 +11,7 @@ import android.webkit.WebView;
 import android.widget.TextView;
 
 import com.android.volley.toolbox.ImageLoader;
+import com.bluejamesbond.text.DocumentView;
 import com.facebook.drawee.view.SimpleDraweeView;
 
 import mprz.cl.cle.clases.Noticia;
@@ -37,7 +38,8 @@ public class NoticiaDetalle extends AppCompatActivity {
 
             TextView titulo = (TextView)findViewById(R.id.noticia_detalle_titulo);
             titulo.setText(n.getTitulo());
-            TextView cuerpo = (TextView)findViewById(R.id.noticia_detalle_completo);
+            //TextView cuerpo = (TextView)findViewById(R.id.noticia_detalle_completo);
+            DocumentView cuerpo = (DocumentView)findViewById(R.id.noticia_detalle_completo);
             //WebView cuerpo = (WebView) findViewById(R.id.noticia_detalle_completo2);
             cuerpo.setText(n.getCuerpo());
 /*            WebSettings settings = cuerpo.getSettings();

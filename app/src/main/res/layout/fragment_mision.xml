@@ -35,8 +35,9 @@
                 android:text="Gestionar el proceso de desarrollo del liderazgo a nivel institucional."
                 android:id="@+id/textView2"
                 android:layout_gravity="center_horizontal"
-                android:textStyle="italic"
-                android:layout_marginTop="20dp" />
+                android:layout_marginTop="20dp"
+                android:textStyle="bold"
+                android:textColor="#393939" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -45,7 +46,8 @@
                 android:text="Tareas Fundamentales:"
                 android:id="@+id/textView3"
                 android:layout_marginTop="20dp"
-                android:layout_marginBottom="20dp" />
+                android:layout_marginBottom="20dp"
+                android:textStyle="bold|italic" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -54,7 +56,8 @@
                 android:text="1.- Planificar y realizar mejora continua a los procesos que desarrolla el CLE."
                 android:id="@+id/textView4"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="10dp" />
+                android:layout_marginBottom="10dp"
+                android:textSize="15dp" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -63,7 +66,8 @@
                 android:id="@+id/textView5"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginBottom="10dp"
-                android:textIsSelectable="false" />
+                android:textIsSelectable="false"
+                android:textSize="15dp"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -71,7 +75,8 @@
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:text="3.- Realizar medición, fortalecimiento y seguimiento de los niveles de atributos y competencias de liderazgo a los integrantes de la Institución."
                 android:id="@+id/textView6"
-                android:layout_marginBottom="10dp"/>
+                android:layout_marginBottom="10dp"
+                android:textSize="15dp"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -87,7 +92,8 @@
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:text="5.- Investigar y desarrollar conocimiento en el área de liderazgo."
                 android:id="@+id/textView8"
-                android:layout_marginBottom="10dp"/>
+                android:layout_marginBottom="10dp"
+                android:textSize="15dp"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -96,7 +102,8 @@
                 android:text="6.- Disponer de una plataforma tecnológica eficiente y escalable que sirva a las necesidades del CLE. "
                 android:id="@+id/textView9"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="10dp"/>
+                android:layout_marginBottom="10dp"
+                android:textSize="15dp"/>
         </LinearLayout>
     </RelativeLayout>
 </android.support.v4.widget.NestedScrollView>
