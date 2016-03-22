@@ -8,22 +8,24 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.bluejamesbond.text.DocumentView;
+
 import mprz.cl.cle.R;
 import mprz.cl.cle.util.SQLiteEncuestasHandler;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class introEncuesta extends Fragment {
+public class introEncuesta2 extends Fragment {
 
     private SQLiteEncuestasHandler db;
     private String cod_relacion;
 
-    public static introEncuesta newInstance(String cod_relacion) {
+    public static introEncuesta2 newInstance(String cod_relacion) {
 
         Bundle args = new Bundle();
         args.putString("cod_relacion", cod_relacion);
-        introEncuesta fragment = new introEncuesta();
+        introEncuesta2 fragment = new introEncuesta2();
 
         fragment.setArguments(args);
         return fragment;
@@ -42,23 +44,15 @@ public class introEncuesta extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_intro_encuesta, container, false);
+        View v = inflater.inflate(R.layout.fragment_intro_encuesta2, container, false);
 
         String[] datos = db.obtenerIntroduccionAEncuesta(cod_relacion);
 
-        TextView titulo_intro = (TextView)v.findViewById(R.id.titulo_intro);
-        TextView intro = (TextView)v.findViewById(R.id.intro);
         TextView titulo_comp = (TextView)v.findViewById(R.id.titulo_comp);
-        TextView comp = (TextView)v.findViewById(R.id.comp);
-        TextView titulo_atrib = (TextView)v.findViewById(R.id.titulo_atrib);
-        TextView atrib = (TextView)v.findViewById(R.id.atrib);
+        DocumentView comp = (DocumentView)v.findViewById(R.id.comp);
 
-        titulo_intro.setText(datos[0]);
-        intro.setText(datos[1]);
         titulo_comp.setText(datos[2]);
         comp.setText(datos[3]);
-        titulo_atrib.setText(datos[4]);
-        atrib.setText(datos[5]);
 
         return v;
     }

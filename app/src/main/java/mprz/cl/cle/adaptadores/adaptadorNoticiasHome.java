@@ -15,6 +15,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.NetworkImageView;
+import com.bluejamesbond.text.DocumentView;
 import com.facebook.drawee.view.SimpleDraweeView;
 
 import java.util.ArrayList;
@@ -83,6 +84,7 @@ public class adaptadorNoticiasHome extends RecyclerView.Adapter<adaptadorNoticia
 
         private int id;
         private TextView titulo;
+        //private DocumentView cuerpo;
         private TextView cuerpo;
         private SimpleDraweeView imagen;
 
@@ -90,6 +92,7 @@ public class adaptadorNoticiasHome extends RecyclerView.Adapter<adaptadorNoticia
             super(v);
 
             titulo = (TextView)v.findViewById(R.id.titulo_noticia);
+            //cuerpo = (DocumentView)v.findViewById(R.id.resumen_noticia);
             cuerpo = (TextView)v.findViewById(R.id.resumen_noticia);
             //imagen = (NetworkImageView)v.findViewById(R.id.img_thumbnail);
             imagen = (SimpleDraweeView) v.findViewById(R.id.img_thumbnail);
@@ -99,7 +102,7 @@ public class adaptadorNoticiasHome extends RecyclerView.Adapter<adaptadorNoticia
 
         public void bindNoticia(final Noticia n){
             titulo.setText(n.getTitulo());
-            cuerpo.setText(n.getCuerpo());
+            cuerpo.setText(n.getCuerpo().replace("\n", "").replace("\r", ""));
 
            /* mImageLoader = CLESingleton.getInstance(cx).getImageLoader();
             imagen.setImageUrl("http://cle.ejercito.cl/upload/" + n.getUrl_imagen(),mImageLoader);*/

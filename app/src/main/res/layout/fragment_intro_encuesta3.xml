@@ -2,9 +2,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.introEncuesta1"
-    android:orientation="vertical"
-    android:fillViewport="false">
+    tools:context=".fragments.introEncuesta3"
+    android:orientation="vertical">
 
     <LinearLayout
         android:orientation="vertical"
@@ -17,7 +16,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Encuesta Liderazgo Ejército de Chile (Autoevaluación)"
-            android:id="@+id/titulo_intro"
+            android:id="@+id/titulo_atrib"
             android:textStyle="bold"
             android:textSize="18dp"
             android:layout_marginTop="10dp"
@@ -27,7 +26,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Mide UC, el Centro de Medición de la Pontificia Universidad Católica de Chile, junto con el MILE del Ejército de Chile, se encuentran en proceso de diseño del MML, el instrumento de medición de liderazgo que permitirá evaluar el nivel en que cada integrante de la Institución se ajusta al \&quot;deber ser\&quot; exigido para ser un Líder.\nQueremos agradecer su participación en este proceso de pilotaje. Gracias a sus respuestas, podremos generar la versión final del instrumento de evaluación, el cual será luego implementado por el Ejército en el marco del Proyecto MILE (Modelo Integral de Liderazgo del Ejército de Chile).\nEn esta oportunidad, usted ha sido asignado para evaluar la versión de autoevaluación, por lo tanto, deberá contestar pensando siempre en usted mismo. Es importante que durante todo el transcurso de la encuesta, conteste siempre pensando en usted.\nEsta encuesta se compone de 2 secciones principales:\n1. En la primera sección, usted encontrará una serie de frases o afirmaciones referentes a diversos aspectos relacionados con las conductas y habilidades que forman parte del MILE, las cuales le solicitamos leer cuidadosamente. Frente a cada frase, usted debe marcar la alternativa que mejor represente su opinión de acuerdo a 4 opciones de respuesta.\n2. En la segunda sección, usted encontrará una serie de frases o afirmaciones referentes a aspectos relacionados con los atributos que componen en MILE. Al igual que en la sección anterior, le solicitamos leer cuidadosamente cada frase y marcar la alternativa que mejor represente su opinión. Esta vez, frente a cada una de ellas, existen 3 opciones de respuesta.\nPor favor recuerde: \r\n        ·   Usted debe marcar la alternativa que mejor represente su opinión. \r\n        ·   Deberá responder todas las afirmaciones. \r\n        Hay 100 preguntas en esta encuesta\n"
-            android:id="@+id/intro"
+            android:id="@+id/atrib"
             android:layout_marginTop="10dp"
             android:textSize="17dp" />-->
 
@@ -35,13 +34,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:id="@+id/intro"
+            android:id="@+id/atrib"
             android:text="Mide UC, el Centro de Medición de la Pontificia Universidad Católica de Chile, junto con el MILE del Ejército de Chile, se encuentran en proceso de diseño del MML, el instrumento de medición de liderazgo que permitirá evaluar el nivel en que cada integrante de la Institución se ajusta al \&quot;deber ser\&quot; exigido para ser un Líder.\nQueremos agradecer su participación en este proceso de pilotaje. Gracias a sus respuestas, podremos generar la versión final del instrumento de evaluación, el cual será luego implementado por el Ejército en el marco del Proyecto MILE (Modelo Integral de Liderazgo del Ejército de Chile).\nEn esta oportunidad, usted ha sido asignado para evaluar la versión de autoevaluación, por lo tanto, deberá contestar pensando siempre en usted mismo. Es importante que durante todo el transcurso de la encuesta, conteste siempre pensando en usted.\nEsta encuesta se compone de 2 secciones principales:\n1. En la primera sección, usted encontrará una serie de frases o afirmaciones referentes a diversos aspectos relacionados con las conductas y habilidades que forman parte del MILE, las cuales le solicitamos leer cuidadosamente. Frente a cada frase, usted debe marcar la alternativa que mejor represente su opinión de acuerdo a 4 opciones de respuesta.\n2. En la segunda sección, usted encontrará una serie de frases o afirmaciones referentes a aspectos relacionados con los atributos que componen en MILE. Al igual que en la sección anterior, le solicitamos leer cuidadosamente cada frase y marcar la alternativa que mejor represente su opinión. Esta vez, frente a cada una de ellas, existen 3 opciones de respuesta.\nPor favor recuerde: \r\n        ·   Usted debe marcar la alternativa que mejor represente su opinión. \r\n        ·   Deberá responder todas las afirmaciones. \r\n        Hay 100 preguntas en esta encuesta\n"
             ext:documentView_antialias="true"
             ext:documentView_cacheConfig="auto_quality"
             ext:documentView_textAlignment="justified"
             ext:documentView_textColor="#494949"
-            ext:documentView_textFormat="plain"
+            ext:documentView_textFormat="formatted"
             ext:documentView_textSize="16sp" />
 
     </LinearLayout>

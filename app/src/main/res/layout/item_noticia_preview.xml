@@ -2,6 +2,7 @@
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:ext="http://schemas.android.com/apk/res-auto"
     android:baselineAligned="false"
     android:layout_marginBottom="10dp">
 
@@ -51,6 +52,24 @@
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
             android:gravity="top|left" />
+
+<!--
+        <com.bluejamesbond.text.DocumentView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Small Text"
+            android:id="@+id/resumen_noticia"
+            android:ellipsize="end"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:gravity="top|left"
+            ext:documentView_maxLines="5"
+            ext:documentView_antialias="true"
+            ext:documentView_cacheConfig="auto_quality"
+            ext:documentView_textAlignment="justified"
+            ext:documentView_textColor="#494949"
+            ext:documentView_textFormat="formatted"/>
+-->
 
     </LinearLayout>
     </LinearLayout>

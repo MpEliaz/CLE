@@ -34,7 +34,9 @@ import mprz.cl.cle.clases.CLESingleton;
 import mprz.cl.cle.clases.Persona;
 import mprz.cl.cle.clases.Pregunta;
 import mprz.cl.cle.clases.Respuesta;
-import mprz.cl.cle.fragments.introEncuesta;
+import mprz.cl.cle.fragments.introEncuesta1;
+import mprz.cl.cle.fragments.introEncuesta2;
+import mprz.cl.cle.fragments.introEncuesta3;
 import mprz.cl.cle.util.SQLiteEncuestasHandler;
 import mprz.cl.cle.util.SessionManager;
 import static mprz.cl.cle.util.Constantes.URL;
@@ -81,7 +83,6 @@ public class showEncuesta extends AppCompatActivity {
             }
         });
 
-
         ArrayList<Pregunta> list = db_encuestas.ObtenerEncuestaFromDB(cod_relacion);
         ArrayList<Fragment> fragments = new ArrayList<>();
 
@@ -117,8 +118,6 @@ public class showEncuesta extends AppCompatActivity {
     }
 
     private void inicializarToolbar() {
-
-
         //App bar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_encuesta);
         setSupportActionBar(toolbar);
@@ -128,14 +127,15 @@ public class showEncuesta extends AppCompatActivity {
         if(ab != null){
             ab.setTitle("Encuesta");
         }
-
     }
 
     private ArrayList<Fragment> getFragments(ArrayList<Pregunta> list) {
         ArrayList<Fragment> items = new ArrayList<Fragment>();
 
 
-            items.add(introEncuesta.newInstance(cod_relacion));
+            items.add(introEncuesta1.newInstance(cod_relacion));
+            items.add(introEncuesta2.newInstance(cod_relacion));
+            items.add(introEncuesta3.newInstance(cod_relacion));
 
 
             for (Pregunta p : list) {
@@ -181,7 +181,7 @@ public class showEncuesta extends AppCompatActivity {
 
         Fragment f = adapter.getItem(pager.getCurrentItem());
 
-        if(f instanceof introEncuesta)
+        if(f instanceof introEncuesta1 || f instanceof introEncuesta2 || f instanceof introEncuesta3)
         {
             pager.setCurrentItem(pager.getCurrentItem()+1);
         }
@@ -189,7 +189,7 @@ public class showEncuesta extends AppCompatActivity {
 
            boolean resp = ((PreguntasAbiertas) f).guardar();
 
-            if(resp == false){
+            if(!resp){
                 Toast.makeText(showEncuesta.this, "Responde todas las preguntas antes de continuar.", Toast.LENGTH_SHORT).show();
             }
             else {

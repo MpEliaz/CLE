@@ -251,7 +251,7 @@ public class ActividadPrincipal extends AppCompatActivity {
         }
     }
 
-    @Override
+/*    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
@@ -265,5 +265,5 @@ public class ActividadPrincipal extends AppCompatActivity {
 
             }
         }
-    }
+    }*/
 }
