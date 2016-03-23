@@ -97,6 +97,7 @@ public class adaptadorEncuestados extends RecyclerView.Adapter<adaptadorEncuesta
             if(e.getEstado().equals("Finalizada")){
                 btn.setText("Finalizado");
                 btn.setEnabled(false);
+                btn.setBackgroundColor(cx.getResources().getColor(R.color.grey));
             }
             else {
                 btn.setText("Evaluar");

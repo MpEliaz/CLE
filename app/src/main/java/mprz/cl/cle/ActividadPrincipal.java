@@ -233,7 +233,7 @@ public class ActividadPrincipal extends AppCompatActivity {
                     }
                     if(fragmentTransaction) {
                         getSupportFragmentManager().beginTransaction()
-                                .replace(R.id.content_fragment, fragment)
+                                .replace(R.id.content_fragment, fragment,"menu")
                                 .commit();
 
                         menuItem.setChecked(true);
@@ -251,19 +251,16 @@ public class ActividadPrincipal extends AppCompatActivity {
         }
     }
 
-/*    @Override
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         if(requestCode == 123){
 
-            int result =data.getExtras().getInt("RESULTADO");
-            if(result == 1){
 
+                MisEncuestas f = (MisEncuestas) getSupportFragmentManager().findFragmentByTag("menu");
+                f.obtenerEncuestadosdeWS();
 
-
-
-            }
         }
-    }*/
+    }
 }

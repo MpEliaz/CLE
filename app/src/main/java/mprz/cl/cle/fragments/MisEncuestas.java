@@ -38,9 +38,7 @@ import mprz.cl.cle.clases.CLESingleton;
 import mprz.cl.cle.clases.Encuesta;
 import mprz.cl.cle.clases.Persona;
 import mprz.cl.cle.util.SQLiteEncuestasHandler;
-import mprz.cl.cle.util.SQLiteHandler;
 import mprz.cl.cle.util.SessionManager;
-
 import static mprz.cl.cle.util.Constantes.URL;
 
 /**
@@ -69,9 +67,8 @@ public class MisEncuestas extends Fragment implements adaptadorEncuestados.OnIte
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         View v = inflater.inflate(R.layout.fragment_mis_encuestas, container, false);
-
-
         RecyclerView rv = (RecyclerView) v.findViewById(R.id.rv_encuestas);
         rv.setHasFixedSize(true);
         rv.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
@@ -95,6 +92,7 @@ public class MisEncuestas extends Fragment implements adaptadorEncuestados.OnIte
             public void onRefresh() {
 
                 Persona p = session.obtenerUsuarioLogeado();
+                pDialog = null;
                 getData(p.getRut());
             }
         });
@@ -213,7 +211,7 @@ public class MisEncuestas extends Fragment implements adaptadorEncuestados.OnIte
 public void obtenerEncuestadosdeWS()
 {
     Persona p = session.obtenerUsuarioLogeado();
-    if(p.getNombre() != ""){
+    if(!p.getNombre().equals("")){
         getData(p.getRut());
     }
 }

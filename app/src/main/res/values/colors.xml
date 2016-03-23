@@ -3,6 +3,7 @@
     <color name="primary">#ba0018</color>
     <color name="white">#FFF</color>
     <color name="black">#000</color>
+    <color name="grey">#FF6C706C</color>
 
     <color name="color_primary">#575a3f</color>
     <color name="color_primary_dark">#393b29</color>
