@@ -26,7 +26,7 @@ public class DocumentosPager extends AppCompatActivity {
         pager.setOffscreenPageLimit(3);
 
         int paginas[] = extras.getIntArray("ids");
-        adaptadorPagerDocumentos adapter = new adaptadorPagerDocumentos(paginas);
+        adaptadorPagerDocumentos adapter = new adaptadorPagerDocumentos(paginas, this);
 
         pager.setAdapter(adapter);
     }

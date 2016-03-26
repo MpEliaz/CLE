@@ -40,7 +40,7 @@
             ext:documentView_cacheConfig="auto_quality"
             ext:documentView_textAlignment="justified"
             ext:documentView_textColor="#494949"
-            ext:documentView_textFormat="formatted"
+            ext:documentView_textFormat="plain"
             ext:documentView_textSize="16sp" />
 
     </LinearLayout>
